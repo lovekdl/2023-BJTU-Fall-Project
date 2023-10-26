@@ -42,7 +42,8 @@ public class UserController {
         String password = data.get("password");
         String email = data.get("email");
         String code = data.get("code");
-        if(username == null || password == null || email == null || code == null)
+        String authority = data.get("authority");
+        if(username == null || password == null || email == null || code == null || authority == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
         // 检验验证码
@@ -55,7 +56,7 @@ public class UserController {
 
         // 添加用户
         String encode_password = Tool.passwordEncoder(password);
-        String message = userService.addUser(username, encode_password, email, 3);
+        String message = userService.addUser(username, encode_password, email, Integer.parseInt(authority));
         if(message.equals("ERROR"))
             return Result.errorGetStringByMessage("403","register failed");
         else

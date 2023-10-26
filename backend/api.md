@@ -12,10 +12,11 @@
 
   ```json
   {
-      "username": "string",  // 用户名
-      "password": "string",  // 密码
-      "email": "string",     // 邮箱
-      "code": "string"       // 验证码
+      "username": "string",    // 用户名
+      "password": "string",    // 密码
+      "email": "string",       // 邮箱
+      "code": "string",        // 验证码
+      "authority": "authority" // 账户权限
   }
   ```
 
@@ -112,9 +113,9 @@
 - 
   ```json
   {
-      "token": "token"  // token
-      "oldPassword": "oldpassword",
-      "newPassword": "newpassword"
+      "token": "token"  				// token
+      "oldPassword": "oldpassword",   // 新密码
+      "newPassword": "newpassword"    // 旧密码
   }
   ```
 - **返回示例**:
@@ -136,9 +137,9 @@
 - 
   ```json
   {
-      "email": "email",
-      "code": "code",
-      "newPassword": "newpassword"
+      "email": "email",             // 邮箱
+      "code": "code",               // 验证码
+      "newPassword": "newpassword"  // 新密码
   }
   ```
 - **返回示例**:
