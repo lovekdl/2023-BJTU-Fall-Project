@@ -33,7 +33,6 @@ public class UserService{
     public String addUser(String username, String password) {
 
         String uuid = UUID.randomUUID().toString();
-
         try {
             // 更新计数器
             CounterPojo counterPojo = counterDao.selectById(3);

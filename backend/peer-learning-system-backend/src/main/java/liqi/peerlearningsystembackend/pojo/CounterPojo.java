@@ -19,4 +19,5 @@ public class CounterPojo {
 
     @TableField(value = "uid")
     private Integer uid;
+
 }
