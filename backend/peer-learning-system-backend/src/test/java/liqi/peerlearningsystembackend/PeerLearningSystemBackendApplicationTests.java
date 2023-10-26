@@ -31,10 +31,12 @@ class PeerLearningSystemBackendApplicationTests {
     @Test
     void contextLoads() {
         System.out.println("test");
-        String username = "drj";
+        String username = "yxh";
         String password = "123456";
+        String authority = "3";
+        String email = "21301114@bjtu.edu.cn";
         String encode_password = Tool.passwordEncoder(password);
-        userService.addUser(username, encode_password);
+        userService.addUser(username, encode_password, email, Integer.parseInt(authority));
     }
 
     @Test

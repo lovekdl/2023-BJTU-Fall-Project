@@ -113,7 +113,7 @@
 - 
   ```json
   {
-      "token": "token"  				// token
+      "token": "token",  				// token
       "oldPassword": "oldpassword",   // 新密码
       "newPassword": "newpassword"    // 旧密码
   }
@@ -193,5 +193,28 @@
   {
       "code": "status code",
       "message": "description about the result"
+  }
+  ```
+### 9. 修改用户名
+
+- **请求 URL**: `/usr/changeUsername`
+- **请求方式**: POST
+- **请求参数**:
+- 
+  ```json
+  {
+      "token": "token",  				// token
+      "newUsername": "newusername"    // 新用户名
+  }
+  ```
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result",
+      "data": {
+          "token": "token"
+      }
   }
   ```

@@ -154,6 +154,35 @@ public class UserController {
         }
     }
 
+    @RequestMapping(value = "/changeUsername", method = RequestMethod.POST)
+    public ResponseEntity<String> changeUsername(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String newUsername = data.get("newUsername");
+        if(token == null || newUsername == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 校验token
+        UserPojo user = userService.checkToken(token);
+
+        // 校验用户信息
+        if(user != null) {
+            // 修改用户名
+            user.setUsername(newUsername);
+            userService.updateUser(user);
+            // 生成token
+            String newToken = Tool.tokenEncoder(newUsername, user.getPassword());
+            return Result.okGetStringByData("success",
+                    new HashMap<String, String>() {{
+                        put("token", newToken);
+                    }}
+            );
+        } else {
+            return Result.errorGetStringByMessage("403", "token is wrong");
+        }
+    }
+
     /**
      * 修改用户密码
      */

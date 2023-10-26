@@ -2,7 +2,9 @@ package liqi.peerlearningsystembackend.service;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.jsonwebtoken.Claims;
+import liqi.peerlearningsystembackend.dao.CounterDao;
 import liqi.peerlearningsystembackend.dao.UserDao;
+import liqi.peerlearningsystembackend.pojo.CounterPojo;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
 import liqi.peerlearningsystembackend.utils.Tool;
 import org.apache.ibatis.jdbc.Null;
@@ -19,7 +21,8 @@ public class UserService{
     @Autowired
     UserDao userDao;
 
-    private Integer userid = 0;
+    @Autowired
+    CounterDao counterDao;
 
     /**
      * 插入一条新的用户
@@ -32,7 +35,12 @@ public class UserService{
         String uuid = UUID.randomUUID().toString();
 
         try {
-            Integer uid = ++userid;
+            // 更新计数器
+            CounterPojo counterPojo = counterDao.selectById(3);
+            counterPojo.setUid(counterPojo.getUid() + 1);
+            counterDao.updateById(counterPojo);
+            // 插入用户
+            Integer uid = counterDao.selectById(3).getUid();
             userDao.insert(new UserPojo(uuid, uid, username, password));
             return uuid;
         } catch (Exception e) {
@@ -54,7 +62,12 @@ public class UserService{
         String uuid = UUID.randomUUID().toString();
 
         try {
-            Integer uid = ++userid;
+            // 更新计数器
+            CounterPojo counterPojo = counterDao.selectById(authority);
+            counterPojo.setUid(counterPojo.getUid() + 1);
+            counterDao.updateById(counterPojo);
+            // 插入用户
+            Integer uid = counterDao.selectById(authority).getUid();
             userDao.insert(new UserPojo(uuid, uid, username, password, email, authority));
             return uuid;
         } catch (Exception e) {
