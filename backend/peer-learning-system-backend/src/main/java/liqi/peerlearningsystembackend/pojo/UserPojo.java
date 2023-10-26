@@ -14,8 +14,11 @@ import lombok.NoArgsConstructor;
 @TableName(value = "user")
 public class UserPojo {
 
-    @TableId(value = "uuid", type = IdType.ASSIGN_UUID)
+    @TableId(value = "uuid", type = IdType.AUTO)
     private String uuid;
+
+    @TableField(value = "uid")
+    private Integer uid;
 
     @TableField(value = "username")
     private String username;
@@ -29,8 +32,10 @@ public class UserPojo {
     @TableField(value = "authority")
     private Integer authority;
 
-    public UserPojo(String uuid, String username, String password) {
+
+    public UserPojo(String uuid, Integer uid, String username, String password) {
         this.uuid = uuid;
+        this.uid = uid;
         this.username = username;
         this.password = password;
         this.email = null;

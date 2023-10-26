@@ -19,6 +19,8 @@ public class UserService{
     @Autowired
     UserDao userDao;
 
+    private Integer userid = 0;
+
     /**
      * 插入一条新的用户
      * @param username 用户名
@@ -30,7 +32,8 @@ public class UserService{
         String uuid = UUID.randomUUID().toString();
 
         try {
-            userDao.insert(new UserPojo(uuid, username, password));
+            Integer uid = ++userid;
+            userDao.insert(new UserPojo(uuid, uid, username, password));
             return uuid;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -51,7 +54,8 @@ public class UserService{
         String uuid = UUID.randomUUID().toString();
 
         try {
-            userDao.insert(new UserPojo(uuid, username, password, email, authority));
+            Integer uid = ++userid;
+            userDao.insert(new UserPojo(uuid, uid, username, password, email, authority));
             return uuid;
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -144,6 +148,23 @@ public class UserService{
         return (pojo == null ? "" : pojo.getUuid());
     }
 
+    @Nullable
+    public UserPojo checkToken(String token) {
+        try {
+            Claims claims = Tool.parseToken(token);
+            String username = claims.getSubject();
+            String encodedPassword = claims.get("encodedPassword", String.class);
+            if (username == null || encodedPassword == null) {
+                return null;
+            } else {
+                UserPojo usr = userDao.selectOne(new QueryWrapper<UserPojo>().eq("username", username));
+                return (usr == null ? null : usr.getPassword().equals(encodedPassword) ? usr : null);
+            }
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
 
     /**
      * 查询所有用户

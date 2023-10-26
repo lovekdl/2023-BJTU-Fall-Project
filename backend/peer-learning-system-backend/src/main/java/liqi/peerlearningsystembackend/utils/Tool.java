@@ -9,7 +9,10 @@ import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 
+import liqi.peerlearningsystembackend.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import java.util.Base64;
 import java.util.Random;
 
@@ -19,7 +22,6 @@ public class Tool {
     }
     private static final String SECRET = "ThisIsALongerSecretKeyForJWTWithMoreThan256Bits";
     private static final Key SECRET_KEY = Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
-
 
     /**
      * 密码加密器
