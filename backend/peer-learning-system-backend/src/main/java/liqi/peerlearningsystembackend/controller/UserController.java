@@ -138,9 +138,8 @@ public class UserController {
             return Result.errorGetStringByMessage("400", "token is null");
 
         // 检验用户
-        Claims claims = Tool.parseToken(token);
-        String username = claims.getSubject();
-        UserPojo user = userService.getUserByName(username);
+        UserPojo user = userService.checkToken(token);
+
         if(user == null) {
             return Result.errorGetStringByMessage("404", "user not exist");
         } else {

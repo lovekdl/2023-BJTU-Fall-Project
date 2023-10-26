@@ -81,7 +81,7 @@
 
 ### 4. 根据token获取用户信息
 
-- **请求 URL**: `/usr/getInfo`
+- **请求 URL**: `/usr/getInfoByToken`
 - **请求方式**: POST
 - **请求参数**:
 - 
@@ -97,7 +97,7 @@
       "code": "status code",
       "message": "description about the result",
       "data": {
-          "uuid": "uuid",
+          "uid": "uid",
           "username": "username",
           "email": "email",
           "authority": "authority"
