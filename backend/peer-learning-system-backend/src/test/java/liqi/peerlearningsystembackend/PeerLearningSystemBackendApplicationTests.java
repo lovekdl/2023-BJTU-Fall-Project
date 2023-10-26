@@ -1,7 +1,9 @@
 package liqi.peerlearningsystembackend;
 
 import io.jsonwebtoken.Claims;
+import liqi.peerlearningsystembackend.pojo.UserPojo;
 import liqi.peerlearningsystembackend.service.UserService;
+import liqi.peerlearningsystembackend.utils.MailUtils;
 import liqi.peerlearningsystembackend.utils.Tool;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +15,37 @@ class PeerLearningSystemBackendApplicationTests {
     @Autowired
     UserService userService;
 
+    @Autowired
+    MailUtils mailUtils;
+
+    @Test
+    void sendMail() {
+        mailUtils.sendMail("21301034@bjtu.edu.cn", "test", "test");
+    }
+
+    @Test
+    void generateCode() {
+        System.out.println(Tool.generateCode());
+    }
+
     @Test
     void contextLoads() {
         System.out.println("test");
-        userService.addUser("liqi", "123456");
+        String username = "drj";
+        String password = "123456";
+        String encode_password = Tool.passwordEncoder(password);
+        userService.addUser(username, encode_password);
+    }
+
+    @Test
+    void setEmail() {
+        String username = "drj";
+        String email = "lalalal";
+        UserPojo usr = userService.getUserByName(username);
+        System.out.println(usr);
+        System.out.println(usr.getEmail());
+        usr.setEmail(email);
+        userService.updateUser(usr);
     }
 
     @Test

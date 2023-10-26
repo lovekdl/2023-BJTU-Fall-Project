@@ -11,6 +11,7 @@ import java.security.Key;
 
 import org.apache.commons.codec.digest.DigestUtils;
 import java.util.Base64;
+import java.util.Random;
 
 public class Tool {
     private static String ENCODER_SALT() {
@@ -68,4 +69,18 @@ public class Tool {
             throw e;
         }
     }
+
+    /**
+     * 生成随机验证码
+     * @return 验证码
+     */
+    static public String generateCode() {
+        Random random = new Random();
+        StringBuilder code = new StringBuilder();
+        for(int i = 0; i < 6; i++) {
+            code.append(random.nextInt(10));
+        }
+        return code.toString();
+    }
+
 }
