@@ -101,6 +101,7 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<String> login(@RequestBody Map<String, String> data) {
 
+        System.out.println("user login");
         // 获取数据
         String username = data.get("username");
         String password = data.get("password");

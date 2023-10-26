@@ -24,7 +24,7 @@
 
   ```
   {
-      "status": "success or error",
+      "code": "status code",
       "message": "description about the result"
   }
   ```
@@ -47,7 +47,7 @@
 
   ```json
   {
-      "status": "success or error",
+      "code": "status code",
       "message": "description about the result"
   }
   ```
@@ -71,7 +71,7 @@
 
   ```json
   {
-      "status": "success",
+      "code": "status code",
       "message" "success",
       "data": {
           "token": "token_string"
@@ -94,7 +94,7 @@
 
   ```json
   {
-      "status": "success or error",
+      "code": "status code",
       "message": "description about the result",
       "data": {
           "uuid": "uuid",
@@ -122,7 +122,7 @@
 
   ```json
   {
-      "status": "success or error",
+      "code": "status code",
       "message": "description about the result",
       "data": {
           "token": "token"
@@ -146,7 +146,7 @@
 
   ```json
   {
-      "status": "success or error",
+      "code": "status code",
       "message": "description about the result",
   }
   ```
@@ -168,7 +168,7 @@
 
   ```json
   {
-      "status": "success or error",
+      "code": "status code",
       "message": "description about the result"
   }
   ```
@@ -191,7 +191,7 @@
 
   ```json
   {
-      "status": "success or error",
+      "code": "status code",
       "message": "description about the result"
   }
   ```
