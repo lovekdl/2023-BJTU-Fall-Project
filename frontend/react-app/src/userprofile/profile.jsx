@@ -1,0 +1,105 @@
+import React,{useState,useEffect} from 'react';
+import {Layout, Menu } from "antd";
+import "./userprofile.style.css"
+import { observer } from 'mobx-react-lite'
+import {
+  UserOutlined
+} from "@ant-design/icons";
+import Innerprofile from './innerprofile';
+
+
+const { Content, Sider } = Layout;
+function Profile() {
+  
+  const [nowKey, setNowKey] = useState(1);
+  const [content, setContent] = useState(<div></div>);
+  function getLabel(x) {
+    if(x === 1) {
+      return "个人信息"
+    }
+    // if(x === 2) {
+    //   return t("planets")
+    // }
+    
+  }
+  useEffect(() => {
+    const handleWheel = (e) => {
+      e.preventDefault();
+    };
+
+    // 在组件挂载时添加滚轮事件监听器
+    window.addEventListener('wheel', handleWheel, { passive: false });
+
+    // 在组件卸载时移除滚轮事件监听器
+    return () => {
+      window.removeEventListener('wheel', handleWheel);
+    };
+  }, []);
+  useEffect(()=>{
+    if(nowKey == 1) {
+      setContent(
+        <Innerprofile></Innerprofile>
+      )
+    } 
+    // else if(nowKey == 2) {
+    //   setContent(
+    //     <ProfilePlanets></ProfilePlanets>
+    //   )
+    // }
+    // else {
+    //   setContent(<div></div>);
+    // } 
+  },[nowKey])
+  
+  
+  function handleLeftMenuClicked  ({key}) {
+    console.log(key)
+    setNowKey(key)
+  }
+  return (
+    <div>
+      
+      <Layout>
+        <Sider
+          breakpoint="lg"
+          collapsedWidth="0"
+          onBreakpoint={(broken) => {
+            console.log(broken);
+          }}
+          onCollapse={(collapsed, type) => {
+            console.log(collapsed, type);
+          }}
+          className='Slider'
+        >
+          <div className="demo-logo-vertical" />
+          <Menu
+            mode="inline"
+            defaultSelectedKeys={['1']}
+            className='SliderMenu'
+            items={[UserOutlined].map(
+              (icon, index) => ({
+                key: String(index + 1),
+                icon: React.createElement(icon),
+                label: <span> {`${getLabel(index+1)}`}</span>,
+              }),
+            )}
+            onSelect={handleLeftMenuClicked}
+          />
+            
+        </Sider>
+      
+        <Layout style={{ padding: "0 24px 0px" }}>
+          
+          <Content className='ProfileContent'>
+            
+            {content}
+
+          </Content>
+        </Layout>
+        
+      </Layout>
+    </div>
+  )
+}
+
+export default observer(Profile);

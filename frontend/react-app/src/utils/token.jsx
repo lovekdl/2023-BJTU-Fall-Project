@@ -1,8 +1,6 @@
 //封装，localstorage存储token
 
 const key = 'BlueSpace-cookie-token'
-const langKey = 'BlueSpace-language-key'
-const firtMessageKey = 'BlueSpace-First-Message'
 const setTokenFromLocalStorage = (token) => {
   return window.localStorage.setItem(key, token)
 }
