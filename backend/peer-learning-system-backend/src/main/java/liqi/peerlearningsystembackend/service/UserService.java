@@ -7,11 +7,14 @@ import liqi.peerlearningsystembackend.dao.UserDao;
 import liqi.peerlearningsystembackend.pojo.CounterPojo;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
 import liqi.peerlearningsystembackend.utils.Tool;
+import org.apache.ibatis.exceptions.PersistenceException;
 import org.apache.ibatis.jdbc.Null;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.sql.SQLIntegrityConstraintViolationException;
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -61,15 +64,24 @@ public class UserService{
         String uuid = UUID.randomUUID().toString();
 
         try {
+            // 插入用户
+            Integer uid = counterDao.selectById(authority).getUid();
+            userDao.insert(new UserPojo(uuid, uid, username, password, email, authority));
+
             // 更新计数器
             CounterPojo counterPojo = counterDao.selectById(authority);
             counterPojo.setUid(counterPojo.getUid() + 1);
             counterDao.updateById(counterPojo);
-            // 插入用户
-            Integer uid = counterDao.selectById(authority).getUid();
-            userDao.insert(new UserPojo(uuid, uid, username, password, email, authority));
+
             return uuid;
-        } catch (Exception e) {
+        }  catch (Exception e) {
+            Throwable cause = e.getCause();
+            if (cause.getMessage().contains("Duplicate entry") && cause.getMessage().contains("for key 'user.email'")) {
+                return "ERROR: duplicate email";
+            }
+            if (cause.getMessage().contains("Duplicate entry") && cause.getMessage().contains("for key 'user.username'")) {
+                return "ERROR: duplicate username";
+            }
             System.out.println(e.getMessage());
             return "ERROR";
         }
@@ -104,15 +116,33 @@ public class UserService{
      */
     public String deleteUserByName(String username) {
         UserPojo user = getUserByName(username);
-        if(user != null) {
-            try {
-                userDao.deleteById(user.getUuid());
-                return "OK";
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return "ERROR";
-            }
-        } else {
+        if (user == null)
+            return "ERROR";
+
+        // 删除用户
+        try {
+            userDao.deleteById(user.getUuid());
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
+     * 根据uid删除一条用户
+     */
+    public String deleteUserByUid(Integer uid) {
+        UserPojo user = getUserByUid(uid);
+        if (user == null)
+            return "ERROR";
+
+        // 删除用户
+        try {
+            userDao.deleteById(user.getUuid());
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
             return "ERROR";
         }
     }
@@ -123,6 +153,13 @@ public class UserService{
     @Nullable
     public UserPojo getUserByUUID(String uuid) {
         return userDao.selectById(uuid);
+    }
+
+    /**
+     * 根据uid查询一条用户信息
+     */
+    public UserPojo getUserByUid(Integer uid) {
+        return userDao.selectOne(new QueryWrapper<UserPojo>().eq("uid", uid));
     }
 
     /**
@@ -141,14 +178,19 @@ public class UserService{
         try {
             Claims claims = Tool.parseToken(token);
             String username = claims.getSubject();
-            return getUserByName(username);
+            String encodedPassword = claims.get("encodedPassword", String.class);
+            UserPojo usr = getUserByName(username);
+            return (usr == null ? null : usr.getPassword().equals(encodedPassword) ? usr : null);
         } catch (IllegalArgumentException e) {
             return null;
         }
     }
 
+    /**
+     * 根据邮箱查询一条用户信息
+     */
     @Nullable
-    public UserPojo getUserByEamil(String email) {
+    public UserPojo getUserByEmail(String email) {
         return userDao.selectOne(new QueryWrapper<UserPojo>().eq("email", email));
     }
 
@@ -160,23 +202,6 @@ public class UserService{
         return (pojo == null ? "" : pojo.getUuid());
     }
 
-    @Nullable
-    public UserPojo checkToken(String token) {
-        try {
-            Claims claims = Tool.parseToken(token);
-            String username = claims.getSubject();
-            String encodedPassword = claims.get("encodedPassword", String.class);
-            if (username == null || encodedPassword == null) {
-                return null;
-            } else {
-                UserPojo usr = userDao.selectOne(new QueryWrapper<UserPojo>().eq("username", username));
-                return (usr == null ? null : usr.getPassword().equals(encodedPassword) ? usr : null);
-            }
-        } catch (Exception e) {
-            return null;
-        }
-
-    }
 
     /**
      * 查询所有用户
@@ -185,6 +210,44 @@ public class UserService{
         return userDao.selectList(new QueryWrapper<>());
     }
 
+    /**
+     * 根据某一字段查询用户
+     */
+    public List<UserPojo> getUsersByValue(Object value) {
+        QueryWrapper<UserPojo> queryWrapper = new QueryWrapper<>();
+
+        // 假设我们有一个字段列表，我们想要在这些字段中搜索值
+        List<String> fieldsToSearch = Arrays.asList("username", "email", "uid", "authority");
+
+        for (String field : fieldsToSearch) {
+            queryWrapper.or(wrapper -> wrapper.eq(field, value));
+        }
+
+        return userDao.selectList(queryWrapper);
+    }
+
+    /**
+     * 根据Token返回用户
+     */
+    @Nullable
+    public UserPojo checkToken(String token) {
+        try {
+            Claims claims = Tool.parseToken(token);
+            String username = claims.getSubject();
+            String encodedPassword = claims.get("encodedPassword", String.class);
+            if (username == null || encodedPassword == null)
+                return null;
+            UserPojo usr = getUserByName(username);
+            return (usr == null ? null : usr.getPassword().equals(encodedPassword) ? usr : null);
+        } catch (Exception e) {
+            return null;
+        }
+
+    }
+
+    /**
+     * 更新邮箱
+     */
     public String updateEmail(String username, String email) {
         UserPojo user = getUserByName(username);
         if(user != null) {
@@ -194,4 +257,5 @@ public class UserService{
             return "ERROR";
         }
     }
+
 }

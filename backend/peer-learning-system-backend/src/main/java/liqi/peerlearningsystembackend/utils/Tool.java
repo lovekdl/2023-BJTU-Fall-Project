@@ -34,13 +34,13 @@ public class Tool {
 
     /**
      * Token加密
-     * @param username 该用户的用户名
+     * @param value 该用户的邮箱
      * @param password 该用户的密码
      * @return token
      */
-    public static String tokenEncoder(String username, String password) {
+    public static String tokenEncoder(String value, String password) {
         String token = Jwts.builder()
-                .setSubject(username) // 使用用户名作为token的主题
+                .setSubject(value) // 使用邮箱作为token的主题
                 .claim("encodedPassword", password) // 添加编码后的密码作为声明
                 .signWith(SECRET_KEY) // 使用指定的密钥签名token
                 .compact();
@@ -83,6 +83,16 @@ public class Tool {
             code.append(random.nextInt(10));
         }
         return code.toString();
+    }
+
+    static public String checkEmailFormat(String email) {
+        if(email == null || email.length() == 0) {
+            return "email can not be empty";
+        }
+        if(!email.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
+            return "email format error";
+        }
+        return "OK";
     }
 
 }

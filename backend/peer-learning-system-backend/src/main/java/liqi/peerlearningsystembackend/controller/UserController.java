@@ -1,19 +1,20 @@
 package liqi.peerlearningsystembackend.controller;
 
-import io.jsonwebtoken.Claims;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
 import liqi.peerlearningsystembackend.service.UserService;
 import liqi.peerlearningsystembackend.utils.MailUtils;
 import liqi.peerlearningsystembackend.utils.Result;
 import liqi.peerlearningsystembackend.utils.Tool;
+import liqi.peerlearningsystembackend.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.cache.CacheProperties;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -57,7 +58,7 @@ public class UserController {
         // 添加用户
         String encode_password = Tool.passwordEncoder(password);
         String message = userService.addUser(username, encode_password, email, Integer.parseInt(authority));
-        if(message.equals("ERROR"))
+        if(message.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403","register failed");
         else
             return Result.okGetString();
@@ -76,7 +77,7 @@ public class UserController {
             return Result.errorGetStringByMessage("400", "email is null");
 
         // 查找是否存在用户使用该邮箱
-        UserPojo usr = userService.getUserByEamil(email);
+        UserPojo usr = userService.getUserByEmail(email);
         if(usr != null)
             return Result.errorGetStringByMessage("403", "email has been used");
 
@@ -106,7 +107,7 @@ public class UserController {
         String username = data.get("username");
         String password = data.get("password");
         if(username == null || password == null)
-            return Result.errorGetStringByMessage("400", "username or password is null");
+            return Result.errorGetStringByMessage("400", "email or password is null");
 
         // 检验用户
         String encode_password = Tool.passwordEncoder(password);
@@ -139,21 +140,24 @@ public class UserController {
 
         // 检验用户
         UserPojo user = userService.checkToken(token);
-
-        if(user == null) {
+        if(user == null)
             return Result.errorGetStringByMessage("404", "user not exist");
-        } else {
-            return Result.okGetStringByData("success",
-                    new HashMap<String, String>() {{
-                        put("uid", String.valueOf(user.getUid()));
-                        put("username", user.getUsername());
-                        put("email", user.getEmail());
-                        put("authority", String.valueOf(user.getAuthority()));
-                    }}
-            );
-        }
+
+        // 返回用户信息
+        return Result.okGetStringByData("success",
+                new HashMap<String, String>() {{
+                    put("uid", String.valueOf(user.getUid()));
+                    put("username", user.getUsername());
+                    put("email", user.getEmail());
+                    put("authority", String.valueOf(user.getAuthority()));
+                }}
+        );
+
     }
 
+    /**
+     * 修改用户名
+     */
     @RequestMapping(value = "/changeUsername", method = RequestMethod.POST)
     public ResponseEntity<String> changeUsername(@RequestBody Map<String, String> data) {
 
@@ -167,20 +171,19 @@ public class UserController {
         UserPojo user = userService.checkToken(token);
 
         // 校验用户信息
-        if(user != null) {
-            // 修改用户名
-            user.setUsername(newUsername);
-            userService.updateUser(user);
-            // 生成token
-            String newToken = Tool.tokenEncoder(newUsername, user.getPassword());
-            return Result.okGetStringByData("success",
-                    new HashMap<String, String>() {{
-                        put("token", newToken);
-                    }}
-            );
-        } else {
+        if(user == null)
             return Result.errorGetStringByMessage("403", "token is wrong");
-        }
+
+        // 修改用户名
+        user.setUsername(newUsername);
+        userService.updateUser(user);
+        // 生成token
+        String newToken = Tool.tokenEncoder(newUsername, user.getPassword());
+        return Result.okGetStringByData("success",
+                new HashMap<String, String>() {{
+                    put("token", newToken);
+                }}
+        );
     }
 
     /**
@@ -193,29 +196,38 @@ public class UserController {
         String token = data.get("token");
         String oldPassword = data.get("oldPassword");
         String newPassword = data.get("newPassword");
-        if(token == null || oldPassword == null || newPassword == null)
+        if (token == null || oldPassword == null || newPassword == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
         // 校验token
         UserPojo user = userService.checkToken(token);
 
         // 校验用户信息
-        if(user != null) {
-            // 修改密码
-            String encode_password = Tool.passwordEncoder(newPassword);
-            user.setPassword(encode_password);
-            userService.updateUser(user);
-            // 生成token
-            String newToken = Tool.tokenEncoder(user.getUsername(), encode_password);
-            return Result.okGetStringByData("success",
-                    new HashMap<String, String>() {{
-                        put("token", newToken);
-                    }}
-            );
-        } else {
+        if (user == null)
             return Result.errorGetStringByMessage("403", "token is wrong");
-        }
+
+        // 校验旧密码
+        String oldEncodePassword = Tool.passwordEncoder(oldPassword);
+        if (!user.getPassword().equals(oldEncodePassword))
+            return Result.errorGetStringByMessage("403", "old password is wrong");
+
+        // 新旧密码不能相同
+        if (oldPassword.equals(newPassword))
+            return Result.errorGetStringByMessage("403", "new password is same as old password");
+
+        // 修改密码
+        String encode_password = Tool.passwordEncoder(newPassword);
+        user.setPassword(encode_password);
+        userService.updateUser(user);
+        // 生成token
+        String newToken = Tool.tokenEncoder(user.getUsername(), encode_password);
+        return Result.okGetStringByData("success",
+                new HashMap<String, String>() {{
+                    put("token", newToken);
+                }}
+        );
     }
+
 
     /**
      * 找回密码
@@ -239,15 +251,15 @@ public class UserController {
         }
 
         // 修改密码
-        UserPojo user = userService.getUserByEamil(email);
-        if(user == null) {
+        UserPojo user = userService.getUserByEmail(email);
+        if(user == null)
             return Result.errorGetStringByMessage("404", "user not exist");
-        } else {
-            String encode_password = Tool.passwordEncoder(newPassword);
-            user.setPassword(encode_password);
-            userService.updateUser(user);
-            return Result.okGetString();
-        }
+
+        String encode_password = Tool.passwordEncoder(newPassword);
+        user.setPassword(encode_password);
+        userService.updateUser(user);
+        return Result.okGetString();
+
     }
 
     /**
@@ -266,7 +278,7 @@ public class UserController {
         boolean sendMail = mailUtils.sendMail(email, "您正在找回账户密码，您的验证码为：" + code + "，请在5分钟内使用。", "互评平台验证码");
         if(sendMail) {
             // 将验证码存入redis, 并设置过期时间为5分钟
-            long expire = 5 * 60;
+            long expire = Constants.EMAIL_CODE_EXPIRE_TIME;
             redisTemplate.opsForValue().set(email, code);
             redisTemplate.expire(email, expire, java.util.concurrent.TimeUnit.SECONDS);
             return Result.okGetString();
@@ -274,26 +286,6 @@ public class UserController {
             return Result.errorGetStringByMessage("403", "send email failed");
         }
     }
-
-    /**
-     * 根据用户名删除用户
-     */
-    @RequestMapping(value = "/deleteByName", method = RequestMethod.DELETE)
-    public ResponseEntity<String> delete(@RequestBody Map<String, String> data) {
-
-        // 获取数据
-        String username = data.get("username");
-        if(username == null)
-            return Result.errorGetStringByMessage("400", "username is null");
-
-        // 删除用户
-        String message = userService.deleteUserByName(username);
-        if(message.equals("ERROR"))
-            return Result.errorGetStringByMessage("403", "delete failed");
-        else
-            return Result.okGetString();
-    }
-
 
 }
 
