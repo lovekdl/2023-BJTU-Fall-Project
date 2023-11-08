@@ -1,43 +1,37 @@
-import {RefObject, useEffect, useState} from 'react'
+import {useState} from 'react'
 import "./authority.style.css"
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { useStore } from '../store';
 import { useNavigate } from 'react-router-dom';
 // import Scrolls from "./scroll";
 import { motion } from "framer-motion";
 import { observer } from 'mobx-react-lite';
 import qq from '../assets/QQ.png'
-import wechat from '../assets/WeChat.png'
-
+// import { RegisterForm } from './register';
 import {message} from 'antd'
-interface InputRef {
-  value: string;
-}
-
+import RegisterForm from "./register"
+import FindPasswordForm from "./findpassword"
 function LoginForm  ()  {
-  const [coordinates, setCoordinates] = useState({ x: 0, y: 0 });
-  const handleMouseMove = (event:any) => {
-    const { clientX, clientY } = event;
-    setCoordinates({ x: clientX, y: clientY });
-    console.log(coordinates)
-  };
+
   const navigate = useNavigate()
-  const usernameRef = useRef<InputRef>(null) as RefObject<HTMLInputElement>;
-  const passwordRef = useRef<InputRef>(null) as RefObject<HTMLInputElement>;
+  const usernameRef = useRef();
+  const passwordRef = useRef();
   const [ current_page , setCurrentPage ] = useState('login');
   
-  const {loginStore} = useStore();
+  const {loginStore,ProfileStore} = useStore();
   
 
   const handleSignUpOnClicked = () => {
-    message.error("联系管理员注册")
-    // setCurrentPage('register')
+    // message.error("联系管理员注册")
+    setCurrentPage('register')
   }
-  
-  async function handleLoginSubmit(event:any) {
+  const handleFindPasswordClicked = () => {
+    setCurrentPage('findPassword')
+  }
+  async function handleLoginSubmit(event) {
     event.preventDefault();
     if(!usernameRef.current?.value || !passwordRef.current?.value) {
-      message.error('inputs can not be empty')
+      message.error('输入不能为空')
       return;
     }
 
@@ -47,13 +41,16 @@ function LoginForm  ()  {
         username: usernameRef.current.value,
         password: passwordRef.current.value
       })
+
       message.success('Success')
+      ProfileStore.getProfile();
       navigate('/', {replace:true})
-      window.location.reload()
-    } catch(e:any) {
+
+      // window.location.reload()
+    } catch(e) {
       console.log(e)
       if(e.response)
-        message.error(e.response.data.error_message)
+        message.error(e.response.data.message)
       else message.error(e.message)
     }
   }
@@ -61,14 +58,13 @@ function LoginForm  ()  {
   const handleGithubClicked = () => {
     window.open('https://github.com/lovekdl/2023-BJTU-Summer-Project', '_blank');
   }
-  const handleBilibiliClicked = () => {
-    window.open('https://space.bilibili.com/99798809', '_blank');
-  }
+  // const handleBilibiliClicked = () => {
+  //   window.open('https://space.bilibili.com/99798809', '_blank');
+  // }
   return (
     
     
     <div className="content" >
-      
       {/* <Scrolls></Scrolls> */}
       <div className="login-wrapper">
         <div className="left-img">
@@ -100,7 +96,7 @@ function LoginForm  ()  {
                 
                 <input type="password" className="inputs" placeholder={"请输入密码"} ref={passwordRef}/>
                 
-                <span className="forgot">{'忘记密码'}</span>
+                <span className="forgot" onClick ={handleFindPasswordClicked}>{'忘记密码'}</span>
               </div>
               
               <motion.button
@@ -130,9 +126,9 @@ function LoginForm  ()  {
                 <div className="other-login-item">
                   <img src={qq} alt="QQ" onClick={handleGithubClicked}/>
                 </div>
-                <div className="other-login-item">
+                {/* <div className="other-login-item">
                   <img style = {{width:'80px'}}src={wechat} alt="WeChat" onClick = {handleBilibiliClicked}/>
-                </div>
+                </div> */}
               </div>
                 
             </div>
@@ -140,13 +136,16 @@ function LoginForm  ()  {
           </div>
           
         </div>:
-        <div></div>
+        
+          current_page === 'register'? <RegisterForm setCurrentPage = {setCurrentPage}></RegisterForm> : <FindPasswordForm setCurrentPage={setCurrentPage}></FindPasswordForm>
+        
         }
       </div>
     </div>
   );
 
 
-};
+}
+
 
 export default observer(LoginForm);

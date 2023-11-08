@@ -1,5 +1,4 @@
 //封装axios
-
 import axios from 'axios'
 import { getTokenFromLocalStorage } from './token'
 
@@ -26,6 +25,9 @@ http.interceptors.request.use((config) => {
 })
 //响应拦截
 http.interceptors.response.use((response ) => {
+    if(response.data?.code > 300) {
+        return Promise.reject(response)
+    }
     //2xx状态码
     return response
 }, (error) => {
