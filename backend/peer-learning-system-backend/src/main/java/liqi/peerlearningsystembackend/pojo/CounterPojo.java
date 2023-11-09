@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @TableName(value = "counter")
 public class CounterPojo {
 
-    @TableId(value = "authority", type = IdType.AUTO)
-    private Integer authority;
+    @TableId(value = "filedName", type = IdType.AUTO)
+    private Integer fieldName;
 
     @TableField(value = "uid")
     private Integer uid;

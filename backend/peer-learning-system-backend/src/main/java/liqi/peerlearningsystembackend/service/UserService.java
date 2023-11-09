@@ -158,6 +158,7 @@ public class UserService{
     /**
      * 根据uid查询一条用户信息
      */
+    @Nullable
     public UserPojo getUserByUid(Integer uid) {
         return userDao.selectOne(new QueryWrapper<UserPojo>().eq("uid", uid));
     }
@@ -197,6 +198,7 @@ public class UserService{
     /**
      * 根据名字获取UUID
      */
+    @Nullable
     public String getUUIDByName(String name) {
         UserPojo pojo = userDao.selectOne(new QueryWrapper<UserPojo>().eq("username", name));
         return (pojo == null ? "" : pojo.getUuid());
@@ -206,6 +208,7 @@ public class UserService{
     /**
      * 查询所有用户
      */
+    @Nullable
     public List<UserPojo> getAllUsers() {
         return userDao.selectList(new QueryWrapper<>());
     }
@@ -213,6 +216,7 @@ public class UserService{
     /**
      * 根据某一字段查询用户
      */
+    @Nullable
     public List<UserPojo> getUsersByValue(Object value) {
         QueryWrapper<UserPojo> queryWrapper = new QueryWrapper<>();
 

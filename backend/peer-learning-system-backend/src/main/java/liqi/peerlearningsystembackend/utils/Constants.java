@@ -13,6 +13,20 @@ public final class Constants {
     public static final int AUTHORITY_TEACHER = 2;
     public static final int AUTHORITY_STUDENT = 3;
 
+    /**
+     * Constants for course
+     */
+    public static final int COURSE_COUNTER = 4;
+
+    /**
+     * Constants for assignment
+     */
+    public static final int ASSIGNMENT_COUNTER = 5;
+
+    /**
+     * Constants for homework
+     */
+    public static final int HOMEWORK_COUNTER = 6;
 
     /**
      * Constants for email code expire time

@@ -102,12 +102,12 @@ public class UserController {
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     public ResponseEntity<String> login(@RequestBody Map<String, String> data) {
 
-        System.out.println("user login");
+//        System.out.println("user login");
         // 获取数据
         String username = data.get("username");
         String password = data.get("password");
         if(username == null || password == null)
-            return Result.errorGetStringByMessage("400", "email or password is null");
+            return Result.errorGetStringByMessage("400", "username or password is null");
 
         // 检验用户
         String encode_password = Tool.passwordEncoder(password);
