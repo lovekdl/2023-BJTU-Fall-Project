@@ -218,3 +218,111 @@
       }
   }
   ```
+
+## 管理员模块
+
+### 1. 管理员根据uid删除用户
+
+- **请求 URL**: `/admin/deleteUserByUid`
+
+- **请求方式**: DELETE
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "uid": "uid"    				// uid
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 2. 管理员添加用户
+
+- **请求 URL**: `/admin/addUser`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "username": "username",
+      "email": "email",
+      "password": "password",
+      "authority": "authority"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 3. 管理员查询某些用户
+
+- **请求 URL**: `/admin/deleteUserByUid`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "value": "value"    			// value
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result",
+      "data": {
+          "users": [{"uid":"300001","authority":"学生","key":"300001","email":"21301034@bjtu.edu.cn","username":"liqi"},{"uid":"300002","authority":"学生","key":"300002","email":"21301114@bjtu.edu.cn","username":"yxh"},]
+      }
+  }
+  ```
+
+### 4. 管理员修改用户信息
+
+- **请求 URL**: `/admin/updateUser`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "uid": "uid",    				// uid
+      "username": "username", 		// username
+      "email": "email",
+      "authority": "authority"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+

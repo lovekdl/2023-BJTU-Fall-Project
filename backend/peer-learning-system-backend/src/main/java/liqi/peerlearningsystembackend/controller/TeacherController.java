@@ -3,6 +3,7 @@ package liqi.peerlearningsystembackend.controller;
 import liqi.peerlearningsystembackend.pojo.CoursePojo;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
 import liqi.peerlearningsystembackend.service.CourseService;
+import liqi.peerlearningsystembackend.service.SCService;
 import liqi.peerlearningsystembackend.service.UserService;
 import liqi.peerlearningsystembackend.utils.Constants;
 import liqi.peerlearningsystembackend.utils.Result;
@@ -28,6 +29,9 @@ public class TeacherController {
 
     @Autowired
     CourseService courseService;
+
+    @Autowired
+    SCService scService;
 
     /**
      * 教师添加课程
@@ -154,6 +158,7 @@ public class TeacherController {
             return Result.okGetStringByMessage("don't have any course");
         List<Object> coursesInfo = new ArrayList<>();
 
+        // 将课程信息转换为Map
         for (CoursePojo course : courses) {
             HashMap<String, String> courseInfo = new HashMap<>();
             courseInfo.put("courseID", String.valueOf(course.getCourseID()));
@@ -170,4 +175,55 @@ public class TeacherController {
         );
     }
 
+    /**
+     * 教师添加学生到课程
+     */
+    @RequestMapping(value = "/addStudentToCourse", method = RequestMethod.POST)
+    public ResponseEntity<String> addStudentToCourse(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String courseID = data.get("courseID");
+        String studentID = data.get("uid");
+        if (token == null || courseID == null || studentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo user = userService.checkToken(token);
+        if(user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 添加学生到课程
+        String message = scService.addSCByCourseIDAndStudentID(Integer.parseInt(courseID), Integer.parseInt(studentID));
+        if(message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403",message);
+        else
+            return Result.okGetString();
+    }
+
+    /**
+     * 教师从课程删除学生
+     */
+    @RequestMapping(value = "/deleteStudentFromCourse", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteStudentFromCourse(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String courseID = data.get("courseID");
+        String studentID = data.get("uid");
+        if (token == null || courseID == null || studentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo user = userService.checkToken(token);
+        if(user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 删除学生
+        String message = scService.deleteSCByCourseIDAndStudentID(Integer.parseInt(courseID), Integer.parseInt(studentID));
+        if(message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403",message);
+        else
+            return Result.okGetString();
+    }
 }

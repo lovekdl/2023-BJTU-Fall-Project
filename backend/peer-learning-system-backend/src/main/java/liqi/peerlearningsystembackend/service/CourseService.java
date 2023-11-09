@@ -22,9 +22,6 @@ public class CourseService {
     CourseDao courseDao;
 
     @Autowired
-    UserDao userDao;
-
-    @Autowired
     CounterDao counterDao;
 
     /**
@@ -115,7 +112,7 @@ public class CourseService {
      * 根据课程ID查询课程
      */
     @Nullable
-    private CoursePojo getCourseByCourseID(int courseID) {
+    CoursePojo getCourseByCourseID(int courseID) {
         return courseDao.selectOne(new QueryWrapper<CoursePojo>().eq("courseID", courseID));
     }
 
