@@ -294,7 +294,15 @@
       "code": "status code",
       "message": "description about the result",
       "data": {
-          "users": [{"uid":"300001","authority":"学生","key":"300001","email":"21301034@bjtu.edu.cn","username":"liqi"},{"uid":"300002","authority":"学生","key":"300002","email":"21301114@bjtu.edu.cn","username":"yxh"},]
+            "users": [
+                  {
+                      "uid": "uid",
+                      "authority": "authority",
+                      "key": "key",
+                      "email": "email",
+                      "username": "username"
+                  },
+            ]
       }
   }
   ```
@@ -314,6 +322,189 @@
       "username": "username", 		// username
       "email": "email",
       "authority": "authority"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+## 教师模块
+
+### 1. 教师添加课程
+
+- **请求 URL**: `/teacher/addCourse`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "courseName": "cname",
+      "intro": "intro"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 2. 教师删除课程
+
+- **请求 URL**: `/teacher/deleteCourseByCourseID`
+
+- **请求方式**: DELETE
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "courseID": "courseID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 3. 教师设置课程名称
+
+- **请求 URL**: `/teacher/setCourseName`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "courseID": "courseID",
+      "courseName": "courseName"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 4. 教师设置课程名称
+
+- **请求 URL**: `/teacher/setCourseIntro`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "courseID": "courseID",
+      "intro": "intro"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 5. 教师获取课程列表
+
+- **请求 URL**: `/teacher/getCourseList`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result",
+      "data": {
+          "courses": [
+              {
+                  "courseName": "cname",
+                  "intro": "intro",
+                  "courseID": "cid"
+              }
+          ]
+      },
+  }
+  ```
+
+### 6. 教师添加学生到课程
+
+- **请求 URL**: `/teacher/addStudentToCourse`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "courseID": "courseID",
+      "uid": "uid"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 7. 教师从课程删除学生
+
+- **请求 URL**: `/teacher/deleteStudentFromCourse`
+
+- **请求方式**: DELETE
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "courseID": "courseID",
+      "uid": "uid"
   }
   ```
 

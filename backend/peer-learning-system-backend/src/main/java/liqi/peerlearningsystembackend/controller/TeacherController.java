@@ -170,7 +170,7 @@ public class TeacherController {
 
         return Result.okGetStringByData("success",
                 new HashMap<String, Object>() {{
-                    put("users", coursesInfo);
+                    put("courses", coursesInfo);
                 }}
         );
     }
