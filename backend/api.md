@@ -274,7 +274,7 @@
 
 ### 3. 管理员查询某些用户
 
-- **请求 URL**: `/admin/updateUser`
+- **请求 URL**: `/admin/getUsers`
 
 - **请求方式**: POST
 
@@ -331,6 +331,40 @@
   {
       "code": "status code",
       "message": "description about the result"
+  }
+  ```
+
+### 5. 管理员查看所有用户
+
+- **请求 URL**: `/admin/getAllUsers`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result",
+      "data": {
+            "users": [
+                  {
+                      "uid": "uid",
+                      "authority": "authority",
+                      "key": "key",
+                      "email": "email",
+                      "username": "username"
+                  },
+            ]
+      }
   }
   ```
 
