@@ -165,4 +165,52 @@ public class AdminController {
             return Result.errorGetStringByMessage("403", "update failed");
         }
     }
+
+    /**
+     * 管理员查看所有用户
+     */
+    @RequestMapping(value = "/getAllUsers", method = RequestMethod.POST)
+    public ResponseEntity<String> getAllByAdmin(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        if(token == null)
+            return Result.errorGetStringByMessage("400", "token is null");
+
+        // 检验用户是否是管理员
+        UserPojo user = userService.checkToken(token);
+        if(user == null || user.getAuthority() != Constants.AUTHORITY_ADMIN)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not admin");
+
+        // 查询用户
+        List<UserPojo> users = userService.getAllUsers();
+        List<Object> usersInfo = new ArrayList<>();
+
+        for (UserPojo usr : users) {
+            HashMap<String, String> userInfo = new HashMap<>();
+            userInfo.put("key", String.valueOf(usr.getUid()));
+            userInfo.put("uid", String.valueOf(usr.getUid()));
+            userInfo.put("email", usr.getEmail());
+            userInfo.put("username", usr.getUsername());
+            switch (usr.getAuthority()) {
+                case Constants.AUTHORITY_ADMIN:
+                    userInfo.put("authority", "管理员");
+                    break;
+                case Constants.AUTHORITY_TEACHER:
+                    userInfo.put("authority", "老师");
+                    break;
+                case Constants.AUTHORITY_STUDENT:
+                    userInfo.put("authority", "学生");
+                    break;
+            }
+
+            usersInfo.add(userInfo);
+        }
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("users", usersInfo);
+                }}
+        );
+    }
 }

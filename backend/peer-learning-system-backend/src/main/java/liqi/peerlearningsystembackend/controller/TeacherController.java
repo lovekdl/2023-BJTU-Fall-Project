@@ -2,6 +2,7 @@ package liqi.peerlearningsystembackend.controller;
 
 import liqi.peerlearningsystembackend.pojo.CoursePojo;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
+import liqi.peerlearningsystembackend.service.AssignmentService;
 import liqi.peerlearningsystembackend.service.CourseService;
 import liqi.peerlearningsystembackend.service.SCService;
 import liqi.peerlearningsystembackend.service.UserService;
@@ -32,6 +33,9 @@ public class TeacherController {
 
     @Autowired
     SCService scService;
+
+    @Autowired
+    AssignmentService assignmentService;
 
     /**
      * 教师添加课程
@@ -225,5 +229,34 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403",message);
         else
             return Result.okGetString();
+    }
+
+    /**
+     * 教师添加作业
+     */
+    @RequestMapping(value = "/addAssignmentWithoutFile", method = RequestMethod.POST)
+    public ResponseEntity<String> addAssignment(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String courseID = data.get("courseID");
+        String title = data.get("title");
+        String content = data.get("content");
+        String deadline = data.get("deadline");
+        if (token == null || courseID == null || title == null || content == null || deadline == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 添加作业
+//        String message = assignmentService.addAssignment(Integer.parseInt(courseID), assignmentName, assignmentContent, ddl);
+//        if (message.startsWith("ERROR"))
+//            return Result.errorGetStringByMessage("403", message);
+//        else
+//            return Result.okGetString();
+        return null;
     }
 }
