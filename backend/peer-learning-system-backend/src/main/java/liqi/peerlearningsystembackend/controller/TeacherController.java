@@ -189,8 +189,9 @@ public class TeacherController {
         // 获取数据
         String token = data.get("token");
         String courseID = data.get("courseID");
+        String username = data.get("username");
         String studentID = data.get("uid");
-        if (token == null || courseID == null || studentID == null)
+        if (token == null || courseID == null || (studentID == null && username == null))
             return Result.errorGetStringByMessage("400", "something is null");
 
         // 检验用户是否是教师
@@ -199,7 +200,11 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 添加学生到课程
-        String message = scService.addSCByCourseIDAndStudentID(Integer.parseInt(courseID), Integer.parseInt(studentID));
+        String message;
+        if(studentID != null)
+            message = scService.addSCByCourseIDAndStudentID(Integer.parseInt(courseID), Integer.parseInt(studentID));
+        else
+            message = scService.addSCByCourseIDAndUsername(Integer.parseInt(courseID), username);
         if(message.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403",message);
         else
@@ -233,10 +238,49 @@ public class TeacherController {
     }
 
     /**
+     * 教师获取课程学生列表
+     */
+    @RequestMapping(value = "/getStudentListByCourseID", method = RequestMethod.POST)
+    public ResponseEntity<String> getStudentListByCourseID(@RequestBody Map<String, String> data) {
+
+            // 获取数据
+            String token = data.get("token");
+            String courseID = data.get("courseID");
+            if (token == null || courseID == null)
+                return Result.errorGetStringByMessage("400", "something is null");
+
+            // 检验用户是否是教师
+            UserPojo teacher = userService.checkToken(token);
+            if(teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
+                return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+            // 获取课程学生列表
+            List<UserPojo> students = scService.getStudentsByCourseID(Integer.parseInt(courseID));
+            if(students == null)
+                return Result.okGetStringByMessage("don't have any student");
+            List<Object> studentsInfo = new ArrayList<>();
+
+            // 将学生信息转换为Map
+            for (UserPojo student : students) {
+                HashMap<String, String> studentInfo = new HashMap<>();
+                studentInfo.put("key", String.valueOf(student.getUid()));
+                studentInfo.put("uid", String.valueOf(student.getUid()));
+                studentInfo.put("username", student.getUsername());
+                studentsInfo.add(studentInfo);
+            }
+
+            return Result.okGetStringByData("success",
+                    new HashMap<String, Object>() {{
+                        put("students", studentsInfo);
+                    }}
+            );
+    }
+
+    /**
      * 教师添加作业
      */
     @RequestMapping(value = "/addAssignmentWithoutFile", method = RequestMethod.POST)
-    public ResponseEntity<String> addAssignment(@RequestBody Map<String, String> data) {
+    public ResponseEntity<String> addAssignmentWithoutFile(@RequestBody Map<String, String> data) {
 
         // 获取数据
         String token = data.get("token");
@@ -253,11 +297,10 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 添加作业
-//        String message = assignmentService.addAssignment(Integer.parseInt(courseID), assignmentName, assignmentContent, ddl);
-//        if (message.startsWith("ERROR"))
-//            return Result.errorGetStringByMessage("403", message);
-//        else
-//            return Result.okGetString();
-        return null;
+        String message = assignmentService.addAssignmentWithoutFile(Integer.parseInt(courseID), title, content, deadline);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+        else
+            return Result.okGetString();
     }
 }
