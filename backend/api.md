@@ -274,7 +274,7 @@
 
 ### 3. 管理员查询某些用户
 
-- **请求 URL**: `/admin/deleteUserByUid`
+- **请求 URL**: `/admin/updateUser`
 
 - **请求方式**: POST
 
