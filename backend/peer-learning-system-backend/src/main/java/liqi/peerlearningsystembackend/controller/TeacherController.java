@@ -46,8 +46,8 @@ public class TeacherController {
         // 获取数据
         String token = data.get("token");
         String courseName = data.get("courseName");
-        String intro = data.get("intro");
-        if (token == null || courseName == null || intro == null)
+        String courseDescribe = data.get("courseDescribe");
+        if (token == null || courseName == null || courseDescribe == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
         // 检验用户是否是教师
@@ -56,7 +56,7 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 添加课程
-        String message = courseService.addCourse(courseName, user.getUuid(), intro);
+        String message = courseService.addCourse(courseName, user.getUuid(), courseDescribe);
         if(message.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403",message);
         else
@@ -117,14 +117,14 @@ public class TeacherController {
     /**
      * 教师设置课程名称
      */
-    @RequestMapping(value = "/setCourseIntro", method = RequestMethod.POST)
+    @RequestMapping(value = "/setCourseDescribe", method = RequestMethod.POST)
     public ResponseEntity<String> setCourseIntro(@RequestBody Map<String, String> data) {
 
         // 获取数据
         String token = data.get("token");
         String courseID = data.get("courseID");
-        String intro = data.get("intro");
-        if (token == null || courseID == null || intro == null)
+        String courseDescribe = data.get("courseDescribe");
+        if (token == null || courseID == null || courseDescribe == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
         // 检验用户是否是教师
@@ -133,7 +133,7 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 设置课程名称
-        String message = courseService.setCourseIntro(Integer.parseInt(courseID), intro);
+        String message = courseService.setCourseIntro(Integer.parseInt(courseID), courseDescribe);
         if(message.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403",message);
         else
@@ -165,10 +165,11 @@ public class TeacherController {
         // 将课程信息转换为Map
         for (CoursePojo course : courses) {
             HashMap<String, String> courseInfo = new HashMap<>();
+            courseInfo.put("key", String.valueOf(course.getCourseID()));
             courseInfo.put("courseID", String.valueOf(course.getCourseID()));
             courseInfo.put("courseName", course.getCourseName());
-            courseInfo.put("intro", course.getIntro());
-
+            courseInfo.put("courseDescribe", course.getIntro());
+            courseInfo.put("courseNumber", String.valueOf(course.getNumber()));
             coursesInfo.add(courseInfo);
         }
 

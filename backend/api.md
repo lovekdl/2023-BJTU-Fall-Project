@@ -382,7 +382,7 @@
   {
       "token": "token",  				// token
       "courseName": "cname",
-      "intro": "intro"
+      "courseDescribe": "courseDescribe"
   }
   ```
 
@@ -446,7 +446,7 @@
 
 ### 4. 教师设置课程名称
 
-- **请求 URL**: `/teacher/setCourseIntro`
+- **请求 URL**: `/teacher/setcourseDescribe`
 
 - **请求方式**: POST
 
@@ -456,7 +456,7 @@
   {
       "token": "token",  				// token
       "courseID": "courseID",
-      "intro": "intro"
+      "courseDescribe": "courseDescribe"
   }
   ```
 
@@ -492,9 +492,11 @@
       "data": {
           "courses": [
               {
-                  "courseName": "cname",
-                  "intro": "intro",
-                  "courseID": "cid"
+                  "courseName": "courseName",
+                  "courseDescribe": "courseDescribe",
+                  "courseNumber": "courseNumber",
+                  "courseID": "courseID",
+                  "key": "key"
               }
           ]
       },
