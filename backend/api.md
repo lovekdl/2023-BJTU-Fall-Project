@@ -516,6 +516,8 @@
       "token": "token",  				// token
       "courseID": "courseID",
       "uid": "uid"
+      , or ,
+      "username": "username"
   }
   ```
 
@@ -553,3 +555,198 @@
   }
   ```
 
+### 8. 教师获取课程学生列表
+
+- **请求 URL**: `/teacher/getStudentListByCourseID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",  				// token
+      "courseID": "courseID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "students": [
+              {
+                  "uid": "uid",
+                  "key": "key",
+                  "username": "username"
+              }
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+### 9. 教师添加无附件作业
+
+- **请求 URL**: `/teacher/addAssignmentWithoutFile`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "courseID": "cid",
+      "title": "title",
+      "content": "content",
+      "deadline": "xxxx.xx.xx xx:xx:xx"  //datetime form
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 10. 教师删除作业
+
+- **请求 URL**: `/teacher/deleteAssignmentByAssignmentID`
+
+- **请求方式**: DELETE
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 11. 教师获取课程作业列表
+
+- **请求 URL**: `/teacher/getAssignmentListByCourseID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "courseID": "courseID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "assignments": [
+              {
+                  "title": "title",
+                  "deadline": "deadline",
+                  "assignmentID": "assignmentID",
+                  "key": "key",
+                  "content": "content"
+              },
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+### 12. 教师设置作业标题
+
+- **请求 URL**: `/teacher/setAssignmentTitle`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "title": "title"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 13. 教师设置作业内容
+
+- **请求 URL**: `/teacher/setAssignmentContent`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "content": "content"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 14. 教师设置作业截止时间
+
+- **请求 URL**: `/teacher/setAssignmentDeadline`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "deadline": "deadline"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 

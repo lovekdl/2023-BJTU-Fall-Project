@@ -278,7 +278,7 @@ public class TeacherController {
     }
 
     /**
-     * 教师添加作业
+     * 教师添加无附件作业
      */
     @RequestMapping(value = "/addAssignmentWithoutFile", method = RequestMethod.POST)
     public ResponseEntity<String> addAssignmentWithoutFile(@RequestBody Map<String, String> data) {
