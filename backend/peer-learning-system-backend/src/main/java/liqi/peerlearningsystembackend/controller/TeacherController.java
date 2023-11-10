@@ -297,6 +297,7 @@ public class TeacherController {
             return Result.errorGetStringByMessage("400", "something is null");
 
         String deadline = date + " " + time;
+//        System.out.println(deadline);
 
         // 检验用户是否是教师
         UserPojo user = userService.checkToken(token);

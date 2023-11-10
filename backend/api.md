@@ -443,9 +443,9 @@
   }
   ```
 
-### 4. 教师设置课程名称
+### 4. 教师设置课程描述
 
-- **请求 URL**: `/teacher/setcourseDescribe`
+- **请求 URL**: `/teacher/setCourseDescribe`
 
 - **请求方式**: POST
 
