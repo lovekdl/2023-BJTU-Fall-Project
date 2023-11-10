@@ -156,8 +156,10 @@ public class AdminController {
 
 
         try {
-            usr.setUsername(username);
-            usr.setEmail(email);
+            if(!username.isEmpty())
+                usr.setUsername(username);
+            if(!email.isEmpty())
+                usr.setEmail(email);
             userService.updateUser(usr);
             return Result.okGetString();
         } catch (Exception e) {
