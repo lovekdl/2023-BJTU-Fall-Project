@@ -1,5 +1,6 @@
 package liqi.peerlearningsystembackend.controller;
 
+import liqi.peerlearningsystembackend.pojo.AssignmentPojo;
 import liqi.peerlearningsystembackend.pojo.CoursePojo;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
 import liqi.peerlearningsystembackend.service.AssignmentService;
@@ -298,6 +299,151 @@ public class TeacherController {
 
         // 添加作业
         String message = assignmentService.addAssignmentWithoutFile(Integer.parseInt(courseID), title, content, deadline);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+        else
+            return Result.okGetString();
+    }
+
+    /**
+     * 教师删除作业
+     */
+    @RequestMapping(value = "/deleteAssignmentByAssignmentID", method = RequestMethod.DELETE)
+    public ResponseEntity<String> deleteAssignmentByAssignmentID(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        if (token == null || assignmentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 删除作业
+        String message = assignmentService.deleteAssignmentByAssignmentID(Integer.parseInt(assignmentID));
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+        else
+            return Result.okGetString();
+    }
+
+    /**
+     * 教师获取课程作业列表
+     */
+    @RequestMapping(value = "/getAssignmentListByCourseID", method = RequestMethod.POST)
+    public ResponseEntity<String> getAssignmentListByCourseID(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String courseID = data.get("courseID");
+        if (token == null || courseID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo teacher = userService.checkToken(token);
+        if (teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 获取课程作业列表
+        List<AssignmentPojo> assignments = assignmentService.getAssignmentListByCourseID(Integer.parseInt(courseID));
+        if (assignments == null)
+            return Result.okGetStringByMessage("don't have any assignment");
+
+        List<Object> assignmentsInfo = new ArrayList<>();
+
+        // 将作业信息转换为Map
+        for (AssignmentPojo assignment : assignments) {
+            HashMap<String, String> studentInfo = new HashMap<>();
+            studentInfo.put("key", String.valueOf(assignment.getAssignmentID()));
+            studentInfo.put("assignmentID", String.valueOf(assignment.getAssignmentID()));
+            studentInfo.put("title", assignment.getTitle());
+            studentInfo.put("content", assignment.getContent());
+            studentInfo.put("deadline", assignment.getDeadline());
+            assignmentsInfo.add(studentInfo);
+        }
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("assignments", assignmentsInfo);
+                }}
+        );
+    }
+
+    /**
+     * 教师设置作业标题
+     */
+    @RequestMapping(value = "/setAssignmentTitle", method = RequestMethod.POST)
+    public ResponseEntity<String> setAssignmentTitle(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        String title = data.get("title");
+        if (token == null || assignmentID == null || title == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo teacher = userService.checkToken(token);
+        if (teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 设置作业标题
+        String message = assignmentService.setAssignmentTitle(Integer.parseInt(assignmentID), title);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+        else
+            return Result.okGetString();
+    }
+
+    /**
+     * 教师设置作业内容
+     */
+    @RequestMapping(value = "/setAssignmentContent", method = RequestMethod.POST)
+    public ResponseEntity<String> setAssignmentContent(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        String content = data.get("content");
+        if (token == null || assignmentID == null || content == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo teacher = userService.checkToken(token);
+        if (teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 设置作业内容
+        String message = assignmentService.setAssignmentContent(Integer.parseInt(assignmentID), content);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+        else
+            return Result.okGetString();
+    }
+
+    /**
+     * 教师设置作业截止时间
+     */
+    @RequestMapping(value = "/setAssignmentDeadline", method = RequestMethod.POST)
+    public ResponseEntity<String> setAssignmentDeadline(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        String deadline = data.get("deadline");
+        if (token == null || assignmentID == null || deadline == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo teacher = userService.checkToken(token);
+        if (teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 设置作业截止时间
+        String message = assignmentService.setAssignmentDeadline(Integer.parseInt(assignmentID), deadline);
         if (message.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403", message);
         else
