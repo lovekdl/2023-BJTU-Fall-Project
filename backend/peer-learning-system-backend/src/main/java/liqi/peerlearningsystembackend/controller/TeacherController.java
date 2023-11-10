@@ -288,8 +288,8 @@ public class TeacherController {
         // 获取数据
         String token = data.get("token");
         String courseID = data.get("courseID");
-        String title = data.get("title");
-        String content = data.get("content");
+        String title = data.get("assignmentName");
+        String content = data.get("assignmentDescribe");
 //        String deadline = data.get("deadline");
         String date = data.get("date");
         String time = data.get("time");
@@ -365,9 +365,10 @@ public class TeacherController {
             HashMap<String, String> studentInfo = new HashMap<>();
             studentInfo.put("key", String.valueOf(assignment.getAssignmentID()));
             studentInfo.put("assignmentID", String.valueOf(assignment.getAssignmentID()));
-            studentInfo.put("title", assignment.getTitle());
-            studentInfo.put("content", assignment.getContent());
-            studentInfo.put("deadline", assignment.getDeadline());
+            studentInfo.put("assignmentName", assignment.getTitle());
+            studentInfo.put("assignmentDescribe", assignment.getContent());
+            studentInfo.put("date", assignment.getDeadline().split(" ")[0]);
+            studentInfo.put("time", assignment.getDeadline().split(" ")[1]);
             assignmentsInfo.add(studentInfo);
         }
 
@@ -387,7 +388,7 @@ public class TeacherController {
         // 获取数据
         String token = data.get("token");
         String assignmentID = data.get("assignmentID");
-        String title = data.get("title");
+        String title = data.get("assignmentName");
         if (token == null || assignmentID == null || title == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
@@ -413,7 +414,7 @@ public class TeacherController {
         // 获取数据
         String token = data.get("token");
         String assignmentID = data.get("assignmentID");
-        String content = data.get("content");
+        String content = data.get("assignmentDescribe");
         if (token == null || assignmentID == null || content == null)
             return Result.errorGetStringByMessage("400", "something is null");
 

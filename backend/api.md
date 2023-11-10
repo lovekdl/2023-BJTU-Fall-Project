@@ -599,8 +599,8 @@
   {
       "token": "token",
       "courseID": "cid",
-      "title": "title",
-      "content": "content",
+      "assignmentName": "assignmentName",
+      "assignmentDescribe": "assignmentDescribe",
       "date": "date",
       "time": "time"
   }
@@ -662,11 +662,12 @@
       "data": {
           "assignments": [
               {
-                  "title": "title",
-                  "deadline": "deadline",
+                  "assignmentName": "assignmentName",
+                  "date": "date",
+                  "time": "time",
                   "assignmentID": "assignmentID",
                   "key": "key",
-                  "content": "content"
+                  "assignmentDescribe": "assignmentDescribe"
               },
           ]
       },
@@ -686,7 +687,7 @@
   {
       "token": "token",
       "assignmentID": "assignmentID",
-      "title": "title"
+      "assignmentName": "assignmentName"
   }
   ```
 
@@ -711,7 +712,7 @@
   {
       "token": "token",
       "assignmentID": "assignmentID",
-      "content": "content"
+      "assignmentDescribe": "assignmentDescribe"
   }
   ```
 
