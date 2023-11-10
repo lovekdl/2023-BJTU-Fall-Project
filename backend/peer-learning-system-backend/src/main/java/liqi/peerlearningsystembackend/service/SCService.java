@@ -25,6 +25,9 @@ public class SCService {
     CourseService courseService;
 
     @Autowired
+    CourseDao courseDao;
+
+    @Autowired
     UserService userService;
 
     /**
@@ -43,6 +46,8 @@ public class SCService {
             SCPojo sc = new SCPojo(user.getUuid(), course.getUuid());
             QueryWrapper<SCPojo> scPojoQueryWrapper = new QueryWrapper<>(sc);
             scDao.delete(scPojoQueryWrapper);
+            course.setNumber(course.getNumber() - 1);
+            courseDao.updateById(course);
             return "OK";
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -66,6 +71,8 @@ public class SCService {
             // 添加选课记录
             SCPojo sc = new SCPojo(user.getUuid(), course.getUuid());
             scDao.insert(sc);
+            course.setNumber(course.getNumber() + 1);
+            courseDao.updateById(course);
             return "OK";
         } catch (Exception e) {
             System.out.println(e.getMessage());
@@ -74,7 +81,7 @@ public class SCService {
     }
 
     /**
-     * 根据课程ID和学生用户名删除选课记录
+     * 根据课程ID和学生用户名添加选课记录
      * @param courseID 课程ID
      * @param username 学生用户名
      * @return 返回"OK"或"ERROR"
@@ -88,6 +95,8 @@ public class SCService {
             // 添加选课记录
             SCPojo sc = new SCPojo(user.getUuid(), course.getUuid());
             scDao.insert(sc);
+            course.setNumber(course.getNumber() + 1);
+            courseDao.updateById(course);
             return "OK";
         } catch (Exception e) {
             System.out.println(e.getMessage());

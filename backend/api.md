@@ -225,7 +225,7 @@
 
 - **请求 URL**: `/admin/deleteUserByUid`
 
-- **请求方式**: DELETE
+- **请求方式**: POST
 
 - **请求参数**:
 
@@ -601,10 +601,11 @@
       "courseID": "cid",
       "title": "title",
       "content": "content",
-      "deadline": "xxxx.xx.xx xx:xx:xx"  //datetime form
+      "date": "date",
+      "time": "time"
   }
   ```
-
+  
 - **返回示例**:
 
   ```json
@@ -735,10 +736,11 @@
   {
       "token": "token",
       "assignmentID": "assignmentID",
-      "deadline": "deadline"
+      "date": "date",
+      "time": "time"
   }
   ```
-
+  
 - **返回示例**:
 
   ```json

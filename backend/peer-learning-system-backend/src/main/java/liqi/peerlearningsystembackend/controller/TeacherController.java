@@ -67,7 +67,7 @@ public class TeacherController {
     /**
      * 教师删除课程
      */
-    @RequestMapping(value = "/deleteCourseByCourseID", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/deleteCourseByCourseID", method = RequestMethod.POST)
     public ResponseEntity<String> deleteCourseByCourseID(@RequestBody Map<String, String> data) {
 
         // 获取数据
@@ -215,7 +215,7 @@ public class TeacherController {
     /**
      * 教师从课程删除学生
      */
-    @RequestMapping(value = "/deleteStudentFromCourse", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/deleteStudentFromCourse", method = RequestMethod.POST)
     public ResponseEntity<String> deleteStudentFromCourse(@RequestBody Map<String, String> data) {
 
         // 获取数据
@@ -247,6 +247,7 @@ public class TeacherController {
             // 获取数据
             String token = data.get("token");
             String courseID = data.get("courseID");
+//            System.out.println(data);
             if (token == null || courseID == null)
                 return Result.errorGetStringByMessage("400", "something is null");
 
@@ -273,6 +274,7 @@ public class TeacherController {
             return Result.okGetStringByData("success",
                     new HashMap<String, Object>() {{
                         put("students", studentsInfo);
+                        put("courseNumber", students.size());
                     }}
             );
     }
@@ -288,9 +290,13 @@ public class TeacherController {
         String courseID = data.get("courseID");
         String title = data.get("title");
         String content = data.get("content");
-        String deadline = data.get("deadline");
-        if (token == null || courseID == null || title == null || content == null || deadline == null)
+//        String deadline = data.get("deadline");
+        String date = data.get("date");
+        String time = data.get("time");
+        if (token == null || courseID == null || title == null || content == null || date == null || time == null)
             return Result.errorGetStringByMessage("400", "something is null");
+
+        String deadline = date + " " + time;
 
         // 检验用户是否是教师
         UserPojo user = userService.checkToken(token);
@@ -308,7 +314,7 @@ public class TeacherController {
     /**
      * 教师删除作业
      */
-    @RequestMapping(value = "/deleteAssignmentByAssignmentID", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/deleteAssignmentByAssignmentID", method = RequestMethod.POST)
     public ResponseEntity<String> deleteAssignmentByAssignmentID(@RequestBody Map<String, String> data) {
 
         // 获取数据
@@ -433,9 +439,12 @@ public class TeacherController {
         // 获取数据
         String token = data.get("token");
         String assignmentID = data.get("assignmentID");
-        String deadline = data.get("deadline");
-        if (token == null || assignmentID == null || deadline == null)
+        String date = data.get("date");
+        String time = data.get("time");
+        if (token == null || assignmentID == null || date == null || time == null)
             return Result.errorGetStringByMessage("400", "something is null");
+
+        String deadline = date + " " + time;
 
         // 检验用户是否是教师
         UserPojo teacher = userService.checkToken(token);

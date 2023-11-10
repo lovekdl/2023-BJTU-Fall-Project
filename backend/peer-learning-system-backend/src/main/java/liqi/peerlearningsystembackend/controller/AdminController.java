@@ -27,7 +27,7 @@ public class AdminController {
     /**
      * 管理员根据uid删除用户
      */
-    @RequestMapping(value = "/deleteUserByUid", method = RequestMethod.DELETE)
+    @RequestMapping(value = "/deleteUserByUid", method = RequestMethod.POST)
     public ResponseEntity<String> delete(@RequestBody Map<String, String> data) {
 
         // 获取数据
