@@ -138,8 +138,8 @@ public class AdminController {
         String uid = data.get("uid");
         String username = data.get("username");
         String email = data.get("email");
-        String authority = data.get("authority");
-        if(token == null || uid == null || username == null || email == null || authority == null)
+//        String authority = data.get("authority");
+        if(token == null || uid == null || username == null || email == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
         // 检验用户是否是管理员
@@ -158,7 +158,6 @@ public class AdminController {
         try {
             usr.setUsername(username);
             usr.setEmail(email);
-            usr.setAuthority(Integer.parseInt(authority));
             userService.updateUser(usr);
             return Result.okGetString();
         } catch (Exception e) {

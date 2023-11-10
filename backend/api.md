@@ -320,8 +320,7 @@
       "token": "token",  				// token
       "uid": "uid",    				// uid
       "username": "username", 		// username
-      "email": "email",
-      "authority": "authority"
+      "email": "email"
   }
   ```
 
