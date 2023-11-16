@@ -39,9 +39,17 @@ public class HomeworkService {
      * @return 返回该作业的UUID
      */
     public String addHomeworkWithoutFile(int assignmentID, int userID, String content, String submitTime) {
+        // 判断是否已提交过作业
+        HomeworkPojo homework = getHomeworkByUserIDAndAssignmentID(userID, assignmentID);
+        if(homework != null) {
+            homework.setContent(content);
+            homework.setSubmitTime(submitTime);
+            homeworkDao.updateById(homework);
+            return homework.getUuid();
+        }
         String uuid = UUID.randomUUID().toString();
         try {
-            // 插入课程
+            // 插入作业
             Integer homeworkID = counterDao.selectById(Constants.HOMEWORK_COUNTER).getUid();
             AssignmentPojo assignment = assignmentService.getAssignmentByID(assignmentID);
             UserPojo user = userService.getUserByUid(userID);

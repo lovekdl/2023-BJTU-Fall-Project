@@ -70,7 +70,7 @@ public class HomeworkController {
     }
 
     /**
-     * 学生设置作业标题
+     * 学生设置作业内容
      */
     @RequestMapping(value = "/setHomeworkContent", method = RequestMethod.POST)
     public ResponseEntity<String> setHomeworkContent(@RequestBody Map<String, String> data) {
@@ -133,7 +133,7 @@ public class HomeworkController {
         // 获取数据
         String token = data.get("token");
         String homeworkID = data.get("homeworkID");
-        String score = data.get("score");
+        String score = data.get("grade");
         if (token == null || homeworkID == null || score == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
@@ -394,7 +394,7 @@ public class HomeworkController {
     }
 
     /**
-     * 根据作业ID获取作业
+     * 根据作业ID获取作业内容
      */
     @RequestMapping(value = "/getContentByHomeworkID", method = RequestMethod.POST)
     public ResponseEntity<String> getContentByHomeworkID(@RequestBody Map<String, String> data) {

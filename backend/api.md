@@ -751,4 +751,223 @@
   }
   ```
 
+## 作业模块
+
+### 1. 学生添加无附件作业
+
+- **请求 URL**: `/homework/addHomeworkWithoutFile`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "content": "content",
+      "date": "2023-11-18",
+      "time": "00:00:00"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 2. 设置作业分数
+
+- **请求 URL**: `/homework/setScore`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID",
+      "grade": "grade"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 3. 学生投诉作业
+
+- **请求 URL**: `/homework/setHomeworkArgument`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID",
+      "argument": "argument"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 4. 取消作业投诉
+
+- **请求 URL**: `/homework/cancelHomeworkArgument`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 5. 获取有投诉的作业列表
+
+- **请求 URL**: `/homework/getArgumentHomeworkList`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homeworks": [
+              {
+                  "homeworkID": "homeworkID",
+                  "argument": "argument",
+                  "courseName": "courseName",
+                  "assignmentID": "assignmentID",
+                  "courseID": "courseID",
+                  "key": "key",
+                  "assignmentName": "assignmentName",
+                  "username": "username"
+              }
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+### 6. 根据任务ID获取作业
+
+- **请求 URL**: `/homework/getHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "courseID": "courseID",
+      "assignmentID": "assignmentID"
+      
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homeworks": [
+              {
+                  "date": "/",
+                  "uid": "300001",
+                  "homeworkID": "/",
+                  "submit": "未提交",
+                  "grade": "/",
+                  "time": "/",
+                  "key": "300001",
+                  "username": "liqi"
+              },
+              {
+                  "date": "2023-11-18",
+                  "uid": "300025",
+                  "homeworkID": "600001",
+                  "submit": "已提交",
+                  "grade": "未评分",
+                  "time": "00:00:00",
+                  "key": "300025",
+                  "username": "student"
+              }
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+### 7. 根据作业ID获取作业内容
+
+- **请求 URL**: `/homework/getContentByHomeworkID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "homeworkContent": "homeworkContent"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
 ### 
