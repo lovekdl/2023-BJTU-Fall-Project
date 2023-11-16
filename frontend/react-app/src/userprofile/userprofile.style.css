@@ -13,7 +13,7 @@
   width: 128px;
   height: 40px;
   
-  background-color: rgb(128, 106, 196);
+  /* background-color: #ED4192; */
   border: 0;
   border-radius: 10px;
   color: #fff;
@@ -32,7 +32,7 @@
   width: 100px;
   height: 40px;
   
-  background-color: rgb(128, 106, 196);
+  background-color: #f890c1;
   border: 0;
   border-radius: 10px;
   color: #fff;
@@ -51,7 +51,7 @@
   
   height: 40px;
   
-  background-color: rgb(128, 106, 196);
+  background-color: #f890c1;
   border: 0;
   border-radius: 10px;
   color: #fff;
@@ -115,7 +115,7 @@
   left: 0;
   width: 15vw; /* 调整下划线的长度 */
   height: 3px; /* 调整下划线的高度 */
-  background-color: purple;
+  background-color: #ED4192;
 }
 
 .Modal-purple-underline {
@@ -134,7 +134,7 @@
   left: 0;
   width: 15vw; /* 调整下划线的长度 */
   height: 0.2vh; /* 调整下划线的高度 */
-  background-color: purple;
+  background-color: #ED4192;
 }
 
 .ModalSpan {
@@ -161,7 +161,7 @@
   width: 100px;
   height: 40px;
   
-  background-color: rgb(128, 106, 196);
+  background-color: #f890c1;
   border: 0;
   border-radius: 10px;
   color: #fff;
@@ -186,7 +186,7 @@
 
 .input-box {
   border: none;
-  border-bottom: 0.25vh solid purple;
+  border-bottom: 0.25vh solid #ED4192;
   outline: none;
   width: 15vw;
   font-size: 20px;
@@ -194,12 +194,12 @@
 }
 
 .SliderMenu{
-  margin-top: 5.5vh;
-  height:94.5vh;
+  margin-top: 5vh;
+  height:95vh;
   padding:7px;
   font-size: 20px;
 }
 .SliderMenu .ant-menu-item-selected{
-  background-color: rgb(186, 175, 221);
+  background-color: #ED4192;
   color:white;
 }

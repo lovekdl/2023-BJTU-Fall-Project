@@ -2,29 +2,47 @@
 import './App.css'
 import { LoginForm } from "./authority";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { ButtonAppBar } from './menu';
+import { AuthComponent } from './route_auth/AuthComponent';
 import Profile from './userprofile/profile';
+import { Management } from './manager/index';
+import { TeacherLayout } from './teacher/index';
 function App() {
 
   return (
     <Router>
       <Routes>
       
-        <Route path = "/" element={
+        {/* <Route path = "/" element={
           <div>
             <ButtonAppBar></ButtonAppBar>
+
             登录成功！
           
           </div>} 
-        />
+        /> */}
+        <Route path = "/" element={<AuthComponent></AuthComponent>} />
         <Route path = "/login" element={
           <div>
             
           <LoginForm></LoginForm>
           </div>} 
         />
+        <Route path = "/manager" element={
+          <div>
+            {/* <ButtonAppBar></ButtonAppBar> */}
+            <Management></Management>
+          
+          </div>} 
+        />
+        <Route path = "/teacher" element={
+          <div>
+            {/* <ButtonAppBar></ButtonAppBar> */}
+            {/* <Management></Management> */}
+            <TeacherLayout></TeacherLayout>
+          </div>} 
+        />
         <Route path = "/profile" element={<div>
-          <ButtonAppBar></ButtonAppBar>
+          {/* <ButtonAppBar></ButtonAppBar> */}
           <Profile></Profile>
         </div>} />
       </Routes>

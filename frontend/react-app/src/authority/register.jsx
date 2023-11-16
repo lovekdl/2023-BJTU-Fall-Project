@@ -33,6 +33,18 @@ function RegisterForm  (prop)  {
   const handleLoginOnClicked = () => {
     prop.setCurrentPage('login')
   }
+  const checkFormat = (x) => {
+    var flag1 = false, flag2 = false;
+    for(var ch of x) {
+      if(ch == '@') {
+        flag1=true
+      }
+      if(flag1==true&&ch=='.'){
+        flag2=true
+      }
+    }
+    return flag2
+  }
   async function handleRegisterSubmit(event) {
     event.preventDefault();
 
@@ -62,7 +74,11 @@ function RegisterForm  (prop)  {
   const handleSendClicked = () => {
     if(!usernameRef.current?.value || ! passwordRef.current?.value || !emailRef.current?.value || !confirmedPasswordRef.current?.value  ) {
       message.error('输入不能为空')
-      return;}
+      return;
+    }
+    if(!checkFormat(emailRef.current?.value)) {
+      message.error('邮箱格式不对') 
+    }
     async function send() {
       try {
         const ret = await http.post('/usr/register/sendCode',{

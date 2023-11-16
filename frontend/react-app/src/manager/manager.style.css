@@ -1,0 +1,19 @@
+.myLayOut{
+  height: 100vh;
+  width: 100vw;
+}
+.logo {
+  display: flex;
+  height: 8vh;
+  will-change: filter;
+  
+  overflow: hidden;
+  background-color: white;
+  align-items: 'center';
+  justify-content: center;
+  cursor:pointer;
+}
+.logo .img{
+  height: 90%;
+  
+}

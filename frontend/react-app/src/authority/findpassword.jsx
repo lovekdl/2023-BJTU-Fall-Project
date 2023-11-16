@@ -17,7 +17,22 @@ function FindPasswordForm  (prop)  {
   const handlebackOnClicked = () => {
     prop.setCurrentPage('login')
   }
+  const checkFormat = (x) => {
+    var flag1 = false, flag2 = false;
+    for(var ch of x) {
+      if(ch == '@') {
+        flag1=true
+      }
+      if(flag1==true&&ch=='.'){
+        flag2=true
+      }
+    }
+    return flag2
+  }
   const handleOkOnClicked = () => {
+    
+
+
     if( !passwordRef.current?.value ) {
       message.error('密码不能为空')
     }
@@ -26,6 +41,10 @@ function FindPasswordForm  (prop)  {
     }
     if( !emailRef.current?.value ) {
       message.error('邮箱不能为空')
+      return;
+    }
+    if( !checkFormat(emailRef.current?.value)) {
+      message.error('邮箱格式错误')
       return;
     }
     async function findPassword() {
@@ -37,6 +56,7 @@ function FindPasswordForm  (prop)  {
           newPassword:passwordRef.current?.value
         })
         if(ret.data.message == 'success') {
+          prop.setCurrentPage('login')
           message.success('密码修改成功')
         }
         else message.error('unknown error.')
@@ -53,6 +73,10 @@ function FindPasswordForm  (prop)  {
     
     if( !emailRef.current?.value ) {
       message.error('请不要输入空邮箱')
+      return;
+    }
+    if( !checkFormat(emailRef.current?.value)) {
+      message.error('邮箱格式错误')
       return;
     }
     async function send() {

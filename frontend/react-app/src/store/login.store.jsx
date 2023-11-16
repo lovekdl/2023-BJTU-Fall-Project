@@ -20,12 +20,14 @@ class LoginStore {
 		//调用登录接口
 		console.log('password is ' + password)
 		const ret = await http.post('/usr/login',{
-			username : username,
+			email : username,
+			username:username,
 			password : password,
 		})
 		console.log('hahahaha')
 		console.log(ret)
 		this.setToken(ret.data.data.token)
+		console.log(ret.data.data)
 		// if(ret.data.code > 300) {
 		// 	this
 		// } 

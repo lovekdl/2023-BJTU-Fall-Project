@@ -11,6 +11,7 @@ import qq from '../assets/QQ.png'
 import {message} from 'antd'
 import RegisterForm from "./register"
 import FindPasswordForm from "./findpassword"
+
 function LoginForm  ()  {
 
   const navigate = useNavigate()
@@ -35,7 +36,7 @@ function LoginForm  ()  {
       return;
     }
 
-
+    
     try {
       await loginStore.getTokenByLogin({
         username: usernameRef.current.value,
@@ -43,8 +44,10 @@ function LoginForm  ()  {
       })
 
       message.success('Success')
+        
       ProfileStore.getProfile();
-      navigate('/', {replace:true})
+      setTimeout(()=>navigate('/', {replace:true}), 2000)
+      
 
       // window.location.reload()
     } catch(e) {
