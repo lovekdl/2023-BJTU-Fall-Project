@@ -1,13 +1,18 @@
 package liqi.peerlearningsystembackend;
 
 import io.jsonwebtoken.Claims;
+import liqi.peerlearningsystembackend.pojo.HomeworkPojo;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
+import liqi.peerlearningsystembackend.service.HomeworkService;
 import liqi.peerlearningsystembackend.service.UserService;
 import liqi.peerlearningsystembackend.utils.MailUtils;
+import liqi.peerlearningsystembackend.utils.Result;
 import liqi.peerlearningsystembackend.utils.Tool;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 @SpringBootTest
 class PeerLearningSystemBackendApplicationTests {
@@ -17,6 +22,9 @@ class PeerLearningSystemBackendApplicationTests {
 
     @Autowired
     MailUtils mailUtils;
+
+    @Autowired
+    HomeworkService homeworkService;
 
     @Test
     void sendMail() {
@@ -31,10 +39,10 @@ class PeerLearningSystemBackendApplicationTests {
     @Test
     void contextLoads() {
         System.out.println("test");
-        String username = "yxh";
-        String password = "123456";
-        String authority = "3";
-        String email = "21301114@bjtu.edu.cn";
+        String username = "admin";
+        String password = "admin";
+        String authority = "1";
+        String email = "1832271620@qq.com";
         String encode_password = Tool.passwordEncoder(password);
         userService.addUser(username, encode_password, email, Integer.parseInt(authority));
     }
@@ -66,6 +74,18 @@ class PeerLearningSystemBackendApplicationTests {
 
         System.out.println("Username: " + username);
         System.out.println("Encoded Password: " + encodedPassword);
+    }
+
+    @Test
+    void getArgumentHomeworks() {
+        List<HomeworkPojo> homeworks = homeworkService.getHomeworksHaveArgument();
+        if (homeworks == null)
+            System.out.println("don't have any argument homework");
+
+        for (HomeworkPojo homework : homeworks) {
+            System.out.println(homework.getArgument());
+        }
+
     }
 
 

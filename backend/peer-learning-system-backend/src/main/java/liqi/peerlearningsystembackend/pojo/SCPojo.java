@@ -7,17 +7,24 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Data
+@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName(value = "counter")
-public class CounterPojo {
+@TableName(value = "sc")
+public class SCPojo {
 
-    @TableId(value = "filedName", type = IdType.AUTO)
-    private Integer fieldName;
+    @TableField(value = "userUUID")
+    private String userUUID;
 
-    @TableField(value = "uid")
-    private Integer uid;
+    @TableField(value = "courseUUID")
+    private String courseUUID;
 
+    @TableField(value = "studentName")
+    private String studentName;
+
+    @TableField(value = "courseID")
+    private Integer courseID;
 }
