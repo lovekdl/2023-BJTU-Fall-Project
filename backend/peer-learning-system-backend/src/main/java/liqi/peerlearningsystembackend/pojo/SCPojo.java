@@ -21,4 +21,10 @@ public class SCPojo {
 
     @TableField(value = "courseUUID")
     private String courseUUID;
+
+    @TableField(value = "studentName")
+    private String studentName;
+
+    @TableField(value = "courseID")
+    private Integer courseID;
 }

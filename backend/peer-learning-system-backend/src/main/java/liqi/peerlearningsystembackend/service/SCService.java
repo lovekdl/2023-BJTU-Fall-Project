@@ -43,7 +43,7 @@ public class SCService {
             if(user == null || course == null)
                 return "ERROR";
             // 删除选课记录
-            SCPojo sc = new SCPojo(user.getUuid(), course.getUuid());
+            SCPojo sc = new SCPojo(user.getUuid(), course.getUuid(), user.getUsername(), course.getCourseID());
             QueryWrapper<SCPojo> scPojoQueryWrapper = new QueryWrapper<>(sc);
             scDao.delete(scPojoQueryWrapper);
             course.setNumber(course.getNumber() - 1);
@@ -69,7 +69,7 @@ public class SCService {
             if (user == null || course == null)
                 return "ERROR";
             // 添加选课记录
-            SCPojo sc = new SCPojo(user.getUuid(), course.getUuid());
+            SCPojo sc = new SCPojo(user.getUuid(), course.getUuid(), user.getUsername(), course.getCourseID());
             scDao.insert(sc);
             course.setNumber(course.getNumber() + 1);
             courseDao.updateById(course);
@@ -93,7 +93,7 @@ public class SCService {
             if (user == null || course == null)
                 return "ERROR";
             // 添加选课记录
-            SCPojo sc = new SCPojo(user.getUuid(), course.getUuid());
+            SCPojo sc = new SCPojo(user.getUuid(), course.getUuid(), user.getUsername(), course.getCourseID());
             scDao.insert(sc);
             course.setNumber(course.getNumber() + 1);
             courseDao.updateById(course);

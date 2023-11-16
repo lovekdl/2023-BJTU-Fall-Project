@@ -109,6 +109,14 @@ public class CourseService {
     }
 
     /**
+     * 根据课程UUID查询课程
+     */
+    @Nullable
+    public CoursePojo getCourseByUUID(String courseUUID) {
+        return courseDao.selectById(courseUUID);
+    }
+
+    /**
      * 根据课程ID查询课程
      */
     @Nullable
@@ -123,4 +131,6 @@ public class CourseService {
     public List<CoursePojo> getCourseList() {
         return courseDao.selectList(new QueryWrapper<>());
     }
+
+
 }

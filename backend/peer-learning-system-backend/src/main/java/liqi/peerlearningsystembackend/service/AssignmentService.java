@@ -47,7 +47,7 @@ public class AssignmentService {
             CoursePojo course = courseService.getCourseByCourseID(courseID);
             if(course == null)
                 return "ERROR";
-            assignmentDao.insert(new AssignmentPojo(uuid, assignmentID, course.getUuid(), title, content, "", deadline));
+            assignmentDao.insert(new AssignmentPojo(uuid, assignmentID, course.getUuid(), title, content, null, deadline));
 
             // 更新计数器
             CounterPojo counterPojo = counterDao.selectById(Constants.ASSIGNMENT_COUNTER);
@@ -89,8 +89,18 @@ public class AssignmentService {
      * @return 作业
      */
     @Nullable
-    private AssignmentPojo getAssignmentByID(int assignmentID) {
+    public AssignmentPojo getAssignmentByID(int assignmentID) {
         return assignmentDao.selectOne(new QueryWrapper<AssignmentPojo>().eq("assignmentID", assignmentID));
+    }
+
+    /**
+     * 根据作业UUID获取作业
+     * @param assignmentUUID 作业ID
+     * @return 作业
+     */
+    @Nullable
+    public AssignmentPojo getAssignmentByUUID(String assignmentUUID) {
+        return assignmentDao.selectById(assignmentUUID);
     }
 
     /**
@@ -169,4 +179,5 @@ public class AssignmentService {
             return "ERROR";
         }
     }
+
 }

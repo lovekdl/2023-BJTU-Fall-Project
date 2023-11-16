@@ -1,9 +1,6 @@
 package liqi.peerlearningsystembackend.pojo;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,4 +34,7 @@ public class HomeworkPojo {
 
     @TableField(value = "filePath")
     private String filePath;
+
+    @TableField(value = "argument", updateStrategy = FieldStrategy.IGNORED)
+    private String argument;
 }
