@@ -751,6 +751,32 @@
   }
   ```
 
+### 15. 教师获取开始某任务互评
+
+- **请求 URL**: `/teacher/startPeer`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "courseID": "courseID",
+      "peerNumber": "peerNumber"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
 ## 作业模块
 
 ### 1. 学生添加无附件作业
@@ -1138,5 +1164,5 @@
       "message": "success"
   }
   ```
-
-### 
+  
+###   
