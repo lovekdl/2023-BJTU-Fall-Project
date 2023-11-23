@@ -1230,7 +1230,7 @@
 
 ###  8. 学生给互评作业评分
 
-- **请求 URL**: `/student/getPeerHomeworkByAssignmentID`
+- **请求 URL**: `/student/gradePeerHomework`
 
 - **请求方式**: POST
 
