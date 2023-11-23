@@ -124,4 +124,24 @@ public class SCService {
         return scDao.selectJoinList(UserPojo.class, queryWrapper);
 
     }
+
+    /**
+     * 根据学生ID返回选课课程列表
+     * @param uid 学生ID
+     * @return 返回课程列表
+     */
+    public List<CoursePojo> getCoursesByStudentID(Integer uid) {
+        UserPojo user = userService.getUserByUid(uid);
+        if(user == null)
+            return null;
+        String userUUID = user.getUuid();
+        MPJLambdaWrapper<SCPojo> queryWrapper = new MPJLambdaWrapper<SCPojo>()
+                // Specify the join condition between the sc and user tables
+                .selectAll(CoursePojo.class) // Select all fields from the UserPojo
+                .leftJoin(CoursePojo.class, CoursePojo::getUuid, SCPojo::getCourseUUID)
+                .eq(SCPojo::getUserUUID, userUUID); // Filter by the specific courseUUID
+
+        // Perform the join operation and return the results
+        return scDao.selectJoinList(CoursePojo.class, queryWrapper);
+    }
 }

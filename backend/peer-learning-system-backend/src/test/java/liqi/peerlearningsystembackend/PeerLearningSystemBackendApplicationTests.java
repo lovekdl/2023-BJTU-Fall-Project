@@ -12,7 +12,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @SpringBootTest
 class PeerLearningSystemBackendApplicationTests {
@@ -88,5 +90,17 @@ class PeerLearningSystemBackendApplicationTests {
 
     }
 
+    @Test
+    void allocationTest() {
+        List<Integer> students = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            students.add(i);
+        }
+        Map<Integer, List<Integer>> result = Tool.allocation(students, 3);
+        for (Map.Entry<Integer, List<Integer>> entry : result.entrySet()) {
+            System.out.println(entry.getKey() + " : " + entry.getValue());
+        }
+
+    }
 
 }

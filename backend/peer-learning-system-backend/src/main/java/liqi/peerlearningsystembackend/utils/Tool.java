@@ -13,8 +13,7 @@ import liqi.peerlearningsystembackend.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.Base64;
-import java.util.Random;
+import java.util.*;
 
 public class Tool {
     private static String ENCODER_SALT() {
@@ -85,14 +84,45 @@ public class Tool {
         return code.toString();
     }
 
+    /**
+     * 检查邮箱格式
+     * @param email 邮箱
+     * @return "OK"或错误信息
+     */
     static public String checkEmailFormat(String email) {
-        if(email == null || email.length() == 0) {
+        if(email == null || email.isEmpty()) {
             return "email can not be empty";
         }
         if(!email.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
             return "email format error";
         }
         return "OK";
+    }
+
+    /**
+     * 互评分配算法
+     * @param students 学生列表
+     * @param m 每个学生需要评价的人数
+     * @return 分配结果
+     */
+    static public Map<Integer, List<Integer>> allocation(List<Integer> students, Integer m) {
+
+        Map<Integer, List<Integer>> ret = new HashMap<>();
+        for (Integer student : students) {
+            ret.put(student, new ArrayList<>());
+        }
+
+        // 随机打乱
+        Collections.shuffle(students);
+
+        // 分配
+        for (int i = 0; i < students.size(); i++) {
+            for (int j = 0; j < m; j++) {
+                ret.get(students.get(i)).add(students.get((i + j + 1) % students.size()));
+            }
+        }
+
+        return ret;
     }
 
 }
