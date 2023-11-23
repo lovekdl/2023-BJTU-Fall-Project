@@ -1165,4 +1165,91 @@
   }
   ```
   
-###   
+###  6. 学生根据任务ID获取互评作业信息
+
+- **请求 URL**: `/student/getPeerHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "peerHomework": [
+              {
+                  "peerID": "700011",
+                  "homeworkID": "600009",
+                  "grade": "未评分"
+              }
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+###  7. 学生根据作业ID获取互评作业内容
+
+- **请求 URL**: `/student/getPeerHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "homeworkContent": "yxh的作业"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
+###  8. 学生给互评作业评分
+
+- **请求 URL**: `/student/getPeerHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "peerID": "peerID",
+      "grade": "grade"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+###  
