@@ -1069,7 +1069,7 @@
 
 ### 3. 学生根据课程号获取课程作业列表
 
-- **请求 URL**: `/student/getMyCourseList`
+- **请求 URL**: `/student/getAssignmentListByCourseID`
 
 - **请求方式**: POST
 
