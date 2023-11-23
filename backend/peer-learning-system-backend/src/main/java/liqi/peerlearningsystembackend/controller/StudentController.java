@@ -273,6 +273,10 @@ public class StudentController {
             HashMap<String, String> peerInfo = new HashMap<>();
             peerInfo.put("peerID", String.valueOf(peer.getPeerID()));
             peerInfo.put("homeworkID", String.valueOf(peer.getHomeworkID()));
+            peerInfo.put("assignmentName", assignment.getTitle());
+            peerInfo.put("assignmentDescribe", assignment.getContent());
+            peerInfo.put("courseName", courseService.getCourseByUUID(assignment.getCourseUUID()).getCourseName());
+            peerInfo.put("teacherName", userService.getUserByUUID(courseService.getCourseByUUID(assignment.getCourseUUID()).getUserUUID()).getUsername());
             peerInfo.put("grade", peer.getScore() == null ? "未评分" : String.valueOf(peer.getScore()));
             peerInfo.put("comment", peer.getComment() == null ? "未评价" : peer.getComment());
             peerHomeworkInfo.add(peerInfo);
@@ -308,8 +312,13 @@ public class StudentController {
         List<Object> peerHomeworkInfo = new ArrayList<>();
         for (PeerPojo peer : peerList) {
             HashMap<String, String> peerInfo = new HashMap<>();
+            AssignmentPojo assignment = assignmentService.getAssignmentByID(peer.getAssignmentID());
             peerInfo.put("peerID", String.valueOf(peer.getPeerID()));
             peerInfo.put("homeworkID", String.valueOf(peer.getHomeworkID()));
+            peerInfo.put("assignmentName", assignment.getTitle());
+            peerInfo.put("assignmentDescribe", assignment.getContent());
+            peerInfo.put("courseName", courseService.getCourseByUUID(assignment.getCourseUUID()).getCourseName());
+            peerInfo.put("teacherName", userService.getUserByUUID(courseService.getCourseByUUID(assignment.getCourseUUID()).getUserUUID()).getUsername());
             peerInfo.put("grade", peer.getScore() == null ? "未评分" : String.valueOf(peer.getScore()));
             peerInfo.put("comment", peer.getComment() == null ? "未评价" : peer.getComment());
             peerHomeworkInfo.add(peerInfo);
