@@ -1206,7 +1206,7 @@
 
 ###  7. 学生根据作业ID获取互评作业内容
 
-- **请求 URL**: `/student/getPeerHomeworkByAssignmentID`
+- **请求 URL**: `/student/getPeerHomeworkContentByHomeworkID`
 
 - **请求方式**: POST
 
