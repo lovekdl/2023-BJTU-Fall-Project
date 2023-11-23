@@ -23,6 +23,7 @@ function ArgumentManage() {
   const [argument, setArgument] = useState('womeicuoya')
   const [content, setContent] = useState(<LoadingOutlined />)
   const [newGrade, setNewGrade] = useState(60)
+  const [currentHomeworkID,setCurrentHomeworkID] = useState(null)
   const onChange = (value) => {
     console.log('changed', value);
     setNewGrade(value)
@@ -67,6 +68,7 @@ function ArgumentManage() {
             <Card key={index} title={card.courseName+'-'+card.assignmentName} hoverable cover={<img alt="example" src={logo} />} style={{ width: 240,margin:'10px',overflow:'hidden' }}
               onClick={async ()=>{
                 setArgument(card.argument)
+                setCurrentHomeworkID(card.homeworkID)
                 setVisible(true)
                 try {
                   const ret = await http.post('/homework/getContentByHomeworkID', {
@@ -111,12 +113,45 @@ function ArgumentManage() {
             <InputNumber onChange={onChange} min={0} max={100} defaultValue={60} style={{borderTopRightRadius:'0',borderBottomRightRadius:'0'}}  />
             <Button type='primary' style={{borderTopLeftRadius:'0',borderBottomLeftRadius:'0'}} 
               onClick={async()=> {
-                //todo
+                try {
+                  const ret2 = await http.post('/homework/setScore', {
+                    homeworkID:currentHomeworkID,
+                    grade:newGrade
+                  })
+                  const ret = await http.post('/homework/cancelHomeworkArgument', {
+                    homeworkID:currentHomeworkID,
+                  })
+                  
+                  if(ret2.data&&ret.data) {
+                    message.success('处理完成')
+                  }
+                  // window.location.reload()
+                  setVisible(false)
+                  
+                } catch(e) {
+                  console.log('catch ')
+                  console.log(e)
+                }
+                TeacherStore.updateArgumentData()
               }}>修改分数</Button>
           </div>
           <Divider type='vertical'></Divider>
           <Button type='primary' onClick={async()=> {
-            //todo
+            try {
+              const ret = await http.post('/homework/cancelHomeworkArgument', {
+                homeworkID:currentHomeworkID,
+              })
+              if(ret.data) {
+                message.success('处理完成')
+              }
+              // window.location.reload()
+              setVisible(false)
+              
+            } catch(e) {
+              console.log('catch ')
+              console.log(e)
+            }
+            TeacherStore.updateArgumentData()
           }}>不更改分数</Button>
         </Space>
       </Modal>

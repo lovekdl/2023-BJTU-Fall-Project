@@ -6,6 +6,7 @@ import LoginStore from "./login.store"
 import ProfileStore from "./profile.store"
 import ManagerStore from "./manager.store"
 import TeacherStore from "./teacher.store"
+import StudentStore from "./student.store"
 import React from "react"
 class RootStore {
 	constructor() {
@@ -13,6 +14,7 @@ class RootStore {
 		this.ProfileStore = new ProfileStore();
 		this.ManagerStore = new ManagerStore();
 		this.TeacherStore = new TeacherStore()
+		this.StudentStore = new StudentStore();
 	}
 }
 

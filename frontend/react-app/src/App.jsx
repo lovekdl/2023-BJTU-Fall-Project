@@ -6,6 +6,7 @@ import { AuthComponent } from './route_auth/AuthComponent';
 import Profile from './userprofile/profile';
 import { Management } from './manager/index';
 import { TeacherLayout } from './teacher/index';
+import { StudentLayout } from './student/index'
 function App() {
 
   return (
@@ -39,6 +40,13 @@ function App() {
             {/* <ButtonAppBar></ButtonAppBar> */}
             {/* <Management></Management> */}
             <TeacherLayout></TeacherLayout>
+          </div>} 
+        />
+        <Route path = "/student" element={
+          <div>
+            {/* <ButtonAppBar></ButtonAppBar> */}
+            {/* <Management></Management> */}
+            <StudentLayout></StudentLayout>
           </div>} 
         />
         <Route path = "/profile" element={<div>

@@ -72,11 +72,10 @@ function LoginForm  ()  {
       <div className="login-wrapper">
         <div className="left-img">
           <div className="title">
-            <div className="tips">
               <h1>{'作业互评系统'}</h1>
               {/* <span>{'explore the universe.'}</span>
               <span>{'try to find your planet.'}</span> */}
-            </div>
+            
           </div>
         </div>
         {current_page === 'login'? <div className="right-login-form">
@@ -87,7 +86,7 @@ function LoginForm  ()  {
             <form onSubmit={handleLoginSubmit}>
               <div className="input-items">
                   <span className="input-tips">
-                      {'学号/工号'}
+                      {'用户名'}
                   </span>
                   <input type="text"  className="inputs" placeholder={"请输入学号或工号"} ref={usernameRef}  ></input>
                   

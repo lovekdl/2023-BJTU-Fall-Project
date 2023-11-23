@@ -28,9 +28,9 @@ function GradeManage(prop) {
   };
   async function changeGrade(homeworkID, gradeValue) {
     try {
-      const ret = await http.post('/homework/setHomeworkArgument', {
+      const ret = await http.post('/homework/setScore', {
         homeworkID,
-        gradeValue
+        grade:gradeValue
       })
       if(ret.data) {
         message.success('修改成功')

@@ -27,11 +27,9 @@
   position: relative;
 }
 .title {
-  width: 25%;
-  padding: 20px;
   position: absolute;
-  top: 10%;
-  left: 35%;
+  top: 15%;
+  left: 37%;
   
 }
 .login-wrapper .left-img .glass {
