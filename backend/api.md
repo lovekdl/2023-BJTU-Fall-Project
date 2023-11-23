@@ -1240,10 +1240,11 @@
   {
       "token": "token",
       "peerID": "peerID",
-      "grade": "grade"
+      "grade": "grade",
+      "comment": "comment"
   }
   ```
-
+  
 - **返回示例**:
 
   ```json
