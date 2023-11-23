@@ -6,8 +6,10 @@ const http = axios.create({
 
     //baseURL : 'http://62.234.54.216:8000',
     // baseURL : 'https://120.53.94.209',
-    baseURL : 'http://192.168.3.4:8080',
-    timeout : 50000
+    // baseURL : 'http://192.168.3.4:8080',
+    // baseURL : 'http://172.20.10.2:8080',
+    baseURL : 'http://172.20.10.14:8080',
+    timeout : 5000
 })
 //请求拦截
 http.interceptors.request.use((config) => {

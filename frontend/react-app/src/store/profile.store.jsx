@@ -43,9 +43,11 @@ class ProfileStore {
 			this.setEmail(ret.data.data.email)
 			this.setUsername(ret.data.data.username)
 			this.setUid(ret.data.data.uid)
+			console.log(ret.data)
 			if(ret.data.data.authority == 1)this.setUsertype('manager');
 			else if(ret.data.data.authority == 2)this.setUsertype('teacher');
 			else if(ret.data.data.authority == 3)this.setUsertype('student');
+			console.log('get authorit is ' + ret.data.data.authority + this.usertype)
 			
 		}
 		catch (e) {
