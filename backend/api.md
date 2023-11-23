@@ -1308,7 +1308,7 @@
 - ```json
   {
       "token": "token",
-      "homeworkID": "homeworkID"
+      "assignmentID": "assignmentID"
   }
   ```
 
