@@ -970,4 +970,173 @@
   }
   ```
 
+## 学生模块
+
+ ### 1. 学生获取所有课程列表
+
+- **请求 URL**: `/student/getAllCourseList`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result",
+      "data": {
+          "courses": [
+              {
+                  "courseName": "courseName",
+                  "courseDescribe": "courseDescribe",
+                  "courseNumber": "courseNumber",
+                  "courseID": "courseID",
+                  "key": "key"
+              }
+          ]
+      },
+  }
+  ```
+
+### 2. 学生获取自己的课程列表
+
+- **请求 URL**: `/student/getMyCourseList`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result",
+      "data": {
+          "courses": [
+              {
+                  "courseName": "courseName",
+                  "courseDescribe": "courseDescribe",
+                  "courseNumber": "courseNumber",
+                  "courseID": "courseID",
+                  "key": "key"
+              }
+          ]
+      },
+  }
+  ```
+
+### 3. 学生根据课程号获取课程作业列表
+
+- **请求 URL**: `/student/getMyCourseList`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "courseID": "courseID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "assignments": [
+              {
+                  "date": "2023-11-18",
+                  "assignmentDescribe": "3333333",
+                  "time": "00:00:00",
+                  "assignmentID": "500004",
+                  "key": "500004",
+                  "assignmentName": "assignment4"
+              }
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+### 4. 学生添加无附件作业
+
+- **请求 URL**: `/student/addHomeworkWithoutFile`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "content": "content",
+      "date": "2023-11-18",
+      "time": "00:00:00"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 5. 学生根据任务ID获取作业信息
+
+- **请求 URL**: `/student/getHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "date": "2023-11-17",
+              "uid": "300002",
+              "homeworkID": "600002",
+              "submit": "已提交",
+              "grade": "未评分",
+              "time": "13:10:00",
+              "key": "300002",
+              "username": "yxh"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
 ### 

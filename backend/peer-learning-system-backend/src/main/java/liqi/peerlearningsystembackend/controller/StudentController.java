@@ -2,6 +2,7 @@ package liqi.peerlearningsystembackend.controller;
 
 import liqi.peerlearningsystembackend.pojo.AssignmentPojo;
 import liqi.peerlearningsystembackend.pojo.CoursePojo;
+import liqi.peerlearningsystembackend.pojo.HomeworkPojo;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
 import liqi.peerlearningsystembackend.service.*;
 import liqi.peerlearningsystembackend.utils.Constants;
@@ -118,7 +119,7 @@ public class StudentController {
     }
 
     /**
-     * 学生获取课程作业列表
+     * 学生根据课程号获取课程作业列表
      */
     @RequestMapping(value = "/getAssignmentListByCourseID", method = RequestMethod.POST)
     public ResponseEntity<String> getAssignmentListByCourseID(@RequestBody Map<String, String> data) {
@@ -190,4 +191,50 @@ public class StudentController {
         else
             return Result.okGetString();
     }
+
+    /**
+     * 学生根据任务ID获取作业信息
+     */
+    @RequestMapping(value = "/getHomeworkByAssignmentID", method = RequestMethod.POST)
+    public ResponseEntity<String> getHomeworkByAssignmentID(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        if (token == null || assignmentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是学生
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_STUDENT)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not student");
+
+        // 获取作业信息
+        HomeworkPojo homework = homeworkService.getHomeworkByUserIDAndAssignmentID(user.getUid(), Integer.parseInt(assignmentID));
+
+        HashMap<String, String> homeworkInfo = new HashMap<>();
+        homeworkInfo.put("username", user.getUsername());
+        homeworkInfo.put("uid", String.valueOf(user.getUid()));
+        homeworkInfo.put("key", String.valueOf(user.getUid()));
+        if (homework == null) {
+            homeworkInfo.put("submit", "未提交");
+            homeworkInfo.put("homeworkID", "/");
+            homeworkInfo.put("date", "/");
+            homeworkInfo.put("time", "/");
+            homeworkInfo.put("grade", "/");
+        } else {
+            homeworkInfo.put("submit", "已提交");
+            homeworkInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
+            homeworkInfo.put("date", homework.getSubmitTime().split(" ")[0]);
+            homeworkInfo.put("time", homework.getSubmitTime().split(" ")[1]);
+            homeworkInfo.put("grade", homework.getScore() == null ? "未评分" : String.valueOf(homework.getScore()));
+        }
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("homework", homeworkInfo);
+                }}
+        );
+    }
+
 }
