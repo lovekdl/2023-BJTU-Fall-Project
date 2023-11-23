@@ -1191,7 +1191,8 @@
               {
                   "peerID": "700011",
                   "homeworkID": "600009",
-                  "grade": "未评分"
+                  "grade": "未评分",
+                  "comment": "未评价"
               }
           ]
       },
@@ -1278,7 +1279,8 @@
               {
                   "peerID": "700011",
                   "homeworkID": "600009",
-                  "grade": "未评分"
+                  "grade": "未评分",
+                  "comment": "未评价"
               }
           ]
       },
