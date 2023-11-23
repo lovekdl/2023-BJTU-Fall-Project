@@ -1,9 +1,6 @@
 package liqi.peerlearningsystembackend.controller;
 
-import liqi.peerlearningsystembackend.pojo.AssignmentPojo;
-import liqi.peerlearningsystembackend.pojo.CoursePojo;
-import liqi.peerlearningsystembackend.pojo.HomeworkPojo;
-import liqi.peerlearningsystembackend.pojo.UserPojo;
+import liqi.peerlearningsystembackend.pojo.*;
 import liqi.peerlearningsystembackend.service.*;
 import liqi.peerlearningsystembackend.utils.Constants;
 import liqi.peerlearningsystembackend.utils.Result;
@@ -37,6 +34,9 @@ public class StudentController {
 
     @Autowired
     SCService scService;
+
+    @Autowired
+    PeerService peerService;
 
     /**
      * 学生获取所有课程列表
@@ -237,4 +237,106 @@ public class StudentController {
         );
     }
 
+    /**
+     * 学生根据任务ID获取互评作业信息
+     */
+    @RequestMapping(value = "/getPeerHomeworkByAssignmentID", method = RequestMethod.POST)
+    public ResponseEntity<String> getPeerHomeworkByAssignmentID(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        if (token == null || assignmentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是学生
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_STUDENT)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not student");
+
+        // 获取任务信息
+        AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
+        if (assignment == null)
+            return Result.errorGetStringByMessage("403", "assignmentID is wrong");
+
+        // 获取作业信息
+        List<PeerPojo> peerList = peerService.getPeerListByUserUUIDAndAssignmentUUID(user.getUuid(), assignment.getUuid());
+        if (peerList == null)
+            return Result.okGetStringByMessage("don't have any peer homework");
+
+//        System.out.println(peerList);
+
+        List<Object> peerHomeworkInfo = new ArrayList<>();
+        for (PeerPojo peer : peerList) {
+            HashMap<String, String> peerInfo = new HashMap<>();
+            peerInfo.put("peerID", String.valueOf(peer.getPeerID()));
+            peerInfo.put("homeworkID", String.valueOf(peer.getHomeworkID()));
+            peerInfo.put("grade", peer.getScore() == null ? "未评分" : String.valueOf(peer.getScore()));
+            peerHomeworkInfo.add(peerInfo);
+        }
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("peerHomework", peerHomeworkInfo);
+                }}
+        );
+    }
+
+    /**
+     * 学生根据作业ID获取互评作业内容
+     */
+    @RequestMapping(value = "/getPeerHomeworkContentByHomeworkID", method = RequestMethod.POST)
+    public ResponseEntity<String> getPeerHomeworkContentByHomeworkID(@RequestBody Map<String, String> data) {
+        // 获取数据
+        String token = data.get("token");
+        String homeworkID = data.get("homeworkID");
+        if (token == null || homeworkID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是学生
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_STUDENT)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not student");
+
+        // 获取作业信息
+        HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
+        if (homework == null)
+            return Result.errorGetStringByMessage("403", "homeworkID is wrong");
+
+        HashMap<String, String> homeworkInfo = new HashMap<>();
+        homeworkInfo.put("homeworkContent", homework.getContent());
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("homework", homeworkInfo);
+                }}
+        );
+    }
+
+    /**
+     * 学生给互评作业评分
+     */
+    @RequestMapping(value = "/gradePeerHomework", method = RequestMethod.POST)
+    public ResponseEntity<String> gradePeerHomework(@RequestBody Map<String, String> data) {
+        // 获取数据
+        String token = data.get("token");
+        String peerID = data.get("peerID");
+        String grade = data.get("grade");
+        if (token == null || peerID == null || grade == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是学生
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_STUDENT)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not student");
+
+        // 获取互评作业信息
+        PeerPojo peer = peerService.getPeerByID(Integer.valueOf(peerID));
+        if (peer == null)
+            return Result.errorGetStringByMessage("403", "peerID is wrong");
+
+        peer.setScore(Integer.valueOf(grade));
+
+        return Result.okGetString();
+    }
 }

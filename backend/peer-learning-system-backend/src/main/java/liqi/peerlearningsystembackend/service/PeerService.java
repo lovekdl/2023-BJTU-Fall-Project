@@ -75,12 +75,22 @@ public class PeerService {
     }
 
     /**
+     * 根据peerID获取peer
+     * @param peerID peerID
+     * @return 返回peer
+     */
+    @Nullable
+    public PeerPojo getPeerByID(Integer peerID) {
+        return peerDao.selectOne(new QueryWrapper<PeerPojo>().eq("peerID", peerID));
+    }
+
+    /**
      * 根据userUUID获取peer列表
      * @param userUUID 学生UUID
      * @return 返回peer
      */
     @Nullable
-    public List<PeerPojo> getPeerByUserUUID(Integer userUUID) {
+    public List<PeerPojo> getPeerListByUserUUID(Integer userUUID) {
         return peerDao.selectList(new QueryWrapper<PeerPojo>().eq("userUUID", userUUID));
     }
 
@@ -88,7 +98,7 @@ public class PeerService {
      * 根据userUUID和assignmentUUID获取peer列表
      */
     @Nullable
-    public List<PeerPojo> getPeerByUserUUIDAndAssignmentUUID(Integer userUUID, Integer assignmentUUID) {
+    public List<PeerPojo> getPeerListByUserUUIDAndAssignmentUUID(String userUUID, String assignmentUUID) {
         return peerDao.selectList(new QueryWrapper<PeerPojo>().eq("userUUID", userUUID).eq("assignmentUUID", assignmentUUID));
     }
 
@@ -100,7 +110,7 @@ public class PeerService {
      * @return 返回peer
      */
     @Nullable
-    public List<PeerPojo> getPeerByHomeworkUUID(Integer homeworkUUID) {
+    public List<PeerPojo> getPeerListByHomeworkUUID(Integer homeworkUUID) {
         return peerDao.selectList(new QueryWrapper<PeerPojo>().eq("homeworkUUID", homeworkUUID));
     }
 

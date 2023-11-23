@@ -498,8 +498,11 @@ public class TeacherController {
                 studentIDs.add(student.getUid());
         }
 
-        if (studentIDs.size() < students.size())
-            return Result.errorGetStringByMessage("403", "don't have enough homeworks");
+        if (studentIDs.isEmpty())
+            return Result.errorGetStringByMessage("403", "not a single homework");
+
+//        if (studentIDs.size() < students.size())
+//            return Result.errorGetStringByMessage("403", "don't have enough homeworks");
 
         // 获取互评分配
         Map<Integer, List<Integer>> allocation = Tool.allocation(studentIDs, Integer.parseInt(peerNumber));
