@@ -1,9 +1,6 @@
 package liqi.peerlearningsystembackend.controller;
 
-import liqi.peerlearningsystembackend.pojo.AssignmentPojo;
-import liqi.peerlearningsystembackend.pojo.CoursePojo;
-import liqi.peerlearningsystembackend.pojo.HomeworkPojo;
-import liqi.peerlearningsystembackend.pojo.UserPojo;
+import liqi.peerlearningsystembackend.pojo.*;
 import liqi.peerlearningsystembackend.service.*;
 import liqi.peerlearningsystembackend.utils.Constants;
 import liqi.peerlearningsystembackend.utils.Result;
@@ -523,4 +520,47 @@ public class TeacherController {
     /**
      * 教师结束某任务互评
      */
+    @RequestMapping(value = "/endPeer", method = RequestMethod.POST)
+    public ResponseEntity<String> endPeer(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        if (token == null || assignmentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo teacher = userService.checkToken(token);
+        if (teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 获取任务
+        AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
+        if (assignment == null)
+            return Result.errorGetStringByMessage("403", "assignment is null");
+
+        // 获取课程
+        CoursePojo course = courseService.getCourseByUUID(assignment.getCourseUUID());
+        if (course == null)
+            return Result.errorGetStringByMessage("403", "course is null");
+
+        // 获取课程学生列表
+        List<UserPojo> students = scService.getStudentsByCourseID(course.getCourseID());
+
+        // 对每个学生的作业统计互评分数
+        for (UserPojo student : students) {
+            HomeworkPojo homework = homeworkService.getHomeworkByUserIDAndAssignmentID(student.getUid(), Integer.parseInt(assignmentID));
+            List<PeerPojo> peers = peerService.getPeerListByUserUUIDAndAssignmentUUID(student.getUuid(), assignment.getUuid());
+            if (peers == null)
+                continue;
+            Integer peerNumber = peers.size();
+            Integer peerScore = 0;
+            for (PeerPojo peer : peers) {
+                peerScore += peer.getScore();
+            }
+            homework.setScore(peerScore / peerNumber);
+        }
+
+        return Result.okGetString();
+    }
 }

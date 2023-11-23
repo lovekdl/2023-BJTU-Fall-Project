@@ -147,6 +147,10 @@ public class StudentController {
         // 将作业信息转换为Map
         for (AssignmentPojo assignment : assignments) {
             HashMap<String, String> studentInfo = new HashMap<>();
+            if (homeworkService.getHomeworkByUserIDAndAssignmentID(user.getUid(), assignment.getAssignmentID()) != null)
+                studentInfo.put("submit", "已提交");
+            else
+                studentInfo.put("submit", "未提交");
             studentInfo.put("key", String.valueOf(assignment.getAssignmentID()));
             studentInfo.put("assignmentID", String.valueOf(assignment.getAssignmentID()));
             studentInfo.put("assignmentName", assignment.getTitle());

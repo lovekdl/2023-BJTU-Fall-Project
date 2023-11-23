@@ -55,6 +55,21 @@ public class PeerService {
     }
 
     /**
+     * 根据peerID删除peer
+     * @param peerID peerID
+     * @return 返回"OK"或"ERROR"
+     */
+    public String deletePeerByID(Integer peerID) {
+        try {
+            peerDao.selectOne(new QueryWrapper<PeerPojo>().eq("peerID", peerID));
+            peerDao.deleteById(peerID);
+            return "OK";
+        } catch (Exception e) {
+            return "ERROR";
+        }
+    }
+
+    /**
      * 根据homeworkUUID和userUUID获取peerID
      * @param homeworkUUID 作业UUID
      * @param userUUID 学生UUID
