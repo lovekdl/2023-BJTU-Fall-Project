@@ -2,11 +2,9 @@ package liqi.peerlearningsystembackend.controller;
 
 import liqi.peerlearningsystembackend.pojo.AssignmentPojo;
 import liqi.peerlearningsystembackend.pojo.CoursePojo;
+import liqi.peerlearningsystembackend.pojo.HomeworkPojo;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
-import liqi.peerlearningsystembackend.service.AssignmentService;
-import liqi.peerlearningsystembackend.service.CourseService;
-import liqi.peerlearningsystembackend.service.SCService;
-import liqi.peerlearningsystembackend.service.UserService;
+import liqi.peerlearningsystembackend.service.*;
 import liqi.peerlearningsystembackend.utils.Constants;
 import liqi.peerlearningsystembackend.utils.Result;
 import liqi.peerlearningsystembackend.utils.Tool;
@@ -17,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RestController
 @RequestMapping("/teacher")
@@ -38,6 +33,12 @@ public class TeacherController {
     @Autowired
     AssignmentService assignmentService;
 
+    @Autowired
+    HomeworkService homeworkService;
+
+    @Autowired
+    PeerService peerService;
+
     /**
      * 教师添加课程
      */
@@ -53,13 +54,13 @@ public class TeacherController {
 
         // 检验用户是否是教师
         UserPojo user = userService.checkToken(token);
-        if(user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 添加课程
         String message = courseService.addCourse(courseName, user.getUuid(), courseDescribe);
-        if(message.startsWith("ERROR"))
-            return Result.errorGetStringByMessage("403",message);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
         else
             return Result.okGetString();
     }
@@ -78,13 +79,13 @@ public class TeacherController {
 
         // 检验用户是否是教师
         UserPojo user = userService.checkToken(token);
-        if(user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 删除课程
         String message = courseService.deleteCourseByCourseID(Integer.parseInt(courseID));
-        if(message.startsWith("ERROR"))
-            return Result.errorGetStringByMessage("403",message);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
         else
             return Result.okGetString();
     }
@@ -104,13 +105,13 @@ public class TeacherController {
 
         // 检验用户是否是教师
         UserPojo user = userService.checkToken(token);
-        if(user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 设置课程名称
         String message = courseService.setCourseName(Integer.parseInt(courseID), courseName);
-        if(message.startsWith("ERROR"))
-            return Result.errorGetStringByMessage("403",message);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
         else
             return Result.okGetString();
     }
@@ -130,13 +131,13 @@ public class TeacherController {
 
         // 检验用户是否是教师
         UserPojo user = userService.checkToken(token);
-        if(user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 设置课程名称
         String message = courseService.setCourseIntro(Integer.parseInt(courseID), courseDescribe);
-        if(message.startsWith("ERROR"))
-            return Result.errorGetStringByMessage("403",message);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
         else
             return Result.okGetString();
     }
@@ -154,12 +155,12 @@ public class TeacherController {
 
         // 检验用户是否是教师
         UserPojo user = userService.checkToken(token);
-        if(user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 获取课程列表
         List<CoursePojo> courses = courseService.getCourseList();
-        if(courses == null)
+        if (courses == null)
             return Result.okGetStringByMessage("don't have any course");
         List<Object> coursesInfo = new ArrayList<>();
 
@@ -197,17 +198,17 @@ public class TeacherController {
 
         // 检验用户是否是教师
         UserPojo user = userService.checkToken(token);
-        if(user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 添加学生到课程
         String message;
-        if(studentID != null)
+        if (studentID != null)
             message = scService.addSCByCourseIDAndStudentID(Integer.parseInt(courseID), Integer.parseInt(studentID));
         else
             message = scService.addSCByCourseIDAndUsername(Integer.parseInt(courseID), username);
-        if(message.startsWith("ERROR"))
-            return Result.errorGetStringByMessage("403",message);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
         else
             return Result.okGetString();
     }
@@ -227,13 +228,13 @@ public class TeacherController {
 
         // 检验用户是否是教师
         UserPojo user = userService.checkToken(token);
-        if(user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 删除学生
         String message = scService.deleteSCByCourseIDAndStudentID(Integer.parseInt(courseID), Integer.parseInt(studentID));
-        if(message.startsWith("ERROR"))
-            return Result.errorGetStringByMessage("403",message);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
         else
             return Result.okGetString();
     }
@@ -244,39 +245,39 @@ public class TeacherController {
     @RequestMapping(value = "/getStudentListByCourseID", method = RequestMethod.POST)
     public ResponseEntity<String> getStudentListByCourseID(@RequestBody Map<String, String> data) {
 
-            // 获取数据
-            String token = data.get("token");
-            String courseID = data.get("courseID");
+        // 获取数据
+        String token = data.get("token");
+        String courseID = data.get("courseID");
 //            System.out.println(data);
-            if (token == null || courseID == null)
-                return Result.errorGetStringByMessage("400", "something is null");
+        if (token == null || courseID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
 
-            // 检验用户是否是教师
-            UserPojo teacher = userService.checkToken(token);
-            if(teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
-                return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+        // 检验用户是否是教师
+        UserPojo teacher = userService.checkToken(token);
+        if (teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
-            // 获取课程学生列表
-            List<UserPojo> students = scService.getStudentsByCourseID(Integer.parseInt(courseID));
-            if(students == null)
-                return Result.okGetStringByMessage("don't have any student");
-            List<Object> studentsInfo = new ArrayList<>();
+        // 获取课程学生列表
+        List<UserPojo> students = scService.getStudentsByCourseID(Integer.parseInt(courseID));
+        if (students == null)
+            return Result.okGetStringByMessage("don't have any student");
+        List<Object> studentsInfo = new ArrayList<>();
 
-            // 将学生信息转换为Map
-            for (UserPojo student : students) {
-                HashMap<String, String> studentInfo = new HashMap<>();
-                studentInfo.put("key", String.valueOf(student.getUid()));
-                studentInfo.put("uid", String.valueOf(student.getUid()));
-                studentInfo.put("username", student.getUsername());
-                studentsInfo.add(studentInfo);
-            }
+        // 将学生信息转换为Map
+        for (UserPojo student : students) {
+            HashMap<String, String> studentInfo = new HashMap<>();
+            studentInfo.put("key", String.valueOf(student.getUid()));
+            studentInfo.put("uid", String.valueOf(student.getUid()));
+            studentInfo.put("username", student.getUsername());
+            studentsInfo.add(studentInfo);
+        }
 
-            return Result.okGetStringByData("success",
-                    new HashMap<String, Object>() {{
-                        put("students", studentsInfo);
-                        put("courseNumber", students.size());
-                    }}
-            );
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("students", studentsInfo);
+                    put("courseNumber", students.size());
+                }}
+        );
     }
 
     /**
@@ -459,5 +460,60 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403", message);
         else
             return Result.okGetString();
+    }
+
+    /**
+     * 教师获取开始某任务互评
+     */
+    @RequestMapping(value = "/startPeer", method = RequestMethod.POST)
+    public ResponseEntity<String> startPeer(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String courseID = data.get("courseID");
+        String assignmentID = data.get("assignmentID");
+        String peerNumber = data.get("peerNumber");
+        if (token == null || assignmentID == null || peerNumber == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo teacher = userService.checkToken(token);
+        if (teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 获取课程学生列表
+        List<UserPojo> students = scService.getStudentsByCourseID(Integer.parseInt(courseID));
+        if (students == null)
+            return Result.okGetStringByMessage("don't have any student");
+
+        // 获取任务
+        AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
+        if (assignment == null)
+            return Result.errorGetStringByMessage("403", "assignment is null");
+
+        List<Integer> studentIDs = new ArrayList<>();
+        for (UserPojo student : students) {
+            // 判断学生作业是否已经提交
+            if(homeworkService.getHomeworkByUserIDAndAssignmentID(student.getUid(), Integer.parseInt(assignmentID)) != null)
+                studentIDs.add(student.getUid());
+        }
+
+        if (studentIDs.size() < students.size())
+            return Result.errorGetStringByMessage("403", "don't have enough homeworks");
+
+        // 获取互评分配
+        Map<Integer, List<Integer>> allocation = Tool.allocation(studentIDs, Integer.parseInt(peerNumber));
+
+        // 保存互评分配
+        for (Map.Entry<Integer, List<Integer>> entry : allocation.entrySet()) {
+            Integer uid = entry.getKey();
+            UserPojo student = userService.getUserByUid(uid);
+            for (Integer peerID : entry.getValue()) {
+                HomeworkPojo homework = homeworkService.getHomeworkByUserIDAndAssignmentID(peerID, Integer.parseInt(assignmentID));
+                peerService.addPeer(student.getUuid(), homework.getUuid(), homework.getAssignmentUUID(), student.getUsername(), homework.getHomeworkID(), assignment.getAssignmentID());
+            }
+        }
+
+        return Result.okGetString();
     }
 }

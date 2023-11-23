@@ -29,6 +29,11 @@ public final class Constants {
     public static final int HOMEWORK_COUNTER = 6;
 
     /**
+     * Constants for peer
+     */
+    public static final int PEER_COUNTER = 7;
+
+    /**
      * Constants for email code expire time
      */
     public static final int EMAIL_CODE_EXPIRE_TIME = 60 * 5;
