@@ -396,5 +396,34 @@ public class StudentController {
             return Result.okGetString();
     }
 
+    /**
+     * 学生根据任务ID获取作业内容
+     */
+    @RequestMapping(value = "/getHomeworkContentByAssignmentID", method = RequestMethod.POST)
+    public ResponseEntity<String> getHomeworkContentByAssignmentID(@RequestBody Map<String, String> data) {
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        if (token == null || assignmentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
 
+        // 检验用户是否是学生
+        UserPojo user = userService.checkToken(token);
+        if (user == null)
+            return Result.errorGetStringByMessage("403", "token is wrong");
+
+        // 获取作业信息
+        HomeworkPojo homework = homeworkService.getHomeworkByUserIDAndAssignmentID(user.getUid(), Integer.parseInt(assignmentID));
+        if (homework == null)
+            return Result.errorGetStringByMessage("403", "homeworkID is wrong");
+
+        HashMap<String, String> homeworkInfo = new HashMap<>();
+        homeworkInfo.put("homeworkContent", homework.getContent());
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("homework", homeworkInfo);
+                }}
+        );
+    }
 }

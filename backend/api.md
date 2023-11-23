@@ -1297,4 +1297,33 @@
   }
   ```
 
+###  9. 学生根据任务ID获取作业内容
+
+- **请求 URL**: `/student/getHomeworkContentByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "homeworkContent": "yxh的作业"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
 ###  
