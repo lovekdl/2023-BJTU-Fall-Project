@@ -1191,9 +1191,13 @@
               {
                   "peerID": "700011",
                   "homeworkID": "600009",
+                  "courseName": "testCourse1",
+                  "teacherName": "fjq",
+                  "assignmentDescribe": "test assignment for allocation",
                   "grade": "未评分",
-                  "comment": "未评价"
-              }
+                  "comment": "未评价",
+                  "assignmentName": "test assignment"
+              },
           ]
       },
       "message": "success"
@@ -1279,9 +1283,13 @@
               {
                   "peerID": "700011",
                   "homeworkID": "600009",
+                  "courseName": "testCourse1",
+                  "teacherName": "fjq",
+                  "assignmentDescribe": "test assignment for allocation",
                   "grade": "未评分",
-                  "comment": "未评价"
-              }
+                  "comment": "未评价",
+                  "assignmentName": "test assignment"
+              },
           ]
       },
       "message": "success"
