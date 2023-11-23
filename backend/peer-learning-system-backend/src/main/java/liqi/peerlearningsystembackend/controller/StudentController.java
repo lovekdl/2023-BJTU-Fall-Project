@@ -103,10 +103,12 @@ public class StudentController {
         // 将课程信息转换为Map
         for (CoursePojo course : courses) {
             HashMap<String, String> courseInfo = new HashMap<>();
+            UserPojo teacher = userService.getUserByUUID(course.getUserUUID());
             courseInfo.put("key", String.valueOf(course.getCourseID()));
             courseInfo.put("courseID", String.valueOf(course.getCourseID()));
             courseInfo.put("courseName", course.getCourseName());
             courseInfo.put("courseDescribe", course.getIntro());
+            courseInfo.put("teacherName", teacher.getUsername());
             courseInfo.put("courseNumber", String.valueOf(course.getNumber()));
             coursesInfo.add(courseInfo);
         }

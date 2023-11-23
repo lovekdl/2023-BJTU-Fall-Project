@@ -1058,6 +1058,7 @@
                   "courseName": "courseName",
                   "courseDescribe": "courseDescribe",
                   "courseNumber": "courseNumber",
+                  "teacherName": "teacherName",
                   "courseID": "courseID",
                   "key": "key"
               }
