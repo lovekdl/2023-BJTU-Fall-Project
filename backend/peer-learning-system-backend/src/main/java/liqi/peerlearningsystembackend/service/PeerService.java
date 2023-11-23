@@ -90,7 +90,7 @@ public class PeerService {
      * @return 返回peer
      */
     @Nullable
-    public List<PeerPojo> getPeerListByUserUUID(Integer userUUID) {
+    public List<PeerPojo> getPeerListByUserUUID(String userUUID) {
         return peerDao.selectList(new QueryWrapper<PeerPojo>().eq("userUUID", userUUID));
     }
 
