@@ -360,7 +360,8 @@ public class StudentController {
         String token = data.get("token");
         String peerID = data.get("peerID");
         String grade = data.get("grade");
-        if (token == null || peerID == null || grade == null)
+        String comment = data.get("comment");
+        if (token == null || peerID == null || grade == null || comment == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
         // 检验用户是否是学生
@@ -369,13 +370,15 @@ public class StudentController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not student");
 
         // 获取互评作业信息
-        PeerPojo peer = peerService.getPeerByID(Integer.valueOf(peerID));
-        if (peer == null)
-            return Result.errorGetStringByMessage("403", "peerID is wrong");
-
-        peer.setScore(Integer.valueOf(grade));
-
-        return Result.okGetString();
+        // 设置作业分数
+        String message1 = peerService.setScore(Integer.parseInt(peerID), Integer.parseInt(grade));
+        String message2 = peerService.setComment(Integer.parseInt(peerID), comment);
+        if (message1.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message1);
+        else if (message2.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message2);
+        else
+            return Result.okGetString();
     }
 
 

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.activerecord.Model;
 import liqi.peerlearningsystembackend.dao.CounterDao;
 import liqi.peerlearningsystembackend.dao.PeerDao;
 import liqi.peerlearningsystembackend.pojo.CounterPojo;
+import liqi.peerlearningsystembackend.pojo.HomeworkPojo;
 import liqi.peerlearningsystembackend.pojo.PeerPojo;
 import liqi.peerlearningsystembackend.pojo.UserPojo;
 import liqi.peerlearningsystembackend.utils.Constants;
@@ -41,7 +42,7 @@ public class PeerService {
         try {
             Integer peerID = counterDao.selectById(Constants.PEER_COUNTER).getUid();
 
-            peerDao.insert(new PeerPojo(uuid, peerID, userUUID, homeworkUUID, assignmentUUID, username, homeworkID, assignmentID, null));
+            peerDao.insert(new PeerPojo(uuid, peerID, userUUID, homeworkUUID, assignmentUUID, username, homeworkID, assignmentID, null, null));
 
             // 更新计数器
             CounterPojo counterPojo = counterDao.selectById(Constants.PEER_COUNTER);
@@ -112,6 +113,40 @@ public class PeerService {
     @Nullable
     public List<PeerPojo> getPeerListByHomeworkUUID(Integer homeworkUUID) {
         return peerDao.selectList(new QueryWrapper<PeerPojo>().eq("homeworkUUID", homeworkUUID));
+    }
+
+    /**
+     * 设置互评作业分数
+     */
+    public String setScore(int peerID, int score) {
+        try {
+            PeerPojo peer = getPeerByID(peerID);
+            if (peer == null)
+                return "ERROR";
+            peer.setScore(score);
+            peerDao.updateById(peer);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
+     * 设置互评作业评论
+     */
+    public String setComment(int peerID, String comment) {
+        try {
+            PeerPojo peer = getPeerByID(peerID);
+            if (peer == null)
+                return "ERROR";
+            peer.setComment(comment);
+            peerDao.updateById(peer);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
     }
 
 }

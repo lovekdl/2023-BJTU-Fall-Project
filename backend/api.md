@@ -1255,7 +1255,7 @@
 
 ###  9. 学生根据uid获取互拼作业信息
 
-- **请求 URL**: `/student/getPeerHomeworkByAssignmentID`
+- **请求 URL**: `/student/getPeerHomeworkByUID`
 
 - **请求方式**: POST
 
