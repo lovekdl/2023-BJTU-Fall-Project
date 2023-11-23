@@ -274,6 +274,7 @@ public class StudentController {
             peerInfo.put("peerID", String.valueOf(peer.getPeerID()));
             peerInfo.put("homeworkID", String.valueOf(peer.getHomeworkID()));
             peerInfo.put("grade", peer.getScore() == null ? "未评分" : String.valueOf(peer.getScore()));
+            peerInfo.put("comment", peer.getComment() == null ? "未评价" : peer.getComment());
             peerHomeworkInfo.add(peerInfo);
         }
 
@@ -310,6 +311,7 @@ public class StudentController {
             peerInfo.put("peerID", String.valueOf(peer.getPeerID()));
             peerInfo.put("homeworkID", String.valueOf(peer.getHomeworkID()));
             peerInfo.put("grade", peer.getScore() == null ? "未评分" : String.valueOf(peer.getScore()));
+            peerInfo.put("comment", peer.getComment() == null ? "未评价" : peer.getComment());
             peerHomeworkInfo.add(peerInfo);
         }
 
