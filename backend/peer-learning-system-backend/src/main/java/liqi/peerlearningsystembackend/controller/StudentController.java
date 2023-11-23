@@ -283,7 +283,7 @@ public class StudentController {
     }
 
     /**
-     * 学生根据userID获取互拼作业信息
+     * 学生根据uid获取互拼作业信息
      */
     @RequestMapping(value = "/getPeerHomeworkByUID", method = RequestMethod.POST)
     public ResponseEntity<String> getPeerHomeworkByUID(@RequestBody Map<String, String> data) {

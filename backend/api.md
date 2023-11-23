@@ -1252,4 +1252,36 @@
   }
   ```
 
+###  9. 学生根据uid获取互拼作业信息
+
+- **请求 URL**: `/student/getPeerHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "peerHomework": [
+              {
+                  "peerID": "700011",
+                  "homeworkID": "600009",
+                  "grade": "未评分"
+              }
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
 ###  
