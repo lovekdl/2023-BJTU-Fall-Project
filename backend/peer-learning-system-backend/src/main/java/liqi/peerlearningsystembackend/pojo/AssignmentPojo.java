@@ -34,4 +34,7 @@ public class AssignmentPojo {
 
     @TableField(value = "deadline")
     private String deadline;
+
+    @TableField(value = "status")
+    private String status;
 }

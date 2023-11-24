@@ -639,7 +639,7 @@
   }
   ```
 
-### 11. 教师获取课程作业列表
+### 11. 教师获取课程任务列表
 
 - **请求 URL**: `/teacher/getAssignmentListByCourseID`
 
@@ -663,6 +663,7 @@
           "assignments": [
               {
                   "assignmentName": "assignmentName",
+                  "assignmentStatus":"assignmentStatus",
                   "date": "date",
                   "time": "time",
                   "assignmentID": "assignmentID",

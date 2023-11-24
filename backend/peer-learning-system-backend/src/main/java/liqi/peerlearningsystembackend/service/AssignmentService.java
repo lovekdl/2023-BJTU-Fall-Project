@@ -47,7 +47,7 @@ public class AssignmentService {
             CoursePojo course = courseService.getCourseByCourseID(courseID);
             if(course == null)
                 return "ERROR";
-            assignmentDao.insert(new AssignmentPojo(uuid, assignmentID, course.getUuid(), title, content, null, deadline));
+            assignmentDao.insert(new AssignmentPojo(uuid, assignmentID, course.getUuid(), title, content, null, deadline, "未开始互评"));
 
             // 更新计数器
             CounterPojo counterPojo = counterDao.selectById(Constants.ASSIGNMENT_COUNTER);
@@ -175,6 +175,26 @@ public class AssignmentService {
             if (cause.getMessage().contains("Incorrect datetime value")) {
                 return "ERROR: Incorrect datetime value";
             }
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
+     * 教师设置作业状态
+     * @param assignmentID 作业ID
+     * @param status 状态
+     * @return 返回"OK"或"ERROR"
+     */
+    public String setAssignmentStatus(int assignmentID, String status) {
+        try {
+            AssignmentPojo assignment = getAssignmentByID(assignmentID);
+            if (assignment == null)
+                return "ERROR";
+            assignment.setStatus(status);
+            assignmentDao.updateById(assignment);
+            return "OK";
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             return "ERROR";
         }

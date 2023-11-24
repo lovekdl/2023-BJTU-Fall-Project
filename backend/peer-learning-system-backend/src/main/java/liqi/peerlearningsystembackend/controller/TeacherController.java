@@ -366,6 +366,7 @@ public class TeacherController {
             studentInfo.put("assignmentID", String.valueOf(assignment.getAssignmentID()));
             studentInfo.put("assignmentName", assignment.getTitle());
             studentInfo.put("assignmentDescribe", assignment.getContent());
+            studentInfo.put("assignmentStatus", assignment.getStatus());
             studentInfo.put("date", assignment.getDeadline().split(" ")[0]);
             studentInfo.put("time", assignment.getDeadline().split(" ")[1]);
             assignmentsInfo.add(studentInfo);
@@ -498,6 +499,9 @@ public class TeacherController {
         if (studentIDs.isEmpty())
             return Result.errorGetStringByMessage("403", "not a single homework");
 
+        // 设置任务状态为互评中
+        assignmentService.setAssignmentStatus(Integer.parseInt(assignmentID), "互评中");
+
 //        if (studentIDs.size() < students.size())
 //            return Result.errorGetStringByMessage("403", "don't have enough homeworks");
 
@@ -560,6 +564,9 @@ public class TeacherController {
             }
             homework.setScore(peerScore / peerNumber);
         }
+
+        // 设置任务状态为互评结束
+        assignmentService.setAssignmentStatus(Integer.parseInt(assignmentID), "互评结束");
 
         return Result.okGetString();
     }
