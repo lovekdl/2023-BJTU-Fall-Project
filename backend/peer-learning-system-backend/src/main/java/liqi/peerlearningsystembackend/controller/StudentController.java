@@ -274,6 +274,8 @@ public class StudentController {
 
         List<Object> peerHomeworkInfo = new ArrayList<>();
         for (PeerPojo peer : peerList) {
+            if (peer.getStatus().equals("互评结束"))
+                continue;
             HashMap<String, String> peerInfo = new HashMap<>();
             peerInfo.put("peerID", String.valueOf(peer.getPeerID()));
             peerInfo.put("homeworkID", String.valueOf(peer.getHomeworkID()));
@@ -315,6 +317,8 @@ public class StudentController {
 
         List<Object> peerHomeworkInfo = new ArrayList<>();
         for (PeerPojo peer : peerList) {
+            if (peer.getStatus().equals("互评结束"))
+                continue;
             HashMap<String, String> peerInfo = new HashMap<>();
             AssignmentPojo assignment = assignmentService.getAssignmentByID(peer.getAssignmentID());
             peerInfo.put("peerID", String.valueOf(peer.getPeerID()));

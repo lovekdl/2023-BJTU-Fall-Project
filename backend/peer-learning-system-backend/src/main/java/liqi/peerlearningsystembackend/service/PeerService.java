@@ -42,7 +42,7 @@ public class PeerService {
         try {
             Integer peerID = counterDao.selectById(Constants.PEER_COUNTER).getUid();
 
-            peerDao.insert(new PeerPojo(uuid, peerID, userUUID, homeworkUUID, assignmentUUID, username, homeworkID, assignmentID, null, null));
+            peerDao.insert(new PeerPojo(uuid, peerID, userUUID, homeworkUUID, assignmentUUID, username, homeworkID, assignmentID, null, null, "正在互评中"));
 
             // 更新计数器
             CounterPojo counterPojo = counterDao.selectById(Constants.PEER_COUNTER);
@@ -156,6 +156,23 @@ public class PeerService {
             if (peer == null)
                 return "ERROR";
             peer.setComment(comment);
+            peerDao.updateById(peer);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
+     * 设置互评作业状态
+     */
+    public String setStatus(int peerID, String status) {
+        try {
+            PeerPojo peer = getPeerByID(peerID);
+            if (peer == null)
+                return "ERROR";
+            peer.setStatus(status);
             peerDao.updateById(peer);
             return "OK";
         } catch (Exception e) {

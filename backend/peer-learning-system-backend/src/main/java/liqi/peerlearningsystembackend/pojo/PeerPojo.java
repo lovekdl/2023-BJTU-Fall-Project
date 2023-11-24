@@ -41,4 +41,7 @@ public class PeerPojo {
     @TableField(value = "comment", updateStrategy = FieldStrategy.IGNORED)
     private String comment;
 
+    @TableField(value = "status")
+    private String status;
+
 }
