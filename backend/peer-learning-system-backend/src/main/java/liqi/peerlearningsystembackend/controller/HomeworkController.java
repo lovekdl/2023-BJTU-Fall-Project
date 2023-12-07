@@ -246,6 +246,43 @@ public class HomeworkController {
     }
 
     /**
+     * 根据作业ID获取投诉状态
+     */
+    @RequestMapping(value = "/getArgumentByHomeworkID", method = RequestMethod.POST)
+    public ResponseEntity<String> getArgumentByHomeworkID(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String homeworkID = data.get("homeworkID");
+        if (token == null || homeworkID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户
+        UserPojo user = userService.checkToken(token);
+        if (user == null)
+            return Result.errorGetStringByMessage("403", "token is wrong");
+
+        // 获取作业
+        HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
+        if (homework == null)
+            return Result.okGetStringByMessage("don't have any homework");
+
+        HashMap<String, String> homeworkInfo = new HashMap<>();
+        if (homework.getArgument() == null)
+            homeworkInfo.put("argument", "未投诉");
+        else if (Objects.equals(homework.getArgument(), "已处理"))
+            homeworkInfo.put("argument", "已处理");
+        else
+            homeworkInfo.put("argument", homework.getArgument());
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("homework", homeworkInfo);
+                }}
+        );
+    }
+
+    /**
      * 获取有投诉的作业列表
      */
     @RequestMapping(value = "/getArgumentHomeworkList", method = RequestMethod.POST)

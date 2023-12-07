@@ -1125,6 +1125,35 @@
   }
   ```
 
+### 根据作业ID获取投诉状态
+
+- **请求 URL**: `/homework/handleHomeworkArgument`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "argument": "argument"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
 ### 
 
 ## 学生模块
