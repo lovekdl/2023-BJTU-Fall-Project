@@ -55,7 +55,7 @@ public class HomeworkService {
             UserPojo user = userService.getUserByUid(userID);
             if(assignment == null || user == null)
                 return "ERROR";
-            homeworkDao.insert(new HomeworkPojo(uuid, homeworkID, assignment.getUuid(), user.getUuid(), null, submitTime, content, null, null));
+            homeworkDao.insert(new HomeworkPojo(uuid, homeworkID, assignment.getUuid(), user.getUuid(), null, submitTime, content, null, null, null));
 
             // 更新计数器
             CounterPojo counterPojo = counterDao.selectById(Constants.HOMEWORK_COUNTER);
@@ -259,5 +259,32 @@ public class HomeworkService {
         }
     }
 
+    /**
+     * 设置作业优秀
+     * @param homeworkID 作业ID
+     * @param excellent 优秀
+     * @return 返回"OK"或"ERROR"
+     */
+    public String setHomeworkExcellent(int homeworkID, String excellent) {
+        try {
+            HomeworkPojo homework = getHomeworkByID(homeworkID);
+            if (homework == null)
+                return "ERROR";
+            homework.setExcellent(excellent);
+            homeworkDao.updateById(homework);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
 
+    /**
+     * 根据任务ID获取优秀作业
+     * @param assignmentID 任务ID
+     * @return 优秀作业列表
+     */
+    public List<HomeworkPojo> getExcellentHomeworkByAssignmentID(String assignmentID) {
+        return homeworkDao.selectList(new QueryWrapper<HomeworkPojo>().eq("assignmentUUID", assignmentID).isNotNull("excellent"));
+    }
 }

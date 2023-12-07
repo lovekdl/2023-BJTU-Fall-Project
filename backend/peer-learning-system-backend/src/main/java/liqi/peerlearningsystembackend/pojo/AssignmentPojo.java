@@ -37,4 +37,7 @@ public class AssignmentPojo {
 
     @TableField(value = "status")
     private String status;
+
+    @TableField(value = "excellent")
+    private String excellent;
 }

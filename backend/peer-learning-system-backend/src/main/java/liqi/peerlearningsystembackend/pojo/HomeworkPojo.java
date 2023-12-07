@@ -37,4 +37,7 @@ public class HomeworkPojo {
 
     @TableField(value = "argument", updateStrategy = FieldStrategy.IGNORED)
     private String argument;
+
+    @TableField(value = "excellent", updateStrategy = FieldStrategy.IGNORED)
+    private String excellent;
 }

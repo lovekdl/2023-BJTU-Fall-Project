@@ -257,6 +257,80 @@ public class HomeworkController {
     }
 
     /**
+     * 设置作业优秀
+     */
+    @RequestMapping(value = "/setHomeworkExcellent", method = RequestMethod.POST)
+    public ResponseEntity<String> setHomeworkExcellent(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String homeworkID = data.get("homeworkID");
+        String excellent = data.get("excellent");
+        if (token == null || homeworkID == null || excellent == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是老师
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 设置作业优秀
+        String message = homeworkService.setHomeworkExcellent(Integer.parseInt(homeworkID), excellent);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+
+        try {
+            assignmentService.getAssignmentByUUID(homeworkService.getHomeworkByID(Integer.parseInt(homeworkID)).getAssignmentUUID()).setExcellent(excellent);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Result.errorGetStringByMessage("403", "ERROR");
+        }
+
+        return Result.okGetString();
+
+    }
+
+    /**
+     * 根据任务ID获取优秀作业列表
+     */
+    @RequestMapping(value = "/getExcellentHomeworkListByAssignmentID", method = RequestMethod.POST)
+    public ResponseEntity<String> getExcellentHomeworkListByAssignmentID(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        if (token == null || assignmentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是老师
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 获取优秀作业列表
+        List<HomeworkPojo> homeworks = homeworkService.getExcellentHomeworkByAssignmentID(assignmentID);
+        if (homeworks == null)
+            return Result.okGetStringByMessage("don't have any excellent homework");
+
+        List<Object> homeworksInfo = new ArrayList<>();
+
+        for (HomeworkPojo homework : homeworks) {
+            HashMap<String, String> homeworkInfo = new HashMap<>();
+            homeworkInfo.put("key", String.valueOf(homework.getHomeworkID()));
+            homeworkInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
+            homeworksInfo.add(homeworkInfo);
+            break;
+        }
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("homeworks", homeworksInfo);
+                }}
+        );
+
+    }
+
+    /**
      * 根据用户ID获取作业列表
      */
     @RequestMapping(value = "/getHomeworkListByUserID", method = RequestMethod.POST)

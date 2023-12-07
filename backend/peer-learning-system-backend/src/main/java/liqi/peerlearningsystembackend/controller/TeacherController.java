@@ -366,6 +366,7 @@ public class TeacherController {
             studentInfo.put("assignmentID", String.valueOf(assignment.getAssignmentID()));
             studentInfo.put("assignmentName", assignment.getTitle());
             studentInfo.put("assignmentDescribe", assignment.getContent());
+            studentInfo.put("assignmentHasExcellent", assignment.getExcellent() == null ? "false" : "true");
             studentInfo.put("assignmentStatus", assignment.getStatus());
             studentInfo.put("date", assignment.getDeadline().split(" ")[0]);
             studentInfo.put("time", assignment.getDeadline().split(" ")[1]);
@@ -488,7 +489,7 @@ public class TeacherController {
         AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
         if (assignment == null)
             return Result.errorGetStringByMessage("403", "assignment is null");
-        if (!assignment.getStatus().equals("未开始"))
+        if (!assignment.getStatus().equals("未开始互评"))
             return Result.errorGetStringByMessage("403", "assignment status is wrong");
 
         List<Integer> studentIDs = new ArrayList<>();
@@ -562,7 +563,7 @@ public class TeacherController {
             Integer peerNumber = peers.size();
             Integer peerScore = 0;
             for (PeerPojo peer : peers) {
-                peerScore += peer.getScore();
+                peerScore += peer.getScore() == null ? 60 : peer.getScore();
                 peerService.setStatus(peer.getPeerID(), "互评结束");
             }
             homework.setScore(peerScore / peerNumber);

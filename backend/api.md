@@ -778,6 +778,32 @@
   }
   ```
 
+### 16. 教师结束某任务互评
+
+- **请求 URL**: `/teacher/endPeer`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 
+
 ## 作业模块
 
 ### 1. 学生添加无附件作业
