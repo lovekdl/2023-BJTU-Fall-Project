@@ -38,4 +38,14 @@ public final class Constants {
      */
     public static final int EMAIL_CODE_EXPIRE_TIME = 60 * 5;
 
+    /**
+     * Constant homework file path
+     */
+    public static final String HOMEWORK_FILE_PATH = "src/main/resources/static/homework/";
+
+    /**
+     * Constant assignment file path
+     */
+    public static final String ASSIGNMENT_FILE_PATH = "src/main/resources/static/assignment/";
+
 }

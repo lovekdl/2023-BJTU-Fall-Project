@@ -1034,8 +1034,7 @@
 - ```json
   {
       "token": "token",
-      "homeworkID": "homeworkID",
-      "excellentReason": "excellentReason"
+      "homeworkID": "homeworkID"
   }
   ```
 
@@ -1099,6 +1098,30 @@
   {
       "code": 200,
       "message": "success"
+  }
+  ```
+
+### 11. 处理作业投诉
+
+- **请求 URL**: `/homework/handleHomeworkArgument`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
   }
   ```
 

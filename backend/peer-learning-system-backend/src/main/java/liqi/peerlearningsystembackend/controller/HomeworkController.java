@@ -13,11 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Controller
 @RequestMapping("/homework")
@@ -93,6 +92,26 @@ public class HomeworkController {
             return Result.errorGetStringByMessage("403", message);
         else
             return Result.okGetString();
+    }
+
+    /**
+     * 学生设置作业附件
+     */
+    @RequestMapping(value = "/setHomeworkFile", method = RequestMethod.POST)
+    public ResponseEntity<String> setHomeworkFile(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("homeworkID") String homeworkID) {
+
+        HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
+        if (homework == null)
+            return Result.errorGetStringByMessage("403", "homework is null");
+
+        // 设置作业附件
+        String filename = file.getOriginalFilename();
+
+        String filePath = Constants.HOMEWORK_FILE_PATH + homework.getHomeworkID() + "_" + filename;
+
+        return Result.okGetString();
     }
 
     /**
@@ -193,8 +212,33 @@ public class HomeworkController {
         if (user == null)
             return Result.errorGetStringByMessage("403", "token is wrong");
 
-        // 设置作业分数
+        // 取消作业投诉
         String message = homeworkService.cancelHomeworkArgument(Integer.parseInt(homeworkID));
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+        else
+            return Result.okGetString();
+    }
+
+    /**
+     * 处理作业投诉
+     */
+    @RequestMapping(value = "/handleHomeworkArgument", method = RequestMethod.POST)
+    public ResponseEntity<String> handleHomeworkArgument(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String homeworkID = data.get("homeworkID");
+        if (token == null || homeworkID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是老师
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 处理作业投诉
+        String message = homeworkService.handleHomeworkArgument(Integer.parseInt(homeworkID));
         if (message.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403", message);
         else
@@ -225,6 +269,9 @@ public class HomeworkController {
         List<Object> homeworksInfo = new ArrayList<>();
 
         for (HomeworkPojo homework : homeworks) {
+            if (Objects.equals(homework.getArgument(), "已处理"))
+                continue;
+
             HashMap<String, String> homeworkInfo = new HashMap<>();
             homeworkInfo.put("key", String.valueOf(homework.getHomeworkID()));
             homeworkInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
@@ -265,8 +312,7 @@ public class HomeworkController {
         // 获取数据
         String token = data.get("token");
         String homeworkID = data.get("homeworkID");
-        String excellent = data.get("excellentReason");
-        if (token == null || homeworkID == null || excellent == null)
+        if (token == null || homeworkID == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
         // 检验用户是否是老师
@@ -275,18 +321,15 @@ public class HomeworkController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 设置作业优秀
-        String message = homeworkService.setHomeworkExcellent(Integer.parseInt(homeworkID), excellent);
+        HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
+        if (homework == null)
+            return Result.errorGetStringByMessage("403", "homework is null");
+        AssignmentPojo assignment = assignmentService.getAssignmentByUUID(homework.getAssignmentUUID());
+        if (assignment == null)
+            return Result.errorGetStringByMessage("403", "assignment is null");
+        String message = assignmentService.setAssignmentExcellent(assignment.getAssignmentID(), homeworkID);
         if (message.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403", message);
-
-        try {
-            HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
-            AssignmentPojo assignment = assignmentService.getAssignmentByUUID(homework.getAssignmentUUID());
-            assignmentService.setAssignmentExcellent(assignment.getAssignmentID());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return Result.errorGetStringByMessage("403", "ERROR");
-        }
 
         return Result.okGetString();
 
@@ -310,18 +353,11 @@ public class HomeworkController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 设置作业优秀
-        String message = homeworkService.cancelHomeworkExcellent(Integer.parseInt(homeworkID));
+        HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
+        AssignmentPojo assignment = assignmentService.getAssignmentByUUID(homework.getAssignmentUUID());
+        String message = assignmentService.setAssignmentExcellent(assignment.getAssignmentID(), null);
         if (message.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403", message);
-
-        try {
-            HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
-            AssignmentPojo assignment = assignmentService.getAssignmentByUUID(homework.getAssignmentUUID());
-            assignmentService.cancelAssignmentExcellent(assignment.getAssignmentID());
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return Result.errorGetStringByMessage("403", "ERROR");
-        }
 
         return Result.okGetString();
 
@@ -346,22 +382,22 @@ public class HomeworkController {
 
         // 获取优秀作业列表
         AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
-        HomeworkPojo homework = homeworkService.getExcellentHomeworkByAssignmentID(assignment.getUuid());
-        if (homework == null)
+        if (assignment == null)
+            return Result.errorGetStringByMessage("403", "assignment is null");
+
+        if (assignment.getExcellent() == null)
             return Result.okGetStringByMessage("don't have any excellent homework");
 
         HashMap<String, String> homeworkInfo = new HashMap<>();
 
-        homeworkInfo.put("key", String.valueOf(homework.getHomeworkID()));
-        homeworkInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
+        homeworkInfo.put("key", String.valueOf(assignment.getExcellent()));
+        homeworkInfo.put("homeworkID", String.valueOf(assignment.getExcellent()));
 
         return Result.okGetStringByData("success",
                 new HashMap<String, Object>() {{
                     put("homework", homeworkInfo);
                 }}
         );
-
-
     }
 
     /**

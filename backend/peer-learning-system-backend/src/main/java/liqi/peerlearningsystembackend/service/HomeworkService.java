@@ -55,7 +55,7 @@ public class HomeworkService {
             UserPojo user = userService.getUserByUid(userID);
             if(assignment == null || user == null)
                 return "ERROR";
-            homeworkDao.insert(new HomeworkPojo(uuid, homeworkID, assignment.getUuid(), user.getUuid(), null, submitTime, content, null, null, null));
+            homeworkDao.insert(new HomeworkPojo(uuid, homeworkID, assignment.getUuid(), user.getUuid(), null, submitTime, content, null, null));
 
             // 更新计数器
             CounterPojo counterPojo = counterDao.selectById(Constants.HOMEWORK_COUNTER);
@@ -260,17 +260,16 @@ public class HomeworkService {
     }
 
     /**
-     * 设置作业优秀
+     * 处理作业投诉
      * @param homeworkID 作业ID
-     * @param excellent 优秀
      * @return 返回"OK"或"ERROR"
      */
-    public String setHomeworkExcellent(int homeworkID, String excellent) {
+    public String handleHomeworkArgument(int homeworkID) {
         try {
             HomeworkPojo homework = getHomeworkByID(homeworkID);
             if (homework == null)
                 return "ERROR";
-            homework.setExcellent(excellent);
+            homework.setArgument("已处理");
             homeworkDao.updateById(homework);
             return "OK";
         } catch (Exception e) {
@@ -279,24 +278,44 @@ public class HomeworkService {
         }
     }
 
-    /**
-     * 取消作业优秀
-     * @param homeworkID 作业ID
-     * @return 返回"OK"或"ERROR"
-     */
-    public String cancelHomeworkExcellent(int homeworkID) {
-        try {
-            HomeworkPojo homework = getHomeworkByID(homeworkID);
-            if (homework == null)
-                return "ERROR";
-            homework.setExcellent(null);
-            homeworkDao.updateById(homework);
-            return "OK";
-        } catch (Exception e) {
-            System.out.println(e.getMessage());
-            return "ERROR";
-        }
-    }
+//    /**
+//     * 设置作业优秀
+//     * @param homeworkID 作业ID
+//     * @param excellent 优秀
+//     * @return 返回"OK"或"ERROR"
+//     */
+//    public String setHomeworkExcellent(int homeworkID, String excellent) {
+//        try {
+//            HomeworkPojo homework = getHomeworkByID(homeworkID);
+//            if (homework == null)
+//                return "ERROR";
+//            homework.setExcellent(excellent);
+//            homeworkDao.updateById(homework);
+//            return "OK";
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return "ERROR";
+//        }
+//    }
+//
+//    /**
+//     * 取消作业优秀
+//     * @param homeworkID 作业ID
+//     * @return 返回"OK"或"ERROR"
+//     */
+//    public String cancelHomeworkExcellent(int homeworkID) {
+//        try {
+//            HomeworkPojo homework = getHomeworkByID(homeworkID);
+//            if (homework == null)
+//                return "ERROR";
+//            homework.setExcellent(null);
+//            homeworkDao.updateById(homework);
+//            return "OK";
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return "ERROR";
+//        }
+//    }
 
     /**
      * 根据任务ID获取优秀作业

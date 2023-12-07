@@ -136,14 +136,15 @@ public class AssignmentService {
     /**
      * 教师设置作业有优秀作业
      * @param assignmentID 作业ID
+     * @param homeworkID 作业ID
      * @return 返回"OK"或"ERROR"
      */
-    public String setAssignmentExcellent(int assignmentID) {
+    public String setAssignmentExcellent(int assignmentID, String homeworkID) {
         try {
             AssignmentPojo assignment = getAssignmentByID(assignmentID);
             if (assignment == null)
                 return "ERROR";
-            assignment.setExcellent("yes");
+            assignment.setExcellent(homeworkID);
             assignmentDao.updateById(assignment);
             return "OK";
         } catch (Exception e) {
