@@ -1023,6 +1023,87 @@
   }
   ```
 
+### 8. 设置作业优秀
+
+- **请求 URL**: `/homework/setHomeworkExcellent`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID",
+      "excellentReason": "excellentReason"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 9. 根据任务ID获取优秀作业
+
+- **请求 URL**: `/homework/getExcellentHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "homeworkID": "homeworkID",
+              "key": "key"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
+### 10. 取消作业优秀
+
+- **请求 URL**: `/homework/cancelHomeworkExcellent`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 
+
 ## 学生模块
 
  ### 1. 学生获取所有课程列表

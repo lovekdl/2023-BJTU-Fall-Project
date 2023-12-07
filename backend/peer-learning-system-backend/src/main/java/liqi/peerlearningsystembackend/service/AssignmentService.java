@@ -3,10 +3,7 @@ package liqi.peerlearningsystembackend.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import liqi.peerlearningsystembackend.dao.AssignmentDao;
 import liqi.peerlearningsystembackend.dao.CounterDao;
-import liqi.peerlearningsystembackend.pojo.AssignmentPojo;
-import liqi.peerlearningsystembackend.pojo.CounterPojo;
-import liqi.peerlearningsystembackend.pojo.CoursePojo;
-import liqi.peerlearningsystembackend.pojo.UserPojo;
+import liqi.peerlearningsystembackend.pojo.*;
 import liqi.peerlearningsystembackend.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
@@ -147,6 +144,25 @@ public class AssignmentService {
             if (assignment == null)
                 return "ERROR";
             assignment.setExcellent("yes");
+            assignmentDao.updateById(assignment);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
+     * 教师取消任务有优秀作业
+     * @param assignmentID 作业ID
+     * @return 返回"OK"或"ERROR"
+     */
+    public String cancelAssignmentExcellent(int assignmentID) {
+        try {
+            AssignmentPojo assignment = getAssignmentByID(assignmentID);
+            if (assignment == null)
+                return "ERROR";
+            assignment.setExcellent(null);
             assignmentDao.updateById(assignment);
             return "OK";
         } catch (Exception e) {

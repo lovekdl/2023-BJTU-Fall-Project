@@ -265,7 +265,7 @@ public class HomeworkController {
         // 获取数据
         String token = data.get("token");
         String homeworkID = data.get("homeworkID");
-        String excellent = data.get("excellent");
+        String excellent = data.get("excellentReason");
         if (token == null || homeworkID == null || excellent == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
@@ -280,7 +280,9 @@ public class HomeworkController {
             return Result.errorGetStringByMessage("403", message);
 
         try {
-            assignmentService.getAssignmentByUUID(homeworkService.getHomeworkByID(Integer.parseInt(homeworkID)).getAssignmentUUID()).setExcellent(excellent);
+            HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
+            AssignmentPojo assignment = assignmentService.getAssignmentByUUID(homework.getAssignmentUUID());
+            assignmentService.setAssignmentExcellent(assignment.getAssignmentID());
         } catch (Exception e) {
             System.out.println(e.getMessage());
             return Result.errorGetStringByMessage("403", "ERROR");
@@ -291,10 +293,45 @@ public class HomeworkController {
     }
 
     /**
-     * 根据任务ID获取优秀作业列表
+     * 取消作业优秀
      */
-    @RequestMapping(value = "/getExcellentHomeworkListByAssignmentID", method = RequestMethod.POST)
-    public ResponseEntity<String> getExcellentHomeworkListByAssignmentID(@RequestBody Map<String, String> data) {
+    @RequestMapping(value = "/cancelHomeworkExcellent", method = RequestMethod.POST)
+    public ResponseEntity<String> cancelHomeworkExcellent(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String homeworkID = data.get("homeworkID");
+        if (token == null || homeworkID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是老师
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 设置作业优秀
+        String message = homeworkService.cancelHomeworkExcellent(Integer.parseInt(homeworkID));
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+
+        try {
+            HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
+            AssignmentPojo assignment = assignmentService.getAssignmentByUUID(homework.getAssignmentUUID());
+            assignmentService.cancelAssignmentExcellent(assignment.getAssignmentID());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return Result.errorGetStringByMessage("403", "ERROR");
+        }
+
+        return Result.okGetString();
+
+    }
+
+    /**
+     * 根据任务ID获取优秀作业
+     */
+    @RequestMapping(value = "/getExcellentHomeworkByAssignmentID", method = RequestMethod.POST)
+    public ResponseEntity<String> getExcellentHomeworkByAssignmentID(@RequestBody Map<String, String> data) {
 
         // 获取数据
         String token = data.get("token");
@@ -308,25 +345,22 @@ public class HomeworkController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 获取优秀作业列表
-        List<HomeworkPojo> homeworks = homeworkService.getExcellentHomeworkByAssignmentID(assignmentID);
-        if (homeworks == null)
+        AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
+        HomeworkPojo homework = homeworkService.getExcellentHomeworkByAssignmentID(assignment.getUuid());
+        if (homework == null)
             return Result.okGetStringByMessage("don't have any excellent homework");
 
-        List<Object> homeworksInfo = new ArrayList<>();
+        HashMap<String, String> homeworkInfo = new HashMap<>();
 
-        for (HomeworkPojo homework : homeworks) {
-            HashMap<String, String> homeworkInfo = new HashMap<>();
-            homeworkInfo.put("key", String.valueOf(homework.getHomeworkID()));
-            homeworkInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
-            homeworksInfo.add(homeworkInfo);
-            break;
-        }
+        homeworkInfo.put("key", String.valueOf(homework.getHomeworkID()));
+        homeworkInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
 
         return Result.okGetStringByData("success",
                 new HashMap<String, Object>() {{
-                    put("homeworks", homeworksInfo);
+                    put("homework", homeworkInfo);
                 }}
         );
+
 
     }
 

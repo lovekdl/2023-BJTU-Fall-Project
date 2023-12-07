@@ -280,11 +280,31 @@ public class HomeworkService {
     }
 
     /**
+     * 取消作业优秀
+     * @param homeworkID 作业ID
+     * @return 返回"OK"或"ERROR"
+     */
+    public String cancelHomeworkExcellent(int homeworkID) {
+        try {
+            HomeworkPojo homework = getHomeworkByID(homeworkID);
+            if (homework == null)
+                return "ERROR";
+            homework.setExcellent(null);
+            homeworkDao.updateById(homework);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
      * 根据任务ID获取优秀作业
      * @param assignmentID 任务ID
      * @return 优秀作业列表
      */
-    public List<HomeworkPojo> getExcellentHomeworkByAssignmentID(String assignmentID) {
-        return homeworkDao.selectList(new QueryWrapper<HomeworkPojo>().eq("assignmentUUID", assignmentID).isNotNull("excellent"));
+    @Nullable
+    public HomeworkPojo getExcellentHomeworkByAssignmentID(String assignmentID) {
+        return homeworkDao.selectOne(new QueryWrapper<HomeworkPojo>().eq("assignmentUUID", assignmentID).isNotNull("excellent"));
     }
 }
