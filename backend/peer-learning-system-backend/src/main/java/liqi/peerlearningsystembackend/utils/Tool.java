@@ -122,7 +122,7 @@ public class Tool {
 
         // 分配
         for (int i = 0; i < students.size(); i++) {
-            for (int j = 0; j < m; j++) {
+            for (int j = 0; j < m && j < students.size() - 1; j++) {
                 ret.get(students.get(i)).add(students.get((i + j + 1) % students.size()));
             }
         }

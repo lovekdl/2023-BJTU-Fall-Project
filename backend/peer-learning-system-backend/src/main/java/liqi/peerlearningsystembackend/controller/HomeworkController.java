@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -422,8 +423,8 @@ public class HomeworkController {
 
         // 检验用户是否是老师
         UserPojo user = userService.checkToken(token);
-        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
-            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+        if (user == null)
+            return Result.errorGetStringByMessage("403", "token is wrong");
 
         // 获取优秀作业列表
         AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
@@ -518,6 +519,7 @@ public class HomeworkController {
             homeworkInfo.put("username", student.getUsername());
             homeworkInfo.put("uid", String.valueOf(student.getUid()));
             homeworkInfo.put("key", String.valueOf(student.getUid()));
+            File currentDate;
             if (homework == null) {
                 homeworkInfo.put("submit", "未提交");
                 homeworkInfo.put("homeworkID", "/");
@@ -525,7 +527,15 @@ public class HomeworkController {
                 homeworkInfo.put("time", "/");
                 homeworkInfo.put("grade", "/");
                 homeworksInfo.add(homeworkInfo);
-            } else {
+            }
+//            else if (currentDate.compareTo(homework.getSubmitTime()) > 0) {
+//                homeworkInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
+//                homeworkInfo.put("date", homework.getSubmitTime().split(" ")[0]);
+//                homeworkInfo.put("time", homework.getSubmitTime().split(" ")[1]);
+//                homeworkInfo.put("grade", homework.getScore() == null ? "未评分" : String.valueOf(homework.getScore()));
+//                homeworksInfo.add(homeworkInfo);
+//            }
+            else {
                 homeworkInfo.put("submit", "已提交");
                 homeworkInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
                 homeworkInfo.put("date", homework.getSubmitTime().split(" ")[0]);

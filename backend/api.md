@@ -1305,6 +1305,8 @@
                   "time": "00:00:00",
                   "assignmentID": "500004",
                   "key": "500004",
+                  "grade": "grade",
+                  "homeworkID": "homeworkID",
                   "assignmentName": "assignment4",
                   "submit": "未提交"
               }
@@ -1529,7 +1531,8 @@
       "code": 200,
       "data": {
           "homework": {
-              "homeworkContent": "yxh的作业"
+              "homeworkContent": "yxh的作业",
+              "homeworkID": "homeworkID"
           }
       },
       "message": "success"

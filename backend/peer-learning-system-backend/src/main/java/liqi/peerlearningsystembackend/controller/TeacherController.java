@@ -509,6 +509,7 @@ public class TeacherController {
         if (students == null)
             return Result.okGetStringByMessage("don't have any student");
 
+
         // 获取任务
         AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
         if (assignment == null)
@@ -525,6 +526,8 @@ public class TeacherController {
 
         if (studentIDs.isEmpty())
             return Result.errorGetStringByMessage("403", "not a single homework");
+        if (studentIDs.size() <= Integer.parseInt(peerNumber))
+            return Result.errorGetStringByMessage("403", "don't have enough students who have submitted homework");
 
         // 设置任务状态为互评中
         assignmentService.setAssignmentStatus(Integer.parseInt(assignmentID), "互评中");
@@ -582,7 +585,7 @@ public class TeacherController {
         for (UserPojo student : students) {
             HomeworkPojo homework = homeworkService.getHomeworkByUserIDAndAssignmentID(student.getUid(), Integer.parseInt(assignmentID));
             List<PeerPojo> peers = peerService.getPeerListByUserUUIDAndAssignmentUUID(student.getUuid(), assignment.getUuid());
-            if (peers == null)
+            if (peers.isEmpty())
                 continue;
             Integer peerNumber = peers.size();
             Integer peerScore = 0;
@@ -590,7 +593,9 @@ public class TeacherController {
                 peerScore += peer.getScore() == null ? 60 : peer.getScore();
                 peerService.setStatus(peer.getPeerID(), "互评结束");
             }
-            homework.setScore(peerScore / peerNumber);
+            homeworkService.setScore(homework.getHomeworkID(), peerScore / peerNumber);
+
+//            System.out.println(homework.getHomeworkID() + " " + homework.getScore());
         }
 
         // 设置任务状态为互评结束

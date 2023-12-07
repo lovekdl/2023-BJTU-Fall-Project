@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -147,16 +149,30 @@ public class StudentController {
         // 将作业信息转换为Map
         for (AssignmentPojo assignment : assignments) {
             HashMap<String, String> studentInfo = new HashMap<>();
-            if (homeworkService.getHomeworkByUserIDAndAssignmentID(user.getUid(), assignment.getAssignmentID()) != null)
-                studentInfo.put("submit", "已提交");
-            else
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+            LocalDateTime deadline = LocalDateTime.parse(assignment.getDeadline(), formatter);
+            LocalDateTime now = LocalDateTime.now();
+            HomeworkPojo homework = homeworkService.getHomeworkByUserIDAndAssignmentID(user.getUid(), assignment.getAssignmentID());
+            if (deadline.isBefore(now))
+                studentInfo.put("submit", "已截止");
+            else if (homework == null)
                 studentInfo.put("submit", "未提交");
+            else
+                studentInfo.put("submit", "已提交");
             studentInfo.put("key", String.valueOf(assignment.getAssignmentID()));
             studentInfo.put("assignmentID", String.valueOf(assignment.getAssignmentID()));
             studentInfo.put("assignmentName", assignment.getTitle());
             studentInfo.put("assignmentDescribe", assignment.getContent());
             studentInfo.put("date", assignment.getDeadline().split(" ")[0]);
             studentInfo.put("time", assignment.getDeadline().split(" ")[1]);
+            if (homework == null) {
+                studentInfo.put("grade", "/");
+                studentInfo.put("homeworkID", "/");
+            }
+            else {
+                studentInfo.put("grade", homework.getScore() == null ? "未评分" : String.valueOf(homework.getScore()));
+                studentInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
+            }
             assignmentsInfo.add(studentInfo);
         }
 
@@ -423,6 +439,7 @@ public class StudentController {
 
         HashMap<String, String> homeworkInfo = new HashMap<>();
         homeworkInfo.put("homeworkContent", homework.getContent());
+        homeworkInfo.put("homeworkID", String.valueOf(homework.getHomeworkID()));
 
         return Result.okGetStringByData("success",
                 new HashMap<String, Object>() {{
