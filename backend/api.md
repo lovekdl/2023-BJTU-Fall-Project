@@ -1125,7 +1125,7 @@
   }
   ```
 
-### 根据作业ID获取投诉状态
+### 12. 根据作业ID获取投诉状态
 
 - **请求 URL**: `/homework/handleHomeworkArgument`
 
@@ -1150,6 +1150,31 @@
               "argument": "argument"
           }
       },
+      "message": "success"
+  }
+  ```
+
+### 13. 学生设置作业附件
+
+- **请求 URL**: `/homework/handleHomeworkArgument`
+
+- **请求方式**: POST
+
+- **请求参数（使用form-data）**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID",
+      "file": "file"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
       "message": "success"
   }
   ```

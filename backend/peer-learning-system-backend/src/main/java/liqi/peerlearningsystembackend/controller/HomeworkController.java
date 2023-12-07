@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 @Controller
@@ -99,17 +101,23 @@ public class HomeworkController {
      */
     @RequestMapping(value = "/setHomeworkFile", method = RequestMethod.POST)
     public ResponseEntity<String> setHomeworkFile(
+            @RequestParam("token") String token,
             @RequestParam("file") MultipartFile file,
             @RequestParam("homeworkID") String homeworkID) {
+
+        // 检验用户是否是学生
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_STUDENT)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not student");
 
         HomeworkPojo homework = homeworkService.getHomeworkByID(Integer.parseInt(homeworkID));
         if (homework == null)
             return Result.errorGetStringByMessage("403", "homework is null");
 
         // 设置作业附件
-        String filename = file.getOriginalFilename();
-
-        String filePath = Constants.HOMEWORK_FILE_PATH + homework.getHomeworkID() + "_" + filename;
+        String message = homeworkService.setHomeworkFile(Integer.parseInt(homeworkID), file);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
 
         return Result.okGetString();
     }

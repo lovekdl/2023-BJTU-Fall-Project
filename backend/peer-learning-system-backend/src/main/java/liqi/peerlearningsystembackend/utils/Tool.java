@@ -6,12 +6,17 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.security.Keys;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Key;
 
 import liqi.peerlearningsystembackend.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -123,6 +128,23 @@ public class Tool {
         }
 
         return ret;
+    }
+
+
+    public static Path saveFile(String uploadDir, MultipartFile multipartFile) throws IOException {
+        Path uploadPath = Paths.get(uploadDir);
+
+        // 如果目录不存在，创建目录
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // 尝试保存文件
+        String fileName = multipartFile.getOriginalFilename();
+        Path filePath = uploadPath.resolve(fileName);
+        multipartFile.transferTo(filePath);
+
+        return filePath;
     }
 
 }

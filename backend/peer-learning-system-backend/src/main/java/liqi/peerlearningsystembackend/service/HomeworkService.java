@@ -5,10 +5,15 @@ import liqi.peerlearningsystembackend.dao.CounterDao;
 import liqi.peerlearningsystembackend.dao.HomeworkDao;
 import liqi.peerlearningsystembackend.pojo.*;
 import liqi.peerlearningsystembackend.utils.Constants;
+import liqi.peerlearningsystembackend.utils.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -325,5 +330,28 @@ public class HomeworkService {
     @Nullable
     public HomeworkPojo getExcellentHomeworkByAssignmentID(String assignmentID) {
         return homeworkDao.selectOne(new QueryWrapper<HomeworkPojo>().eq("assignmentUUID", assignmentID).isNotNull("excellent"));
+    }
+
+    /**
+     * 设置作业附件
+     * @param homeworkID 作业ID
+     * @param file 附件
+     * @return 返回"OK"或"ERROR"
+     */
+    public String setHomeworkFile(int homeworkID, MultipartFile file) {
+        try {
+            HomeworkPojo homework = getHomeworkByID(homeworkID);
+            if (homework == null)
+                return "ERROR";
+
+            Path filePath = Tool.saveFile(Constants.HOMEWORK_FILE_PATH, file);
+
+            homework.setFilePath(filePath.toString());
+            homeworkDao.updateById(homework);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
     }
 }
