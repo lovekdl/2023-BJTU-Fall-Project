@@ -802,6 +802,31 @@
   }
   ```
 
+### 17. 教师添任务附件
+
+- **请求 URL**: `/teacher/setAssignmentFile`
+
+- **请求方式**: POST
+
+- **请求参数（使用form-data）**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "file": "file"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
 ### 
 
 ## 作业模块
@@ -1127,7 +1152,7 @@
 
 ### 12. 根据作业ID获取投诉状态
 
-- **请求 URL**: `/homework/handleHomeworkArgument`
+- **请求 URL**: `/homework/getArgumentByHomeworkID`
 
 - **请求方式**: POST
 
@@ -1156,7 +1181,7 @@
 
 ### 13. 学生设置作业附件
 
-- **请求 URL**: `/homework/handleHomeworkArgument`
+- **请求 URL**: `/homework/setHomeworkFile`
 
 - **请求方式**: POST
 

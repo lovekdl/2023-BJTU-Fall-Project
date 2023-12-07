@@ -7,10 +7,8 @@ import liqi.peerlearningsystembackend.utils.Result;
 import liqi.peerlearningsystembackend.utils.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -308,6 +306,32 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403", message);
         else
             return Result.okGetString();
+    }
+
+    /**
+     * 教师添任务附件
+     */
+    @RequestMapping(value = "/setAssignmentFile", method = RequestMethod.POST)
+    public ResponseEntity<String> setAssignmentFile(
+            @RequestParam("token") String token,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("assignmentID") String assignmentID) {
+
+        // 检验用户是否是教师
+        UserPojo user = userService.checkToken(token);
+        if (user == null || user.getAuthority() != Constants.AUTHORITY_TEACHER)
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
+        if (assignment == null)
+            return Result.errorGetStringByMessage("403", "assignment is null");
+
+        // 设置作业附件
+        String message = assignmentService.setAssignmentFile(Integer.parseInt(assignmentID), file);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+
+        return Result.okGetString();
     }
 
     /**

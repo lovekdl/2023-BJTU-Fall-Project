@@ -5,10 +5,13 @@ import liqi.peerlearningsystembackend.dao.AssignmentDao;
 import liqi.peerlearningsystembackend.dao.CounterDao;
 import liqi.peerlearningsystembackend.pojo.*;
 import liqi.peerlearningsystembackend.utils.Constants;
+import liqi.peerlearningsystembackend.utils.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -236,4 +239,26 @@ public class AssignmentService {
         }
     }
 
+    /**
+     * 设置作业附件
+     * @param assignmentID 任务ID
+     * @param file 附件
+     * @return 返回"OK"或"ERROR"
+     */
+    public String setAssignmentFile(int assignmentID, MultipartFile file) {
+        try {
+            AssignmentPojo assignment = getAssignmentByID(assignmentID);
+            if (assignment == null)
+                return "ERROR";
+
+            Path filePath = Tool.saveFile(Constants.ASSIGNMENT_FILE_PATH, file);
+
+            assignment.setFilePath(filePath.toString());
+            assignmentDao.updateById(assignment);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
 }
