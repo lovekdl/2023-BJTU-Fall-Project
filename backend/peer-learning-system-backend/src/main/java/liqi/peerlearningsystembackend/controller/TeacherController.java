@@ -609,4 +609,58 @@ public class TeacherController {
 
         return Result.okGetString();
     }
+
+    /**
+     * 教师获取某任务互评列表
+     */
+    @RequestMapping(value = "/getPeerListByAssignmentID", method = RequestMethod.POST)
+    public ResponseEntity<String> getPeerListByAssignmentID(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        if (token == null || assignmentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师或学生
+        UserPojo user = userService.checkToken(token);
+        if (user == null || (user.getAuthority() != Constants.AUTHORITY_TEACHER))
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 获取任务
+        AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
+        if (assignment == null)
+            return Result.errorGetStringByMessage("403", "assignment is null");
+
+        // 获取课程
+        CoursePojo course = courseService.getCourseByUUID(assignment.getCourseUUID());
+        if (course == null)
+            return Result.errorGetStringByMessage("403", "course is null");
+
+        // 获取互评列表
+        List<PeerPojo> peers = peerService.getPeerListByAssignmentUUID(assignment.getUuid());
+        if (peers == null)
+            return Result.okGetStringByMessage("don't have any peer");
+
+        List<Object> peersInfo = new ArrayList<>();
+
+        // 将互评信息转换为Map
+        for (PeerPojo peer : peers) {
+            HashMap<String, String> peerInfo = new HashMap<>();
+            peerInfo.put("key", String.valueOf(peer.getPeerID()));
+            peerInfo.put("peerID", String.valueOf(peer.getPeerID()));
+            peerInfo.put("userName", peer.getUsername());
+            peerInfo.put("peerScore", peer.getScore() == null ? "60" : String.valueOf(peer.getScore()));
+            peerInfo.put("peerComment", peer.getComment());
+            HomeworkPojo homework = homeworkService.getHomeworkByID(peer.getHomeworkID());
+            UserPojo peerUser = userService.getUserByUUID(homework.getUserUUID());
+            peerInfo.put("peerName", peerUser.getUsername());
+            peersInfo.add(peerInfo);
+        }
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("peers", peersInfo);
+                }});
+    }
 }

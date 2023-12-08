@@ -111,6 +111,16 @@ public class PeerService {
     }
 
     /**
+     * 根据assignmentUUID获取peer列表
+     * @param assignmentUuid 作业UUID
+     * @return 返回peerList
+     */
+    @Nullable
+    public List<PeerPojo> getPeerListByAssignmentUUID(String assignmentUuid) {
+        return peerDao.selectList(new QueryWrapper<PeerPojo>().eq("assignmentUUID", assignmentUuid));
+    }
+
+    /**
      * 根据userUUID和assignmentUUID获取peer列表
      */
     @Nullable
@@ -180,5 +190,6 @@ public class PeerService {
             return "ERROR";
         }
     }
+
 
 }

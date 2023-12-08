@@ -376,8 +376,15 @@ public class StudentController {
         if (homework == null)
             return Result.errorGetStringByMessage("403", "homeworkID is wrong");
 
+        // 获取任务答案
+        AssignmentPojo assignment = assignmentService.getAssignmentByUUID(homework.getAssignmentUUID());
+        if (assignment == null)
+            return Result.errorGetStringByMessage("403", "assignmentID is wrong");
+
+
         HashMap<String, String> homeworkInfo = new HashMap<>();
         homeworkInfo.put("homeworkContent", homework.getContent());
+        homeworkInfo.put("assignmentAnswer", assignment.getAnswer());
 
         return Result.okGetStringByData("success",
                 new HashMap<String, Object>() {{

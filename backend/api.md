@@ -827,6 +827,42 @@
   }
   ```
 
+### 18. 教师获取某任务互评列表
+
+- **请求 URL**: `/teacher/getPeerListByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数（使用form-data）**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "peers": [
+              {
+                  "peerID": "700056",
+                  "peerName": "student",
+                  "peerComment": "111",
+                  "peerScore": "60",
+                  "userName": "liqi",
+                  "key": "700056"
+              },
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
 ### 
 
 ## 作业模块
@@ -1439,7 +1475,8 @@
       "code": 200,
       "data": {
           "homework": {
-              "homeworkContent": "yxh的作业"
+              "homeworkContent": "yxh的作业",
+              "assignmentAnswer": "assignmentAnswer"
           }
       },
       "message": "success"
