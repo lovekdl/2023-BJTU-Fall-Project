@@ -486,28 +486,23 @@ public class TeacherController {
     }
 
     /**
-     * 教师获取开始某任务互评
+     * 教师开始某任务互评
      */
     @RequestMapping(value = "/startPeer", method = RequestMethod.POST)
     public ResponseEntity<String> startPeer(@RequestBody Map<String, String> data) {
 
         // 获取数据
         String token = data.get("token");
-        String courseID = data.get("courseID");
         String assignmentID = data.get("assignmentID");
         String peerNumber = data.get("peerNumber");
-        if (token == null || assignmentID == null || peerNumber == null)
+        String assignmentAnswer = data.get("assignmentAnswer");
+        if (token == null || assignmentID == null || peerNumber == null || assignmentAnswer == null)
             return Result.errorGetStringByMessage("400", "something is null");
 
         // 检验用户是否是教师
         UserPojo teacher = userService.checkToken(token);
         if (teacher == null || teacher.getAuthority() != Constants.AUTHORITY_TEACHER)
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
-
-        // 获取课程学生列表
-        List<UserPojo> students = scService.getStudentsByCourseID(Integer.parseInt(courseID));
-        if (students == null)
-            return Result.okGetStringByMessage("don't have any student");
 
 
         // 获取任务
@@ -516,6 +511,17 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403", "assignment is null");
         if (!assignment.getStatus().equals("未开始互评"))
             return Result.errorGetStringByMessage("403", "assignment status is wrong");
+
+        // 设置作业答案
+        String message = assignmentService.setAssignmentAnswer(Integer.parseInt(assignmentID), assignmentAnswer);
+        if (message.startsWith("ERROR"))
+            return Result.errorGetStringByMessage("403", message);
+
+        // 获取课程学生列表
+        CoursePojo course = courseService.getCourseByUUID(assignment.getCourseUUID());
+        List<UserPojo> students = scService.getStudentsByCourseID(course.getCourseID());
+        if (students == null)
+            return Result.okGetStringByMessage("don't have any student");
 
         List<Integer> studentIDs = new ArrayList<>();
         for (UserPojo student : students) {

@@ -37,4 +37,7 @@ public class AssignmentPojo {
 
     @TableField(value = "excellent", updateStrategy = FieldStrategy.IGNORED)
     private String excellent;
+
+    @TableField(value = "answer", updateStrategy = FieldStrategy.IGNORED)
+    private String answer;
 }

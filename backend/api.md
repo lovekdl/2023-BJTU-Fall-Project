@@ -752,7 +752,7 @@
   }
   ```
 
-### 15. 教师获取开始某任务互评
+### 15. 教师开始某任务互评
 
 - **请求 URL**: `/teacher/startPeer`
 
@@ -764,8 +764,8 @@
   {
       "token": "token",
       "assignmentID": "assignmentID",
-      "courseID": "courseID",
-      "peerNumber": "peerNumber"
+      "peerNumber": "peerNumber",
+      "assignmentAnswer": "assignmentAnswer"
   }
   ```
 
