@@ -702,6 +702,8 @@ public class TeacherController {
                 float similarity = Tool.calcSimilarityWithJaroWinkler(homework1.getContent(), homework2.getContent());
                 similarityInfo.put("username1", student1);
                 similarityInfo.put("username2", student2);
+                similarityInfo.put("content1", homework1.getContent());
+                similarityInfo.put("content2", homework2.getContent());
                 similarityInfo.put("similarity", String.valueOf(similarity));
                 similarityInfos.add(similarityInfo);
             }
