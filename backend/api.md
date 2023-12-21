@@ -886,7 +886,9 @@
       "data": {
           "similarityRecode": [
               {
-                  "similarity": "0.90000004",
+                  "content2": "drj的本子",
+                  "similarity": "0.8666666",
+                  "content1": "yxh和drj的本子",
                   "username2": "student",
                   "username1": "yxh"
               }
