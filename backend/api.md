@@ -1576,4 +1576,31 @@
   }
   ```
 
-###  
+###  10. 学生获取未完成任务数量未完成互评作业数量
+
+- **请求 URL**: `/student/getUnfinished`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "unfinishedAssignment": unfinishedAssignment,
+          "unfinishedPeerHomework": unfinishedPeerHomework
+      },
+      "message": "success"
+  }
+  ```
+
+### 
