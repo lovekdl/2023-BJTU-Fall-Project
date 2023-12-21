@@ -651,16 +651,18 @@ public class TeacherController {
             peerInfo.put("peerID", String.valueOf(peer.getPeerID()));
             peerInfo.put("userName", peer.getUsername());
             peerInfo.put("peerScore", peer.getScore() == null ? "60" : String.valueOf(peer.getScore()));
-            peerInfo.put("peerComment", peer.getComment());
+            peerInfo.put("peerComment", peer.getComment() == null ? "/" : peer.getComment());
             HomeworkPojo homework = homeworkService.getHomeworkByID(peer.getHomeworkID());
             UserPojo peerUser = userService.getUserByUUID(homework.getUserUUID());
             peerInfo.put("peerName", peerUser.getUsername());
+            peerInfo.put("peerStatus", peer.getStatus());
             peersInfo.add(peerInfo);
         }
 
         return Result.okGetStringByData("success",
                 new HashMap<String, Object>() {{
                     put("peers", peersInfo);
-                }});
+                }}
+        );
     }
 }

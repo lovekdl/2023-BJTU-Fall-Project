@@ -206,6 +206,15 @@ public class StudentController {
         if (user == null || user.getAuthority() != Constants.AUTHORITY_STUDENT)
             return Result.errorGetStringByMessage("403", "token is wrong or user is not student");
 
+        // 获取任务信息
+        AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
+        // 检验是否已经截止
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime deadline = LocalDateTime.parse(assignment.getDeadline(), formatter);
+        LocalDateTime now = LocalDateTime.now();
+        if (deadline.isBefore(now))
+            return Result.errorGetStringByMessage("403", "assignment is overdue");
+
         // 添加作业
         String message = homeworkService.addHomeworkWithoutFile(Integer.parseInt(assignmentID), user.getUid(), content, submitTime);
         if (message.startsWith("ERROR"))
@@ -417,10 +426,10 @@ public class StudentController {
         String message2 = peerService.setComment(Integer.parseInt(peerID), comment);
         if (message1.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403", message1);
-        else if (message2.startsWith("ERROR"))
+        if (message2.startsWith("ERROR"))
             return Result.errorGetStringByMessage("403", message2);
-        else
-            return Result.okGetString();
+        peerService.setStatus(Integer.parseInt(peerID), "已互评");
+        return Result.okGetString();
     }
 
     /**
@@ -451,6 +460,57 @@ public class StudentController {
         return Result.okGetStringByData("success",
                 new HashMap<String, Object>() {{
                     put("homework", homeworkInfo);
+                }}
+        );
+    }
+
+    /**
+     * 学生获取未完成任务数量未完成互评作业数量
+     */
+    @RequestMapping(value = "/getUnfinished", method = RequestMethod.POST)
+    public ResponseEntity<String> getUnfinished(@RequestBody Map<String, String> data) {
+        // 获取数据
+        String token = data.get("token");
+        if (token == null)
+            return Result.errorGetStringByMessage("400", "token is null");
+
+        // 检验用户是否是学生
+        UserPojo user = userService.checkToken(token);
+        if (user == null)
+            return Result.errorGetStringByMessage("403", "token is wrong");
+
+        // 获取未完成任务数量
+        List<CoursePojo> courseList = scService.getCoursesByStudentID(user.getUid());
+        int unfinishedAssignmentNumber = 0;
+        if (courseList != null)
+            for (CoursePojo course : courseList) {
+                List<AssignmentPojo> assignmentList = assignmentService.getAssignmentListByCourseID(course.getCourseID());
+                if (assignmentList != null)
+                    for (AssignmentPojo assignment : assignmentList) {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+                        LocalDateTime deadline = LocalDateTime.parse(assignment.getDeadline(), formatter);
+                        LocalDateTime now = LocalDateTime.now();
+                        HomeworkPojo homework = homeworkService.getHomeworkByUserIDAndAssignmentID(user.getUid(), assignment.getAssignmentID());
+                        if (deadline.isAfter(now) && homework == null)
+                            unfinishedAssignmentNumber++;
+                    }
+            }
+
+        // 获取未完成互评作业数量
+        List<PeerPojo> peerList = peerService.getPeerListByUserUUID(user.getUuid());
+        int unfinishedPeerHomeworkNumber = 0;
+        if (peerList != null)
+            for (PeerPojo peer : peerList) {
+                if (peer.getStatus().equals("正在互评中"))
+                    unfinishedPeerHomeworkNumber++;
+            }
+
+        int finalUnfinishedAssignmentNumber = unfinishedAssignmentNumber;
+        int finalUnfinishedPeerHomeworkNumber = unfinishedPeerHomeworkNumber;
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("unfinishedAssignment", finalUnfinishedAssignmentNumber);
+                    put("unfinishedPeerHomework", finalUnfinishedPeerHomeworkNumber);
                 }}
         );
     }

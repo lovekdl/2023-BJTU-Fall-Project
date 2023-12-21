@@ -519,7 +519,6 @@ public class HomeworkController {
             homeworkInfo.put("username", student.getUsername());
             homeworkInfo.put("uid", String.valueOf(student.getUid()));
             homeworkInfo.put("key", String.valueOf(student.getUid()));
-            File currentDate;
             if (homework == null) {
                 homeworkInfo.put("submit", "未提交");
                 homeworkInfo.put("homeworkID", "/");
