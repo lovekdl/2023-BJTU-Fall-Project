@@ -394,6 +394,7 @@ public class StudentController {
         HashMap<String, String> homeworkInfo = new HashMap<>();
         homeworkInfo.put("homeworkContent", homework.getContent());
         homeworkInfo.put("assignmentAnswer", assignment.getAnswer());
+        homeworkInfo.put("assignmentContent", assignment.getContent());
 
         return Result.okGetStringByData("success",
                 new HashMap<String, Object>() {{

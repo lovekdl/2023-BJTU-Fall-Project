@@ -197,6 +197,16 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 添加学生到课程
+        UserPojo student;
+        if (studentID != null)
+            student = userService.getUserByUid(Integer.parseInt(studentID));
+        else
+            student = userService.getUserByName(username);
+        if (student == null)
+            return Result.errorGetStringByMessage("403", "student does not exist");
+        if (student.getAuthority() != Constants.AUTHORITY_STUDENT)
+            return Result.errorGetStringByMessage("403", "only student can be added");
+
         String message;
         if (studentID != null)
             message = scService.addSCByCourseIDAndStudentID(Integer.parseInt(courseID), Integer.parseInt(studentID));
@@ -531,7 +541,7 @@ public class TeacherController {
         }
 
         if (studentIDs.isEmpty())
-            return Result.errorGetStringByMessage("403", "not a single homework");
+            return Result.errorGetStringByMessage("403", "does not exist a single homework");
         if (studentIDs.size() <= Integer.parseInt(peerNumber))
             return Result.errorGetStringByMessage("403", "don't have enough students who have submitted homework");
 
@@ -700,6 +710,7 @@ public class TeacherController {
                 String student1 = userService.getUserByUUID(homework1.getUserUUID()).getUsername();
                 String student2 = userService.getUserByUUID(homework2.getUserUUID()).getUsername();
                 float similarity = Tool.calcSimilarityWithJaroWinkler(homework1.getContent(), homework2.getContent());
+                similarityInfo.put("key", String.valueOf(i*(n+1)+j));
                 similarityInfo.put("username1", student1);
                 similarityInfo.put("username2", student2);
                 similarityInfo.put("content1", homework1.getContent());

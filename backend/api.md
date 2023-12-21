@@ -1511,7 +1511,8 @@
       "data": {
           "homework": {
               "homeworkContent": "yxh的作业",
-              "assignmentAnswer": "assignmentAnswer"
+              "assignmentAnswer": "assignmentAnswer",
+              "assignmentContent": "assignmentContent"
           }
       },
       "message": "success"

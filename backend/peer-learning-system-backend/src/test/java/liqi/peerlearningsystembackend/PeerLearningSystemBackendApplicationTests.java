@@ -118,8 +118,6 @@ class PeerLearningSystemBackendApplicationTests {
 //        System.out.println(Tool.calcSimilarityWithJaroWinkler(a, b));
 //        System.out.println(Tool.calcSimilarityWithCosine(a, b));
 //        System.out.println(Tool.calcSimilarityWithLevenshtein(a, b));
-        //从resource中读取lcqmc文件夹下的test.tsv文件
-        // 从resource中读取lcqmc文件夹下的test.tsv文件
         try {
             // 使用Spring的ClassPathResource定位资源文件
             ClassPathResource resource = new ClassPathResource("/data/lcqmc/train.tsv");
@@ -146,19 +144,19 @@ class PeerLearningSystemBackendApplicationTests {
                     double cosine = Tool.calcSimilarityWithCosine(a, b);
                     double levenshtein = Tool.calcSimilarityWithLevenshtein(a, b);
                     double simHash = simHash2.getSemblance(a, b);
-                    if (jaro > 0.8 && label.equals("1")) {
+                    if (jaro > 0.7 && label.equals("1")) {
                         Jaro++;
                     }
-                    if (jaroWinkler > 0.8 && label.equals("1")) {
+                    if (jaroWinkler > 0.7 && label.equals("1")) {
                         JaroWinkler++;
                     }
-                    if (cosine > 0.8 && label.equals("1")) {
+                    if (cosine > 0.7 && label.equals("1")) {
                         Cosine++;
                     }
-                    if (levenshtein > 0.8 && label.equals("1")) {
+                    if (levenshtein > 0.7 && label.equals("1")) {
                         Levenshtein++;
                     }
-                    if (simHash > 0.8 && label.equals("1")) {
+                    if (simHash > 0.7 && label.equals("1")) {
                         SimHash++;
                     }
                 }
@@ -174,4 +172,20 @@ class PeerLearningSystemBackendApplicationTests {
 
     }
 
+    @Test
+    void compare () {
+        String a = "<p>习近平总书记在省部级主要领导干部“学习习近平总书记重要讲话精神，迎接党的二十大”专题研讨班上的重要讲话中强调：“当前，世界百年未有之大变局加速演进，世界之变、时代之变、历史之变的特征更加明显。”如何理解“三个之变”？</p>";
+        String b = "<p>在针对省部级领导的专题研讨班上，习近平总书记重申了目前世界正处于一个百年未遇的巨大变革中。他明确指出，这种变化在世界范围、时代背景以及历史进程中都异常显著，标志着一个显著的“三重变化”。</p>";
+        SimHash2 simHash2 = new SimHash2();
+        double jaro = Tool.calcSimilarityWithJaro(a, b);
+        double jaroWinkler = Tool.calcSimilarityWithJaroWinkler(a, b);
+        double cosine = Tool.calcSimilarityWithCosine(a, b);
+        double levenshtein = Tool.calcSimilarityWithLevenshtein(a, b);
+        double simHash = simHash2.getSemblance(a, b);
+        System.out.println("jaro: " + jaro);
+        System.out.println("jaroWinkler: " + jaroWinkler);
+        System.out.println("cosine: " + cosine);
+        System.out.println("levenshtein: " + levenshtein);
+        System.out.println("simHash: " + simHash);
+    }
 }
