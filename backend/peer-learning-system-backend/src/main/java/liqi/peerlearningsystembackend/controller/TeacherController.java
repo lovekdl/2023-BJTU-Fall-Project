@@ -154,7 +154,7 @@ public class TeacherController {
             return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
 
         // 获取课程列表
-        List<CoursePojo> courses = courseService.getCourseList();
+        List<CoursePojo> courses = courseService.getCourseListByUserUUID(user.getUuid());
         if (courses == null)
             return Result.okGetStringByMessage("don't have any course");
         List<Object> coursesInfo = new ArrayList<>();
@@ -662,6 +662,54 @@ public class TeacherController {
         return Result.okGetStringByData("success",
                 new HashMap<String, Object>() {{
                     put("peers", peersInfo);
+                }}
+        );
+    }
+
+    /**
+     * 教师获取某次任务的作业相似度
+     */
+    @RequestMapping(value = "/getSimilarityByAssignmentID", method = RequestMethod.POST)
+    public ResponseEntity<String> getSimilarityByAssignmentID(@RequestBody Map<String, String> data) {
+
+        // 获取数据
+        String token = data.get("token");
+        String assignmentID = data.get("assignmentID");
+        if (token == null || assignmentID == null)
+            return Result.errorGetStringByMessage("400", "something is null");
+
+        // 检验用户是否是教师
+        UserPojo user = userService.checkToken(token);
+        if (user == null || (user.getAuthority() != Constants.AUTHORITY_TEACHER))
+            return Result.errorGetStringByMessage("403", "token is wrong or user is not teacher");
+
+        // 获取作业列表
+        List<HomeworkPojo> homeworks = homeworkService.getHomeworkListByAssignmentID(Integer.parseInt(assignmentID));
+        if (homeworks == null)
+            return Result.okGetStringByMessage("don't have any homework");
+
+        int n = homeworks.size();
+        List<Object> similarityInfos = new ArrayList<>();
+
+        // 计算相似度
+        for (int i = 0; i < n; i++) {
+            HomeworkPojo homework1 = homeworks.get(i);
+            for (int j = i + 1; j < n; j++) {
+                HashMap<String, String> similarityInfo = new HashMap<>();
+                HomeworkPojo homework2 = homeworks.get(j);
+                String student1 = userService.getUserByUUID(homework1.getUserUUID()).getUsername();
+                String student2 = userService.getUserByUUID(homework2.getUserUUID()).getUsername();
+                float similarity = Tool.calcSimilarityWithJaroWinkler(homework1.getContent(), homework2.getContent());
+                similarityInfo.put("username1", student1);
+                similarityInfo.put("username2", student2);
+                similarityInfo.put("similarity", String.valueOf(similarity));
+                similarityInfos.add(similarityInfo);
+            }
+        }
+
+        return Result.okGetStringByData("success",
+                new HashMap<String, Object>() {{
+                    put("similarityRecode", similarityInfos);
                 }}
         );
     }

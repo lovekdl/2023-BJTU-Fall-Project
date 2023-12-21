@@ -15,6 +15,8 @@ import java.security.Key;
 
 import liqi.peerlearningsystembackend.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.simmetrics.StringMetric;
+import org.simmetrics.metrics.StringMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -145,6 +147,47 @@ public class Tool {
         multipartFile.transferTo(filePath);
 
         return filePath;
+    }
+
+
+    /**
+     * 利用Jaro算法计算两个字符串相似度
+     */
+    public static float calcSimilarityWithJaro(String str1, String str2) {
+
+        StringMetric metric = StringMetrics.jaro();
+
+        return metric.compare(str1, str2);
+    }
+
+    /**
+     * 利用Jaro-Winkler算法计算两个字符串相似度
+     */
+    public static float calcSimilarityWithJaroWinkler(String str1, String str2) {
+
+        StringMetric metric = StringMetrics.jaroWinkler();
+
+        return metric.compare(str1, str2);
+    }
+
+    /**
+     * 利用Cosine算法计算两个字符串相似度
+     */
+    public static float calcSimilarityWithCosine(String str1, String str2) {
+
+        StringMetric metric = StringMetrics.cosineSimilarity();
+
+        return metric.compare(str1, str2);
+    }
+
+    /**
+     * 利用Levenshtein算法计算两个字符串相似度
+     */
+    public static float calcSimilarityWithLevenshtein(String str1, String str2) {
+
+        StringMetric metric = StringMetrics.levenshtein();
+
+        return metric.compare(str1, str2);
     }
 
 }

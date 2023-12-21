@@ -863,6 +863,39 @@
   }
   ```
 
+### 19. 教师获取某次任务的作业相似度
+
+- **请求 URL**: `/teacher/getSimilarityByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数（使用form-data）**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "similarityRecode": [
+              {
+                  "similarity": "0.90000004",
+                  "username2": "student",
+                  "username1": "yxh"
+              }
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
 ### 
 
 ## 作业模块

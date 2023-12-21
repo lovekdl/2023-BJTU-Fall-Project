@@ -8,10 +8,17 @@ import liqi.peerlearningsystembackend.service.UserService;
 import liqi.peerlearningsystembackend.utils.MailUtils;
 import liqi.peerlearningsystembackend.utils.Result;
 import liqi.peerlearningsystembackend.utils.Tool;
+import liqi.peerlearningsystembackend.utils.SimHash2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.repository.init.ResourceReader;
 
+import java.awt.desktop.SystemEventListener;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -99,6 +106,70 @@ class PeerLearningSystemBackendApplicationTests {
         Map<Integer, List<Integer>> result = Tool.allocation(students, 3);
         for (Map.Entry<Integer, List<Integer>> entry : result.entrySet()) {
             System.out.println(entry.getKey() + " : " + entry.getValue());
+        }
+
+    }
+
+    @Test
+    void compareString() {
+//        String a = "我草泥马";
+//        String b = "我草你妈";
+//        System.out.println(Tool.calcSimilarityWithJaro(a, b));
+//        System.out.println(Tool.calcSimilarityWithJaroWinkler(a, b));
+//        System.out.println(Tool.calcSimilarityWithCosine(a, b));
+//        System.out.println(Tool.calcSimilarityWithLevenshtein(a, b));
+        //从resource中读取lcqmc文件夹下的test.tsv文件
+        // 从resource中读取lcqmc文件夹下的test.tsv文件
+        try {
+            // 使用Spring的ClassPathResource定位资源文件
+            ClassPathResource resource = new ClassPathResource("/data/lcqmc/train.tsv");
+            int Jaro = 0;
+            int JaroWinkler = 0;
+            int Cosine = 0;
+            int Levenshtein = 0;
+            int SimHash = 0;
+
+            // 使用InputStreamReader和BufferedReader读取文件
+            try (InputStreamReader isr = new InputStreamReader(resource.getInputStream());
+                 BufferedReader reader = new BufferedReader(isr)) {
+
+                String line;
+                SimHash2 simHash2 = new SimHash2();
+                while ((line = reader.readLine()) != null) {
+                    // 在这里处理每行数据
+                    String[] fields = line.split("\t");
+                    String a = fields[0];
+                    String b = fields[1];
+                    String label = fields[2];
+                    double jaro = Tool.calcSimilarityWithJaro(a, b);
+                    double jaroWinkler = Tool.calcSimilarityWithJaroWinkler(a, b);
+                    double cosine = Tool.calcSimilarityWithCosine(a, b);
+                    double levenshtein = Tool.calcSimilarityWithLevenshtein(a, b);
+                    double simHash = simHash2.getSemblance(a, b);
+                    if (jaro > 0.8 && label.equals("1")) {
+                        Jaro++;
+                    }
+                    if (jaroWinkler > 0.8 && label.equals("1")) {
+                        JaroWinkler++;
+                    }
+                    if (cosine > 0.8 && label.equals("1")) {
+                        Cosine++;
+                    }
+                    if (levenshtein > 0.8 && label.equals("1")) {
+                        Levenshtein++;
+                    }
+                    if (simHash > 0.8 && label.equals("1")) {
+                        SimHash++;
+                    }
+                }
+                System.out.println("Jaro: " + Jaro);
+                System.out.println("JaroWinkler: " + JaroWinkler);
+                System.out.println("Cosine: " + Cosine);
+                System.out.println("Levenshtein: " + Levenshtein);
+                System.out.println("SimHash: " + SimHash);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }

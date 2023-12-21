@@ -133,4 +133,12 @@ public class CourseService {
     }
 
 
+    /**
+     * 根据教师UUID查询课程
+     */
+    @Nullable
+    public List<CoursePojo> getCourseListByUserUUID(String teacherUUID) {
+        return courseDao.selectList(new QueryWrapper<CoursePojo>().eq("userUUID", teacherUUID));
+    }
+
 }
