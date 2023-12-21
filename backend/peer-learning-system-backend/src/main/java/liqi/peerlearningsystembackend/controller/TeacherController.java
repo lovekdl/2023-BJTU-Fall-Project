@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @RestController
@@ -517,6 +519,8 @@ public class TeacherController {
 
         // 获取任务
         AssignmentPojo assignment = assignmentService.getAssignmentByID(Integer.parseInt(assignmentID));
+
+
         if (assignment == null)
             return Result.errorGetStringByMessage("403", "assignment is null");
         if (!assignment.getStatus().equals("未开始互评"))
@@ -545,8 +549,7 @@ public class TeacherController {
         if (studentIDs.size() <= Integer.parseInt(peerNumber))
             return Result.errorGetStringByMessage("403", "don't have enough students who have submitted homework");
 
-        // 设置任务状态为互评中
-        assignmentService.setAssignmentStatus(Integer.parseInt(assignmentID), "互评中");
+
 
 //        if (studentIDs.size() < students.size())
 //            return Result.errorGetStringByMessage("403", "don't have enough homeworks");
@@ -563,6 +566,17 @@ public class TeacherController {
                 peerService.addPeer(student.getUuid(), homework.getUuid(), homework.getAssignmentUUID(), student.getUsername(), homework.getHomeworkID(), assignment.getAssignmentID());
             }
         }
+
+
+        // 设置任务状态为互评中
+        assignmentService.setAssignmentStatus(Integer.parseInt(assignmentID), "互评中");
+
+        // 设置任务截止时间为当前时间 或 先于当前时间的截止时间
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        LocalDateTime now = LocalDateTime.now();
+        String deadline = assignment.getDeadline();
+        if (now.isBefore(LocalDateTime.parse(deadline, formatter)))
+            assignmentService.setAssignmentDeadline(Integer.parseInt(assignmentID), now.format(formatter));
 
         return Result.okGetString();
     }
@@ -600,16 +614,22 @@ public class TeacherController {
         // 对每个学生的作业统计互评分数
         for (UserPojo student : students) {
             HomeworkPojo homework = homeworkService.getHomeworkByUserIDAndAssignmentID(student.getUid(), Integer.parseInt(assignmentID));
-            List<PeerPojo> peers = peerService.getPeerListByUserUUIDAndAssignmentUUID(student.getUuid(), assignment.getUuid());
+            List<PeerPojo> peers = peerService.getPeerListByAssignmentUUID(homework.getAssignmentUUID());
             if (peers.isEmpty())
                 continue;
-            Integer peerNumber = peers.size();
+            Integer peerNumber = 0;
             Integer peerScore = 0;
             for (PeerPojo peer : peers) {
-                peerScore += peer.getScore() == null ? 60 : peer.getScore();
-                peerService.setStatus(peer.getPeerID(), "互评结束");
+                if (Objects.equals(peer.getHomeworkUUID(), homework.getUuid())) {
+                    peerNumber++;
+                    peerScore += peer.getScore() == null ? 60 : peer.getScore();
+                    peerService.setStatus(peer.getPeerID(), "互评结束");
+                }
             }
-            homeworkService.setScore(homework.getHomeworkID(), peerScore / peerNumber);
+            if (peerNumber == 0)
+                homeworkService.setScore(homework.getHomeworkID(), 60);
+            else
+                homeworkService.setScore(homework.getHomeworkID(), peerScore / peerNumber);
 
 //            System.out.println(homework.getHomeworkID() + " " + homework.getScore());
         }
@@ -660,7 +680,7 @@ public class TeacherController {
             peerInfo.put("key", String.valueOf(peer.getPeerID()));
             peerInfo.put("peerID", String.valueOf(peer.getPeerID()));
             peerInfo.put("userName", peer.getUsername());
-            peerInfo.put("peerScore", peer.getScore() == null ? "60" : String.valueOf(peer.getScore()));
+            peerInfo.put("peerScore", peer.getScore() == null ? "/" : String.valueOf(peer.getScore()));
             peerInfo.put("peerComment", peer.getComment() == null ? "/" : peer.getComment());
             HomeworkPojo homework = homeworkService.getHomeworkByID(peer.getHomeworkID());
             UserPojo peerUser = userService.getUserByUUID(homework.getUserUUID());
