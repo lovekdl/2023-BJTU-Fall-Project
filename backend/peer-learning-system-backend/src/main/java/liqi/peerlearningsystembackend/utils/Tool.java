@@ -6,15 +6,21 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.security.Keys;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.security.Key;
 
 import liqi.peerlearningsystembackend.service.UserService;
 import org.apache.commons.codec.digest.DigestUtils;
+import org.simmetrics.StringMetric;
+import org.simmetrics.metrics.StringMetrics;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Base64;
-import java.util.Random;
+import java.util.*;
 
 public class Tool {
     private static String ENCODER_SALT() {
@@ -85,14 +91,103 @@ public class Tool {
         return code.toString();
     }
 
+    /**
+     * 检查邮箱格式
+     * @param email 邮箱
+     * @return "OK"或错误信息
+     */
     static public String checkEmailFormat(String email) {
-        if(email == null || email.length() == 0) {
+        if(email == null || email.isEmpty()) {
             return "email can not be empty";
         }
         if(!email.matches("^[a-zA-Z0-9_-]+@[a-zA-Z0-9_-]+(\\.[a-zA-Z0-9_-]+)+$")) {
             return "email format error";
         }
         return "OK";
+    }
+
+    /**
+     * 互评分配算法
+     * @param students 学生列表
+     * @param m 每个学生需要评价的人数
+     * @return 分配结果
+     */
+    static public Map<Integer, List<Integer>> allocation(List<Integer> students, Integer m) {
+
+        Map<Integer, List<Integer>> ret = new HashMap<>();
+        for (Integer student : students) {
+            ret.put(student, new ArrayList<>());
+        }
+
+        // 随机打乱
+        Collections.shuffle(students);
+
+        // 分配
+        for (int i = 0; i < students.size(); i++) {
+            for (int j = 0; j < m && j < students.size() - 1; j++) {
+                ret.get(students.get(i)).add(students.get((i + j + 1) % students.size()));
+            }
+        }
+
+        return ret;
+    }
+
+
+    public static Path saveFile(String uploadDir, MultipartFile multipartFile) throws IOException {
+        Path uploadPath = Paths.get(uploadDir);
+
+        // 如果目录不存在，创建目录
+        if (!Files.exists(uploadPath)) {
+            Files.createDirectories(uploadPath);
+        }
+
+        // 尝试保存文件
+        String fileName = multipartFile.getOriginalFilename();
+        Path filePath = uploadPath.resolve(fileName);
+        multipartFile.transferTo(filePath);
+
+        return filePath;
+    }
+
+
+    /**
+     * 利用Jaro算法计算两个字符串相似度
+     */
+    public static float calcSimilarityWithJaro(String str1, String str2) {
+
+        StringMetric metric = StringMetrics.jaro();
+
+        return metric.compare(str1, str2);
+    }
+
+    /**
+     * 利用Jaro-Winkler算法计算两个字符串相似度
+     */
+    public static float calcSimilarityWithJaroWinkler(String str1, String str2) {
+
+        StringMetric metric = StringMetrics.jaroWinkler();
+
+        return metric.compare(str1, str2);
+    }
+
+    /**
+     * 利用Cosine算法计算两个字符串相似度
+     */
+    public static float calcSimilarityWithCosine(String str1, String str2) {
+
+        StringMetric metric = StringMetrics.cosineSimilarity();
+
+        return metric.compare(str1, str2);
+    }
+
+    /**
+     * 利用Levenshtein算法计算两个字符串相似度
+     */
+    public static float calcSimilarityWithLevenshtein(String str1, String str2) {
+
+        StringMetric metric = StringMetrics.levenshtein();
+
+        return metric.compare(str1, str2);
     }
 
 }

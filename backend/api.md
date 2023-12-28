@@ -639,7 +639,7 @@
   }
   ```
 
-### 11. 教师获取课程作业列表
+### 11. 教师获取课程任务列表
 
 - **请求 URL**: `/teacher/getAssignmentListByCourseID`
 
@@ -663,6 +663,7 @@
           "assignments": [
               {
                   "assignmentName": "assignmentName",
+                  "assignmentStatus":"assignmentStatus",
                   "date": "date",
                   "time": "time",
                   "assignmentID": "assignmentID",
@@ -750,6 +751,154 @@
       "message": "success"
   }
   ```
+
+### 15. 教师开始某任务互评
+
+- **请求 URL**: `/teacher/startPeer`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "peerNumber": "peerNumber",
+      "assignmentAnswer": "assignmentAnswer"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 16. 教师结束某任务互评
+
+- **请求 URL**: `/teacher/endPeer`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 17. 教师添任务附件
+
+- **请求 URL**: `/teacher/setAssignmentFile`
+
+- **请求方式**: POST
+
+- **请求参数（使用form-data）**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "file": "file"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 18. 教师获取某任务互评列表
+
+- **请求 URL**: `/teacher/getPeerListByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数（使用form-data）**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "peers": [
+              {
+                  "peerID": "700056",
+                  "peerName": "student",
+                  "peerComment": "111",
+                  "peerScore": "60",
+                  "userName": "liqi",
+                  "key": "700056"
+              },
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+### 19. 教师获取某次任务的作业相似度
+
+- **请求 URL**: `/teacher/getSimilarityByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数（使用form-data）**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "similarityRecode": [
+              {
+                  "content2": "drj的本子",
+                  "similarity": "0.8666666",
+                  "content1": "yxh和drj的本子",
+                  "username2": "student",
+                  "username1": "yxh"
+              }
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+### 
 
 ## 作业模块
 
@@ -965,6 +1114,526 @@
           "homework": {
               "homeworkContent": "homeworkContent"
           }
+      },
+      "message": "success"
+  }
+  ```
+
+### 8. 设置作业优秀
+
+- **请求 URL**: `/homework/setHomeworkExcellent`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 9. 根据任务ID获取优秀作业
+
+- **请求 URL**: `/homework/getExcellentHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "homeworkID": "homeworkID",
+              "key": "key"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
+### 10. 取消作业优秀
+
+- **请求 URL**: `/homework/cancelHomeworkExcellent`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 11. 处理作业投诉
+
+- **请求 URL**: `/homework/handleHomeworkArgument`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 12. 根据作业ID获取投诉状态
+
+- **请求 URL**: `/homework/getArgumentByHomeworkID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "argument": "argument"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
+### 13. 学生设置作业附件
+
+- **请求 URL**: `/homework/setHomeworkFile`
+
+- **请求方式**: POST
+
+- **请求参数（使用form-data）**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID",
+      "file": "file"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "message": "success"
+  }
+  ```
+
+### 
+
+## 学生模块
+
+ ### 1. 学生获取所有课程列表
+
+- **请求 URL**: `/student/getAllCourseList`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result",
+      "data": {
+          "courses": [
+              {
+                  "courseName": "courseName",
+                  "courseDescribe": "courseDescribe",
+                  "courseNumber": "courseNumber",
+                  "courseID": "courseID",
+                  "key": "key"
+              }
+          ]
+      },
+  }
+  ```
+
+### 2. 学生获取自己的课程列表
+
+- **请求 URL**: `/student/getMyCourseList`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result",
+      "data": {
+          "courses": [
+              {
+                  "courseName": "courseName",
+                  "courseDescribe": "courseDescribe",
+                  "courseNumber": "courseNumber",
+                  "teacherName": "teacherName",
+                  "courseID": "courseID",
+                  "key": "key"
+              }
+          ]
+      },
+  }
+  ```
+
+### 3. 学生根据课程号获取课程作业列表
+
+- **请求 URL**: `/student/getAssignmentListByCourseID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "courseID": "courseID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "assignments": [
+              {
+                  "date": "2023-11-18",
+                  "assignmentDescribe": "3333333",
+                  "time": "00:00:00",
+                  "assignmentID": "500004",
+                  "key": "500004",
+                  "grade": "grade",
+                  "homeworkID": "homeworkID",
+                  "assignmentName": "assignment4",
+                  "submit": "未提交"
+              }
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+### 4. 学生添加无附件作业
+
+- **请求 URL**: `/student/addHomeworkWithoutFile`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID",
+      "content": "content",
+      "date": "2023-11-18",
+      "time": "00:00:00"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+### 5. 学生根据任务ID获取作业信息
+
+- **请求 URL**: `/student/getHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "date": "2023-11-17",
+              "uid": "300002",
+              "homeworkID": "600002",
+              "submit": "已提交",
+              "grade": "未评分",
+              "time": "13:10:00",
+              "key": "300002",
+              "username": "yxh"
+          }
+      },
+      "message": "success"
+  }
+  ```
+  
+###  6. 学生根据任务ID获取互评作业信息
+
+- **请求 URL**: `/student/getPeerHomeworkByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "peerHomework": [
+              {
+                  "peerID": "700011",
+                  "homeworkID": "600009",
+                  "courseName": "testCourse1",
+                  "teacherName": "fjq",
+                  "assignmentDescribe": "test assignment for allocation",
+                  "grade": "未评分",
+                  "comment": "未评价",
+                  "assignmentName": "test assignment"
+              },
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+###  7. 学生根据作业ID获取互评作业内容
+
+- **请求 URL**: `/student/getPeerHomeworkContentByHomeworkID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "homeworkID": "homeworkID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "homeworkContent": "yxh的作业",
+              "assignmentAnswer": "assignmentAnswer",
+              "assignmentContent": "assignmentContent"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
+###  8. 学生给互评作业评分
+
+- **请求 URL**: `/student/gradePeerHomework`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "peerID": "peerID",
+      "grade": "grade",
+      "comment": "comment"
+  }
+  ```
+  
+- **返回示例**:
+
+  ```json
+  {
+      "code": "status code",
+      "message": "description about the result"
+  }
+  ```
+
+###  9. 学生根据uid获取互拼作业信息
+
+- **请求 URL**: `/student/getPeerHomeworkByUID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "peerHomework": [
+              {
+                  "peerID": "700011",
+                  "homeworkID": "600009",
+                  "courseName": "testCourse1",
+                  "teacherName": "fjq",
+                  "assignmentDescribe": "test assignment for allocation",
+                  "grade": "未评分",
+                  "comment": "未评价",
+                  "assignmentName": "test assignment"
+              },
+          ]
+      },
+      "message": "success"
+  }
+  ```
+
+###  9. 学生根据任务ID获取作业内容
+
+- **请求 URL**: `/student/getHomeworkContentByAssignmentID`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token",
+      "assignmentID": "assignmentID"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "homework": {
+              "homeworkContent": "yxh的作业",
+              "homeworkID": "homeworkID"
+          }
+      },
+      "message": "success"
+  }
+  ```
+
+###  10. 学生获取未完成任务数量未完成互评作业数量
+
+- **请求 URL**: `/student/getUnfinished`
+
+- **请求方式**: POST
+
+- **请求参数**:
+
+- ```json
+  {
+      "token": "token"
+  }
+  ```
+
+- **返回示例**:
+
+  ```json
+  {
+      "code": 200,
+      "data": {
+          "unfinishedAssignment": unfinishedAssignment,
+          "unfinishedPeerHomework": unfinishedPeerHomework
       },
       "message": "success"
   }

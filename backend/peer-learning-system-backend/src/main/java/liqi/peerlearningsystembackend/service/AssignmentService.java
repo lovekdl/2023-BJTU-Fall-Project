@@ -3,15 +3,15 @@ package liqi.peerlearningsystembackend.service;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import liqi.peerlearningsystembackend.dao.AssignmentDao;
 import liqi.peerlearningsystembackend.dao.CounterDao;
-import liqi.peerlearningsystembackend.pojo.AssignmentPojo;
-import liqi.peerlearningsystembackend.pojo.CounterPojo;
-import liqi.peerlearningsystembackend.pojo.CoursePojo;
-import liqi.peerlearningsystembackend.pojo.UserPojo;
+import liqi.peerlearningsystembackend.pojo.*;
 import liqi.peerlearningsystembackend.utils.Constants;
+import liqi.peerlearningsystembackend.utils.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Path;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,7 +47,7 @@ public class AssignmentService {
             CoursePojo course = courseService.getCourseByCourseID(courseID);
             if(course == null)
                 return "ERROR";
-            assignmentDao.insert(new AssignmentPojo(uuid, assignmentID, course.getUuid(), title, content, null, deadline));
+            assignmentDao.insert(new AssignmentPojo(uuid, assignmentID, course.getUuid(), title, content, null, deadline, "未开始互评", null, null));
 
             // 更新计数器
             CounterPojo counterPojo = counterDao.selectById(Constants.ASSIGNMENT_COUNTER);
@@ -137,6 +137,45 @@ public class AssignmentService {
     }
 
     /**
+     * 教师设置作业有优秀作业
+     * @param assignmentID 作业ID
+     * @param homeworkID 作业ID
+     * @return 返回"OK"或"ERROR"
+     */
+    public String setAssignmentExcellent(int assignmentID, String homeworkID) {
+        try {
+            AssignmentPojo assignment = getAssignmentByID(assignmentID);
+            if (assignment == null)
+                return "ERROR";
+            assignment.setExcellent(homeworkID);
+            assignmentDao.updateById(assignment);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
+     * 教师取消任务有优秀作业
+     * @param assignmentID 作业ID
+     * @return 返回"OK"或"ERROR"
+     */
+    public String cancelAssignmentExcellent(int assignmentID) {
+        try {
+            AssignmentPojo assignment = getAssignmentByID(assignmentID);
+            if (assignment == null)
+                return "ERROR";
+            assignment.setExcellent(null);
+            assignmentDao.updateById(assignment);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
      * 教师设置作业内容
      * @param assignmentID 作业ID
      * @param content 内容
@@ -148,6 +187,26 @@ public class AssignmentService {
             if (assignment == null)
                 return "ERROR";
             assignment.setContent(content);
+            assignmentDao.updateById(assignment);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
+     * 教师设置作业答案
+     * @param assignmentID 作业ID
+     * @param answer 答案
+     * @return 返回"OK"或"ERROR"
+     */
+    public String setAssignmentAnswer(int assignmentID, String answer) {
+        try {
+            AssignmentPojo assignment = getAssignmentByID(assignmentID);
+            if (assignment == null)
+                return "ERROR";
+            assignment.setAnswer(answer);
             assignmentDao.updateById(assignment);
             return "OK";
         } catch (Exception e) {
@@ -180,4 +239,46 @@ public class AssignmentService {
         }
     }
 
+    /**
+     * 教师设置作业状态
+     * @param assignmentID 作业ID
+     * @param status 状态
+     * @return 返回"OK"或"ERROR"
+     */
+    public String setAssignmentStatus(int assignmentID, String status) {
+        try {
+            AssignmentPojo assignment = getAssignmentByID(assignmentID);
+            if (assignment == null)
+                return "ERROR";
+            assignment.setStatus(status);
+            assignmentDao.updateById(assignment);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
+
+    /**
+     * 设置作业附件
+     * @param assignmentID 任务ID
+     * @param file 附件
+     * @return 返回"OK"或"ERROR"
+     */
+    public String setAssignmentFile(int assignmentID, MultipartFile file) {
+        try {
+            AssignmentPojo assignment = getAssignmentByID(assignmentID);
+            if (assignment == null)
+                return "ERROR";
+
+            Path filePath = Tool.saveFile(Constants.ASSIGNMENT_FILE_PATH, file);
+
+            assignment.setFilePath(filePath.toString());
+            assignmentDao.updateById(assignment);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
 }

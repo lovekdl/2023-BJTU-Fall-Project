@@ -5,10 +5,15 @@ import liqi.peerlearningsystembackend.dao.CounterDao;
 import liqi.peerlearningsystembackend.dao.HomeworkDao;
 import liqi.peerlearningsystembackend.pojo.*;
 import liqi.peerlearningsystembackend.utils.Constants;
+import liqi.peerlearningsystembackend.utils.Tool;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.UUID;
 
@@ -259,5 +264,94 @@ public class HomeworkService {
         }
     }
 
+    /**
+     * 处理作业投诉
+     * @param homeworkID 作业ID
+     * @return 返回"OK"或"ERROR"
+     */
+    public String handleHomeworkArgument(int homeworkID) {
+        try {
+            HomeworkPojo homework = getHomeworkByID(homeworkID);
+            if (homework == null)
+                return "ERROR";
+            homework.setArgument("已处理");
+            homeworkDao.updateById(homework);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
 
+//    /**
+//     * 设置作业优秀
+//     * @param homeworkID 作业ID
+//     * @param excellent 优秀
+//     * @return 返回"OK"或"ERROR"
+//     */
+//    public String setHomeworkExcellent(int homeworkID, String excellent) {
+//        try {
+//            HomeworkPojo homework = getHomeworkByID(homeworkID);
+//            if (homework == null)
+//                return "ERROR";
+//            homework.setExcellent(excellent);
+//            homeworkDao.updateById(homework);
+//            return "OK";
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return "ERROR";
+//        }
+//    }
+//
+//    /**
+//     * 取消作业优秀
+//     * @param homeworkID 作业ID
+//     * @return 返回"OK"或"ERROR"
+//     */
+//    public String cancelHomeworkExcellent(int homeworkID) {
+//        try {
+//            HomeworkPojo homework = getHomeworkByID(homeworkID);
+//            if (homework == null)
+//                return "ERROR";
+//            homework.setExcellent(null);
+//            homeworkDao.updateById(homework);
+//            return "OK";
+//        } catch (Exception e) {
+//            System.out.println(e.getMessage());
+//            return "ERROR";
+//        }
+//    }
+
+    /**
+     * 根据任务ID获取优秀作业
+     * @param assignmentID 任务ID
+     * @return 优秀作业列表
+     */
+    @Nullable
+    public HomeworkPojo getExcellentHomeworkByAssignmentID(String assignmentID) {
+        return homeworkDao.selectOne(new QueryWrapper<HomeworkPojo>().eq("assignmentUUID", assignmentID).isNotNull("excellent"));
+    }
+
+    /**
+     * 设置作业附件
+     * @param homeworkID 作业ID
+     * @param file 附件
+     * @return 返回"OK"或"ERROR"
+     */
+    public String setHomeworkFile(int homeworkID, MultipartFile file) {
+        try {
+            HomeworkPojo homework = getHomeworkByID(homeworkID);
+            if (homework == null)
+                return "ERROR";
+
+            Path filePath = Tool.saveFile(Constants.HOMEWORK_FILE_PATH, file);
+
+            homework.setFilePath(filePath.toString());
+            homeworkDao.updateById(homework);
+            return "OK";
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return "ERROR";
+        }
+    }
 }
