@@ -1,16 +1,16 @@
 import {
   HomeOutlined,
-  PlusOutlined, EditOutlined,DeleteOutlined,CopyOutlined,UserOutlined,ExclamationCircleOutlined
+  PlusOutlined, EditOutlined,DeleteOutlined,CopyOutlined,UserOutlined,ExclamationCircleOutlined,SearchOutlined
 } from '@ant-design/icons';
-import {  SearchOutlined} from '@material-ui/icons';
 import { Breadcrumb, Card, Button, Form, Input,Table,Modal, message, Space, Popconfirm,Pagination,Divider } from 'antd';
 import {useState, useEffect} from 'react'
 import { observer } from 'mobx-react-lite'
 import { useStore } from '../store';
-import HomeworkManage from './homeworkmanage'
+import HomeworkManage from './homeworkmanage.jsx'
 import GradeManage from './grademanage.jsx'
 import { http } from '../utils/http.jsx';
 import logo from '../assets/logo.png'
+import Similarity from './similarity.jsx'
 const { TextArea } = Input;
 function ClassManage(prop) {
   const [visible,setVisible]=useState(false);
@@ -85,8 +85,12 @@ function ClassManage(prop) {
           courseName:v.courseName,
         })
         if(ret.data?.message == 'success') {
-          // message.success('成功')
-          console.log('ok handle edit1')
+          if(!v.courseDescribe) {
+            
+            message.success('修改成功')
+            setEditVisible(false)
+          }
+            console.log('ok handle edit1')
         }
         else message.error(ret.data.message)
       }
@@ -94,10 +98,10 @@ function ClassManage(prop) {
         console.log('catch : ',e)
         if(e.response) message.error(e.response.data.message)
         else message.error(e.message)
-        TeacherStore.updateCourseData()
-        TeacherStore.updateStudentData(editing.courseID)
         return
       }
+      TeacherStore.updateCourseData()
+        TeacherStore.updateStudentData(editing.courseID)
     }
     if(v.courseDescribe){
       try {
@@ -109,6 +113,7 @@ function ClassManage(prop) {
           // message.success('成功')
           console.log('ok handle edit2')
           message.success('修改成功')
+          setEditVisible(false)
         }
         else message.error(ret.data.message)
       }
@@ -117,9 +122,11 @@ function ClassManage(prop) {
         if(e.response) message.error(e.response.data.message)
         else message.error(e.message)
       }
-      TeacherStore.updateCourseData()
-      TeacherStore.updateStudentData(editing.courseID)
+      
+      
     }
+    TeacherStore.updateCourseData()
+      TeacherStore.updateStudentData(editing.courseID)
   }
   const handleAddStudentByUsername = async() => {
     // console.log(editing.courseID, sname)
@@ -173,6 +180,7 @@ function ClassManage(prop) {
     setSid(e.target.value)
   }
   const changeContent = (s, c=null) => {
+    console.log("s is " + s)
     if(s == 'ClassManage') {
       prop.setContent(<ClassManage setContent={prop.setContent} ></ClassManage>)
     }
@@ -182,13 +190,17 @@ function ClassManage(prop) {
     if(s == 'GradeManage') {
       prop.setContent(<GradeManage changeContent={changeContent} assignmentID={c.assignmentID} assignmentName={c.assignmentName}></GradeManage>)
     }
+    if(s == 'Similarity') {
+      
+      prop.setContent(<Similarity changeContent={changeContent} assignmentID={c.assignmentID} assignmentName={c.assignmentName}></Similarity>)
+    }
   }
   const {TeacherStore} = useStore();
   const [myForm] = Form.useForm()
   const [editForm] = Form.useForm()
 
   // 每页显示的卡片数量
-  const cardsPerPage = 6;
+  const cardsPerPage = 5;
 
   // 当前页码
   const [currentPage, setCurrentPage] = useState(1);
@@ -237,7 +249,7 @@ function ClassManage(prop) {
 
 
         <div style={{display:'flex', flexWrap:'wrap', alignItems:'center', marginLeft:'40px'}}>
-          {currentCards.map((card, index) => (
+          {TeacherStore.courseData.slice(startIndex, endIndex).map((card, index) => (
             <div key={index}>
               <Card  title={card.courseName} hoverable cover={<img alt="example" src={logo} />} style={{ width: 240,margin:'10px', overflow:'hidden'}}>
                 <Divider></Divider>

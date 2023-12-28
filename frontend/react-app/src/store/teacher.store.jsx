@@ -67,26 +67,30 @@ class TeacherStore {
       key:'1',
       assignmentName:'作业1',
       assignmentDescribe:'你好',
-      assignmentDate:'2023-11-11',
-      assignmentTime:'10:10:10',
+      date:'2023-11-11',
+      time:'10:10:10',
       assignmentID:'1',
+      assignmentStatus:'未开始互评',
     },
     {
       key:'2',
       assignmentName:'作业2',
       assignmentDescribe:'我不好',
-      assignmentTime:'10:10:10',
-      assignmentDate:'2023-11-11',
+      time:'10:10:10',
+      date:'2023-11-11',
       assignmentID:'2',
+      assignmentStatus:'未开始互评',
     },
     {
       key:'3',
       assignmentName:'作业3',
       assignmentDescribe:'嗯',
-      assignmentDate:'2023-11-11',
-      assignmentTime:'10:10:10',
+      date:'2023-11-11',
+      time:'10:10:10',
       assignmentID:'3',
+      assignmentStatus:'未开始互评',
     },
+    
     
   ]
   studentData=[
@@ -129,15 +133,37 @@ class TeacherStore {
     { courseName:'computer',assignmentName:'homework1',username:'liming',argument:"7" },
     { courseName:'art',assignmentName:'homework2',username:'liming',argument:"8" },
   ];
+  similarityData = [{username1:"test1",username2:"test2",similarity:"30%"}]
   currentCourse='hhaha'
   currentCourseID=''
   currentName='sss'
+  currentSim ={}
   homeworkContent='1+1='
+  homework1 = ''
+  homework2 = ''
+  peerState = []
 	constructor() {
 		
 		//mobx 设置响应式
 		makeAutoObservable(this)
 	}
+  setHomework1 = (x) => {
+    this.homework1 = x
+  }
+  setHomework2 = (x) => {
+    this.homework2 = x
+  }
+  setSimilarityData = (x) => {
+    this.similarityData = x;
+  }
+  setCurrentSim = (x) =>{
+    this.currentSim = x
+  }
+  setPeerState = (x)=> {
+    // this.peerState = x
+    var jsonString = JSON.stringify(toJS(x))
+    this.peerState = JSON.parse(jsonString)
+  }
   setCourseData = (newData)=> {
     // console.log(newData)
     this.courseData=newData
@@ -145,6 +171,26 @@ class TeacherStore {
     // console.log(jsonString)
     // this.coursedata = JSON.parse(jsonString)
   }
+
+  updateSimilarityData = async(id) =>{
+    try {
+      const ret = await http.post('/teacher/getSimilarityByAssignmentID', {
+        assignmentID:id
+      })
+      if(ret.data.message =='success') {
+        console.log(ret.data)
+        this.setSimilarityData(ret.data.data.similarityRecode)
+        
+      }
+
+      // window.location.reload()
+    } catch(e) {
+      if(e.response) console.log(e.response.data.message)
+      else console.log(e.message)
+      console.log(e)
+    }
+  }
+
 	updateCourseData = async () => {
     try {
       const ret = await http.post('/teacher/getCourseList', {

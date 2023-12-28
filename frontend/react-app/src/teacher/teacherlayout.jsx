@@ -12,6 +12,7 @@ import { Layout, Menu, Button, theme, ConfigProvider } from 'antd';
 import {Avatar} from 'antd';
 import ClassManage from './classmanage.jsx';
 import ArgumentManage from './argumentmanage.jsx'
+import touxiang from '../assets/touxiang.png'
 const { Header, Sider, Content } = Layout;
 const TeacherLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -134,7 +135,7 @@ const TeacherLayout = () => {
             />
             作业互评系统
             <div style={{marginLeft:'auto', marginRight: '1vw' }}>
-              <Avatar className = 'MenuAvatar' size={50} onClick ={handleAvatarOnClicked}></Avatar>
+              <Avatar className = 'MenuAvatar' size={50} onClick ={handleAvatarOnClicked} src={touxiang}></Avatar>
             </div>
           </div>
         </Header>

@@ -10,7 +10,7 @@ import { http } from '../utils/http.jsx';
 function ArgumentManage() {
   
   // 每页显示的卡片数量
-  const cardsPerPage = 6;
+  const cardsPerPage = 5;
   const {TeacherStore} = useStore()
   // 当前页码
   const [currentPage, setCurrentPage] = useState(1);
@@ -65,7 +65,7 @@ function ArgumentManage() {
         {/* 显示当前页的卡片 */}
         <div style={{display:'flex', flexWrap:'wrap', alignItems:'center', marginLeft:'40px'}}>
           {currentCards.map((card, index) => (
-            <Card key={index} title={card.courseName+'-'+card.assignmentName} hoverable cover={<img alt="example" src={logo} />} style={{ width: 240,margin:'10px',overflow:'hidden' }}
+            <Card key={index} title={card.courseName+'-'+card.assignmentName} hoverable  style={{ width: '80vw',margin:'10px',overflow:'hidden' }}
               onClick={async ()=>{
                 setArgument(card.argument)
                 setCurrentHomeworkID(card.homeworkID)
@@ -89,7 +89,6 @@ function ArgumentManage() {
                 
               }}
             >
-              <Divider></Divider>
               学生名：{card.username}
             </Card>
           ))}
@@ -104,9 +103,11 @@ function ArgumentManage() {
       </Card>
 
       <Modal title='处理投诉' open={visible} maskClosable={false}  onCancel={() => setVisible(false)}  destroyOnClose>
-        作业内容：{content}
+        作业内容：
+        <Card><div  dangerouslySetInnerHTML={{ __html: content }} /></Card>
         <Divider></Divider>
-        学生留言：{argument}
+        学生投诉理由：
+        <Card><div  dangerouslySetInnerHTML={{ __html: argument }} /></Card>
         <Divider></Divider>
         <Space>
           <div>
@@ -118,7 +119,7 @@ function ArgumentManage() {
                     homeworkID:currentHomeworkID,
                     grade:newGrade
                   })
-                  const ret = await http.post('/homework/cancelHomeworkArgument', {
+                  const ret = await http.post('/homework/handleHomeworkArgument', {
                     homeworkID:currentHomeworkID,
                   })
                   

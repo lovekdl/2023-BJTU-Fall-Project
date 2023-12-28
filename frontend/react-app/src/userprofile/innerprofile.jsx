@@ -3,12 +3,9 @@ import {useState} from 'react';
 import {motion} from "framer-motion";
 import {Avatar} from 'antd'
 import { useStore } from '../store';
-
-import {
-  UserOutlined
-} from "@ant-design/icons";
-import NameModal from "./name.modal";
-import PasswordModal from "./password.modal";
+import touxiang from '../assets/touxiang.png'
+import NameModal from "./name.modal.jsx";
+import PasswordModal from "./password.modal.jsx";
 import { useNavigate } from "react-router-dom";
 
 
@@ -34,7 +31,7 @@ function InnerProfile() {
     <NameModal visible = {nameVisible} setVisible={setNameVisible}></NameModal>
     <PasswordModal visible = {passwordVisible} setVisible={setPasswordVisible} ></PasswordModal>
     <div className = 'HeadPicture'>
-      <Avatar size={128} icon={<UserOutlined />} />
+      <Avatar size={128} src={touxiang} />
     </div >
     <div className = 'InnerDiv'>
       

@@ -1,2 +1,2 @@
-import Profile from "./profile";
+import Profile from "./profile.jsx";
 export {Profile}

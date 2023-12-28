@@ -1,19 +1,18 @@
 import { useState, useEffect} from 'react';
 import {
-  HomeOutlined,
-  PlusOutlined, EditOutlined,DeleteOutlined,ExclamationCircleOutlined,DownOutlined,CopyOutlined,UserOutlined
+  HomeOutlined,SearchOutlined
 } from '@ant-design/icons';
-
-import {  SearchOutlined } from '@material-ui/icons';
+import HomeworkManage from './homeworkmanage.jsx'
+import HomeworkSubmit from './homeworksubmit.jsx'
 import { Breadcrumb, Card, Button, Form, Input,Divider,Pagination} from 'antd';
 import { observer } from 'mobx-react-lite'
 import { useStore } from '../store';
-import { http } from '../utils/http.jsx';
 import logo from '../assets/logo.png'
-function CourseManage() {
+function CourseManage(prop) {
   const {StudentStore} = useStore();
   useEffect(()=>{
     //ManagerStore.updateData()
+    StudentStore.updateCourseData()
   },[])
   
   const [searchString, setSearchString] = useState('');
@@ -23,8 +22,21 @@ function CourseManage() {
   const handleSearch = async()=> {
 
   }
+  const changeContent = (s, c=null) => {
+    if(s == 'CourseManage') {
+      prop.setContent(<CourseManage setContent={prop.setContent} ></CourseManage>)
+    }
+    if(s == 'HomeworkSubmit') {
+      prop.setContent(<HomeworkSubmit changeContent={changeContent}></HomeworkSubmit>)
+    }
+    if(s == 'HomeworkManage') {
+      prop.setContent(<HomeworkManage changeContent={changeContent} courseID={StudentStore.currentCourseID} courseName={StudentStore.currentCourseName}></HomeworkManage>)
+    }
+  }
+
+
   // 每页显示的卡片数量
-  const cardsPerPage = 6;
+  const cardsPerPage = 5;
 
   // 当前页码
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,9 +65,8 @@ function CourseManage() {
         ]}
         style={{marginBottom:'7px'}}
       />
-      <Card title='我的课程' extra={
-        <Button type='primary' icon={<PlusOutlined></PlusOutlined>} ></Button>
-      } style={{height:'80vh'}}>
+      <Card title='我的课程'  style={{height:'80vh'}}
+        >
         <Form >
           <div style={{display:'flex'}}>
             <Form.Item label='搜索：' style={{width:'10vw'}}>
@@ -70,14 +81,14 @@ function CourseManage() {
         <div style={{display:'flex', flexWrap:'wrap', alignItems:'center', marginLeft:'40px'}}>
           {currentCards.map((card, index) => (
             <div key={index}>
-              <Card  title={card.courseName} hoverable cover={<img alt="example" src={logo} />} style={{ width: 240,margin:'10px', overflow:'hidden'}}>
+              <Card  title={card.courseName} hoverable cover={<img alt="example" src={logo} />} style={{ width: 240,margin:'10px', overflow:'hidden'}} onClick={()=>prop.setContent(<HomeworkManage changeContent={changeContent} courseID={card.courseID} courseName={card.courseName}></HomeworkManage>)}>
                 <Divider></Divider>
-                
-                授课教师：{card.teacher}
-                <br></br>
-                课程描述：{card.courseDescribe}
-                <br></br>
-                
+                <div style={{height:'7vh', overflow:'auto'}}>
+                  授课教师：{card.teacherName}
+                  <br></br>
+                  课程描述：{card.courseDescribe}
+                  <br></br>
+                </div>
               </Card>
             </div>
           ))}

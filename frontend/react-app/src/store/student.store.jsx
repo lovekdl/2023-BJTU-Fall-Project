@@ -69,33 +69,47 @@ class StudentStore {
     },
     
   ]
-  
+  peerHomework=[
+    {
+      key:'1',
+      courseName:'test',
+      courseDescribe:'test',
+      courseNumber :'55',
+      courseID:'1',
+      teacher:'lhm',
+      
+    }]
   assignmentData=[
     {
       key:'1',
       assignmentName:'作业1',
-      assignmentDescribe:'你好',
-      assignmentDate:'2023-11-11',
-      assignmentTime:'10:10:10',
+      assignmentDescribe:'实训',
+      date:'2023-11-11',
+      time:'10:10:10',
       assignmentID:'1',
+      grade:'80',
+      submit: '未提交',
     },
     {
       key:'2',
       assignmentName:'作业2',
-      assignmentDescribe:'我不好',
-      assignmentTime:'10:10:10',
-      assignmentDate:'2023-11-11',
+      assignmentDescribe:'好难',
+      time:'10:10:10',
+      date:'2023-11-11',
       assignmentID:'2',
+      grade:'100',
+      submit: '已提交',
     },
     {
       key:'3',
       assignmentName:'作业3',
-      assignmentDescribe:'嗯',
-      assignmentDate:'2023-11-11',
-      assignmentTime:'10:10:10',
+      assignmentDescribe:'不会写怎么办',
+      date:'2023-12-11',
+      time:'10:10:10',
       assignmentID:'3',
+      grade:'95',
+      submit: '已截止',
     },
-    
   ]
   argumentData = [
     { courseName:'math',assignmentName:'homework1',username:'liming',argument:"1"},
@@ -110,12 +124,63 @@ class StudentStore {
   currentCourse='hhaha'
   currentCourseID=''
   currentName='sss'
+  currentAssignmentName="aaa"
+  currentAssignmentID='bbb'
+  currentAssignmentDescribe='describe'
+  currentAssignment = {}
   homeworkContent='1+1=?'
+  editorContent=''
+  filterList= ['未提交','已提交','已截止'];
+  evaluateHomework='aaa'
+  answer = '标准答案'
+  currentHomework = {
+    homeworkID:'1010',
+  }
+  
 	constructor() {
 		
 		//mobx 设置响应式
 		makeAutoObservable(this)
 	}
+  get filteredAssignments() {
+    
+    return this.assignmentData.filter(assignment => this.filterList.includes(assignment.submit));
+  }
+  assignmentContent = ''
+  setAssignmentContent = (x) => {
+    this.assignmentContent = x
+  }
+  setCurrentHomework = (x) => {
+    this.currentHomework = x
+  }
+  setAnswer = (x) => {
+    this.answer = x
+  }
+  setFilterList = (x) => {
+    this.filterList = x
+  }
+  setEvaluateHomework = (x) => {
+    this.evaluateHomework = x
+  }
+  setCurrentAssignment = (x) => {
+    this.currentAssignment = x
+  }
+  setCurrentAssignmentName = (x) => {
+    this.currentAssignmentName=x
+  }
+  setCurrentAssignmentDescribe = (x) => {
+    this.currentAssignmentDescribe=x
+  }
+  setCurrentAssignmentID = (x) => {
+    this.currentAssignmentID=x
+  }
+  setPeerHomework = (x) =>{
+    this.peerHomework=x
+  }
+  get SlicedAssignments() {
+    
+    return this.assignmentData.filter(assignment => this.filterList.includes(assignment.submit));
+  }
   setCourseData = (newData)=> {
     // console.log(newData)
     this.courseData=newData
@@ -123,12 +188,28 @@ class StudentStore {
     // console.log(jsonString)
     // this.coursedata = JSON.parse(jsonString)
   }
+  setEditorContent = (x) => {
+    this.editorContent=x
+  }
 	updateCourseData = async () => {
     try {
-      const ret = await http.post('/teacher/getCourseList', {
+      const ret = await http.post('/student/getMyCourseList', {
         
       })
       if(ret.data) this.setCourseData(ret.data.data.courses)
+      
+
+      // window.location.reload()
+    } catch(e) {
+      console.log(e)
+    }
+  }
+  updateEvaluateCourseData = async()=>{
+    try {
+      const ret = await http.post('/student/getPeerHomeworkByUID', {
+        
+      })
+      if(ret.data) this.setPeerHomework(ret.data.data.peerHomework)
       
 
       // window.location.reload()
@@ -168,36 +249,7 @@ class StudentStore {
     this.studentData = JSON.parse(jsonString)
   }
   
-  updateStudentData = async (s) => {
-    try {
-      console.log('s is '+ s)
-      const ret = await http.post('/teacher/getStudentListByCourseID', {
-        courseID : s
-      })
-      if(ret.data) this.setStudentData(ret.data.data.students)
-      console.log(ret.data.data.students)
 
-      // window.location.reload()
-    } catch(e) {
-      console.log('catch ')
-      console.log(e)
-    }
-  }
-  updateStudentGradeData = async (courseID,assignmentID) => {
-    try {
-      const ret = await http.post('/homework/getHomeworkByAssignmentID', {
-        courseID,
-        assignmentID
-      })
-      if(ret.data) this.setStudentData(ret.data.data.homeworks)
-      console.log(ret.data.data.homeworks)
-
-      // window.location.reload()
-    } catch(e) {
-      console.log('catch ')
-      console.log(e)
-    }
-  }
 
   setAssignmentData=(newData) => {
     this.assignmentData = newData
@@ -207,11 +259,14 @@ class StudentStore {
   //todo
   updateAssignmentData = async (s) => {
     try {
-      const ret = await http.post('/teacher/getAssignmentListByCourseID', {
+      const ret = await http.post('/student/getAssignmentListByCourseID', {
         courseID:s
       })
-      if(ret.data) this.setAssignmentData(ret.data.data.assignments)
-      console.log(ret.data)
+      if(ret.data) {
+        this.setAssignmentData(ret.data.data.assignments)
+        console.log(ret.data)
+      }
+  
 
       // window.location.reload()
     } catch(e) {

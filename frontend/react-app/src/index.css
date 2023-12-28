@@ -64,3 +64,8 @@ button:hover {
 .ant-message {
   top: 6vh !important;; /* 或者其他足够高的值 */
 }
+.fr-wrapper > div[style*='z-index: 9999'] {
+  position: absolute!important;
+  top: -10000px;
+  opacity: 0;
+}

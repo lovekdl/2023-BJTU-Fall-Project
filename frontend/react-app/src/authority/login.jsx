@@ -9,8 +9,8 @@ import { observer } from 'mobx-react-lite';
 import qq from '../assets/QQ.png'
 // import { RegisterForm } from './register';
 import {message} from 'antd'
-import RegisterForm from "./register"
-import FindPasswordForm from "./findpassword"
+import RegisterForm from "./register.jsx"
+import FindPasswordForm from "./findpassword.jsx"
 
 function LoginForm  ()  {
 

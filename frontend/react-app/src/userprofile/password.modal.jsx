@@ -22,7 +22,7 @@ function PasswordModal (prop) {
       message.error('两次输入的密码不同');
       return;
     }
-    if(oldPasswordRef.current?.value !== passwordRef.current?.value) {
+    if(oldPasswordRef.current?.value === passwordRef.current?.value) {
       message.error('新旧密码不能相同');
       return;
     }

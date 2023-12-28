@@ -1,2 +1,2 @@
-import StudentLayout from "./studentlayout";
+import StudentLayout from "./studentlayout.jsx";
 export {StudentLayout}

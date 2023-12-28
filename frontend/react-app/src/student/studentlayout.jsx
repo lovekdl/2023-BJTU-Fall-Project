@@ -3,19 +3,25 @@ import {
   MenuFoldOutlined,
   MenuUnfoldOutlined,
   UserOutlined,
-  SnippetsOutlined
+  SnippetsOutlined,
+  BellOutlined
 } from '@ant-design/icons';
 import { observer } from 'mobx-react-lite'
 import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg'
-import { Layout, Menu, Button, theme, ConfigProvider } from 'antd';
+import { Layout, Menu, Button, theme, ConfigProvider, FloatButton, Popover, message} from 'antd';
 import {Avatar} from 'antd';
+import touxiang from '../assets/touxiang.png'
 import CourseManage from './coursemanage.jsx';
+import HomeworkEvaluate from './homeworkevaluate.jsx';
+import { http } from '../utils/http.jsx';
 const { Header, Sider, Content } = Layout;
 const StudentLayout = () => {
   const [collapsed, setCollapsed] = useState(false);
   const navigate = useNavigate()
   const [nowKey, setNowKey] = useState(1);
+  const [a, setA] = useState(0)
+  const [b, setB] = useState(0)
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -24,9 +30,34 @@ const StudentLayout = () => {
     navigate("/profile", {replace:false});
   }
   useEffect(()=>{
+    const getMessage = async()=>{
+      try {
+        const ret = await http.post('/student/getUnfinished',{
+        })
+        if(ret.data?.message == 'success') {
+          console.log(ret.data)
+          setA(ret.data.data.unfinishedAssignment)
+          setB(ret.data.data.unfinishedPeerHomework)
+        }
+        else message.error(ret.data.message)
+      }
+      catch(e) {
+        console.log('catch : ',e)
+        if(e.response) message.error(e.response.data.message)
+        else message.error(e.message)
+      }
+    }
+    getMessage()
+  },[])
+  useEffect(()=>{
     if(nowKey == 1) {
       setContent(
         <CourseManage setContent={setContent}></CourseManage>
+      )
+    }
+    if(nowKey == 2) {
+      setContent(
+        <HomeworkEvaluate setContent={setContent}></HomeworkEvaluate>
       )
     }
   },[nowKey])
@@ -36,6 +67,11 @@ const StudentLayout = () => {
     if(nowKey == 1) {
       setContent(
         <CourseManage setContent={setContent}></CourseManage>
+      )
+    }
+    if(nowKey == 2) {
+      setContent(
+        <HomeworkEvaluate setContent={setContent}></HomeworkEvaluate>
       )
     }
   }
@@ -48,6 +84,26 @@ const StudentLayout = () => {
       return "作业互评"
     }
   }
+  const [open, setOpen] = useState(false);  
+  const handleOpenChange = async (newOpen) => {
+    setOpen(newOpen);
+    
+    try {
+      const ret = await http.post('/student/getUnfinished',{
+      })
+      if(ret.data?.message == 'success') {
+        console.log(ret.data)
+        setA(ret.data.data.unfinishedAssignment)
+        setB(ret.data.data.unfinishedPeerHomework)
+      }
+      else message.error(ret.data.message)
+    }
+    catch(e) {
+      console.log('catch : ',e)
+      if(e.response) message.error(e.response.data.message)
+      else message.error(e.message)
+    }
+  };
   return (
     <ConfigProvider
     theme={{
@@ -123,7 +179,7 @@ const StudentLayout = () => {
             />
             作业互评系统
             <div style={{marginLeft:'auto', marginRight: '1vw' }}>
-              <Avatar className = 'MenuAvatar' size={50} onClick ={handleAvatarOnClicked}></Avatar>
+              <Avatar className = 'MenuAvatar' size={50} onClick ={handleAvatarOnClicked} src={touxiang} ></Avatar>
             </div>
           </div>
         </Header>
@@ -138,7 +194,17 @@ const StudentLayout = () => {
         >
           {content}
         </Content>
+        
       </Layout>
+      <Popover
+      content={<div><p>您有{a}门待提交的作业</p><p>您有{b}个待处理的互评任务</p></div>}
+      title="消息"
+      trigger="click"
+      open={open}
+      onOpenChange={handleOpenChange}
+    >
+      <FloatButton style={{right: 70, height:50,width:50}}badge={{count: a+b,}} icon={<BellOutlined />}/>
+      </Popover>
     </Layout>
     </ConfigProvider>
   );

@@ -2,11 +2,11 @@
 	存储模块
 	用于状态管理和响应式更新
 */
-import LoginStore from "./login.store"
-import ProfileStore from "./profile.store"
-import ManagerStore from "./manager.store"
-import TeacherStore from "./teacher.store"
-import StudentStore from "./student.store"
+import LoginStore from "./login.store.jsx"
+import ProfileStore from "./profile.store.jsx"
+import ManagerStore from "./manager.store.jsx"
+import TeacherStore from "./teacher.store.jsx"
+import StudentStore from "./student.store.jsx"
 import React from "react"
 class RootStore {
 	constructor() {

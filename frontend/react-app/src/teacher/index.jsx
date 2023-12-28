@@ -1,2 +1,2 @@
-import TeacherLayout from "./teacherLayout";
+import TeacherLayout from "./teacherlayout.jsx";
 export {TeacherLayout}

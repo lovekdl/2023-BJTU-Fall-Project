@@ -2,11 +2,11 @@
 import './App.css'
 import { LoginForm } from "./authority";
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
-import { AuthComponent } from './route_auth/AuthComponent';
-import Profile from './userprofile/profile';
-import { Management } from './manager/index';
-import { TeacherLayout } from './teacher/index';
-import { StudentLayout } from './student/index'
+import { AuthComponent } from './route_auth/AuthComponent.jsx';
+import Profile from './userprofile/profile.jsx';
+import { Management } from './manager/index.jsx';
+import { TeacherLayout } from './teacher/index.jsx';
+import { StudentLayout } from './student/index.jsx'
 function App() {
 
   return (

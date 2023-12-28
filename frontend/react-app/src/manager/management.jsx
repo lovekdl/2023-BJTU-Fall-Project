@@ -10,7 +10,8 @@ import { useNavigate } from 'react-router-dom';
 import logo from '../assets/logo.jpg'
 import { Layout, Menu, Button, theme, ConfigProvider } from 'antd';
 import {Avatar} from 'antd';
-import UserManage from './usermanage';
+import touxiang from '../assets/touxiang.png'
+import UserManage from './usermanage.jsx';
 const { Header, Sider, Content } = Layout;
 const Management = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -113,7 +114,7 @@ const Management = () => {
               }}
             />
             <div style={{marginLeft:'auto', marginRight: '1vw' }}>
-              <Avatar className = 'MenuAvatar' size={50} onClick ={handleAvatarOnClicked}></Avatar>
+              <Avatar className = 'MenuAvatar' size={50} onClick ={handleAvatarOnClicked} src={touxiang}></Avatar>
             </div>
           </div>
         </Header>
